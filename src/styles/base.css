@@ -5,6 +5,7 @@
     font-family: var(--font-body);
     scroll-behavior: smooth;
     scroll-padding-top: var(--spacing-header);
+    scrollbar-gutter: stable;
     touch-action: manipulation;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;

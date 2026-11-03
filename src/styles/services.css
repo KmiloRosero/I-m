@@ -1,26 +1,34 @@
 @layer components {
-  .service-list {
-    display: grid;
-    gap: 3.5rem;
-    margin-top: 3.5rem;
+  .story-scroll {
+    width: 100%;
+    overflow-x: clip;
   }
 
-  .service-title {
-    font-size: clamp(2rem, 4.4vw, 4rem);
+  .story-section {
+    position: relative;
+    width: 100%;
+    min-height: 100svh;
+    overflow: hidden;
+  }
+
+  .story-section-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+    min-height: 100svh;
+    padding: calc(var(--spacing-header) + 2rem) var(--spacing-gutter) var(--spacing-section);
+    transform-origin: bottom left;
+    will-change: transform;
+  }
+
+  .story-title {
+    max-width: 14ch;
+    font-size: clamp(2rem, 10vw, 9rem);
     font-stretch: 125%;
     font-weight: 800;
-    letter-spacing: -0.015em;
-    line-height: 1;
-  }
-
-  @media (min-width: 64rem) {
-    .service-list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: 5rem;
-    }
-
-    .service-list > :nth-child(even) {
-      margin-top: 6rem;
-    }
+    hyphens: auto;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
   }
 }

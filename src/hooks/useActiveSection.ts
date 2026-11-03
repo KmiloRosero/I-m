@@ -13,7 +13,9 @@ export function useActiveSection(sectionIds: readonly string[]): string {
     const observer = new IntersectionObserver(
       (entries) => {
         const activeEntry = entries.find((entry) => entry.isIntersecting)
-        if (activeEntry) setActiveId(activeEntry.target.id)
+        if (!activeEntry) return
+        const { target } = activeEntry
+        setActiveId(target instanceof HTMLElement && target.dataset['navSection'] ? target.dataset['navSection'] : target.id)
       },
       { rootMargin: VIEWPORT_READING_LINE },
     )
@@ -21,6 +23,7 @@ export function useActiveSection(sectionIds: readonly string[]): string {
     sectionIds.forEach((id) => {
       const section = document.getElementById(id)
       if (section) observer.observe(section)
+      document.querySelectorAll(`[data-nav-section="${id}"]`).forEach((part) => observer.observe(part))
     })
 
     return () => observer.disconnect()
