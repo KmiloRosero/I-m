@@ -1,0 +1,77 @@
+@layer components {
+  .testimonial-list {
+    display: grid;
+    gap: 4rem;
+    margin-top: 3rem;
+  }
+
+  .testimonial-quote {
+    max-width: 24ch;
+    font-size: clamp(1.75rem, 4.6vw, 4rem);
+    line-height: 1.12;
+  }
+
+  .testimonial-quote::before {
+    display: block;
+    color: var(--color-red);
+    content: '“';
+    font-family: var(--font-display);
+    font-size: 2.5em;
+    font-weight: 800;
+    line-height: 0.7;
+  }
+
+  .testimonial-list > :nth-child(even) {
+    justify-self: end;
+  }
+
+  .contact-email {
+    display: block;
+    margin-top: 2rem;
+    color: var(--color-yellow);
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 9.6vw, 6rem);
+    font-stretch: 110%;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.12em;
+  }
+
+  .site-footer {
+    padding: 3.5rem var(--spacing-gutter) 1.5rem;
+    background-color: var(--color-black);
+    color: var(--color-white);
+  }
+
+  .site-footer-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+
+  .site-footer-name {
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 4vw, 3.5rem);
+    font-stretch: 125%;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    line-height: 1;
+  }
+
+  .site-footer-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.25rem 2rem;
+  }
+
+  @media (min-width: 64rem) {
+    .site-footer-grid {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 3fr) minmax(0, 3fr);
+      gap: 3rem;
+    }
+  }
+}
