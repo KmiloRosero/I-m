@@ -24,14 +24,10 @@ async function loadDisplayFont(text: string): Promise<ArrayBuffer | null> {
 
 export default async function OpenGraphImage() {
   const { firstName, lastName, position, studies } = personalInfo
-  const fontData = await loadDisplayFont(`${firstName}${lastName}`)
-  const nameStyle = {
-    display: 'flex',
-    fontFamily: fontData ? DISPLAY_FONT_NAME : 'sans-serif',
-    fontSize: 112,
-    fontWeight: 800,
-    lineHeight: 1,
-  }
+  const fontData = await loadDisplayFont(`${firstName}${lastName}${studies}${position}`)
+  const fontFamily = fontData ? DISPLAY_FONT_NAME : 'sans-serif'
+  const nameStyle = { display: 'flex', fontFamily, fontSize: 112, fontWeight: 800, lineHeight: 1 }
+  const roleStyle = { display: 'flex', fontFamily, fontSize: 26, fontWeight: 800 }
 
   return new ImageResponse(
     <div style={{ background: brandColors.cobalt, display: 'flex', height: '100%', width: '100%' }}>
@@ -42,13 +38,14 @@ export default async function OpenGraphImage() {
           flexDirection: 'column',
           justifyContent: 'flex-end',
           padding: 64,
+          paddingRight: 24,
           width: 860,
         }}
       >
         <div style={nameStyle}>{firstName}</div>
         <div style={nameStyle}>{lastName}</div>
-        <div style={{ display: 'flex', fontSize: 36, marginTop: 32 }}>{studies}</div>
-        <div style={{ display: 'flex', fontSize: 36 }}>{position}</div>
+        <div style={{ ...roleStyle, marginTop: 32 }}>{studies}</div>
+        <div style={{ ...roleStyle, marginTop: 8 }}>{position}</div>
       </div>
       <div style={{ background: brandColors.red, display: 'flex', flexGrow: 1 }}>
         <div style={{ background: brandColors.yellow, display: 'flex', height: 210, width: '100%' }} />
