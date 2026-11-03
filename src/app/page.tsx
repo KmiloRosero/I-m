@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { StoryScroll } from '@/components/ui/StoryScroll'
 import { AboutSection } from '@/sections/AboutSection'
 import { ContactSection } from '@/sections/ContactSection'
 import { ExperienceSection } from '@/sections/ExperienceSection'
@@ -13,14 +14,16 @@ export const metadata: Metadata = { alternates: { canonical: '/' } }
 export default function HomePage() {
   return (
     <main id="contenido">
-      <HeroSection />
-      <AboutSection />
-      <SkillsSection />
-      <ServicesSection />
-      <ProjectsSection />
-      <TestimonialsSection />
-      <ExperienceSection />
-      <ContactSection />
+      <StoryScroll>
+        <HeroSection />
+        <AboutSection />
+        <SkillsSection />
+        <ServicesSection />
+        <ProjectsSection />
+        <TestimonialsSection />
+        <ExperienceSection />
+        <ContactSection />
+      </StoryScroll>
     </main>
   )
 }

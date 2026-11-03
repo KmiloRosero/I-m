@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { Section } from '@/components/ui/Section'
-import { FlowArt, FlowSection } from '@/components/ui/StoryScroll'
+import { StorySection } from '@/components/ui/StorySection'
 import { services } from '@/data/services'
 
 const panelTones: readonly CSSProperties[] = [
@@ -20,17 +20,20 @@ export function ServicesSection() {
           ofrecer con un alcance claro.
         </p>
       </Section>
-      <FlowArt aria-label="Servicios que ofrezco" navSectionId="servicios">
-        {services.map(({ description, evidence, title }, index) => (
-          <FlowSection aria-label={title} key={title} style={panelTones[index % panelTones.length]}>
-            <h3 className="story-title">{title}</h3>
-            <div className="max-w-text">
-              <p className="lead-text">{description}</p>
-              <p className="mt-3">Ejemplos: {evidence.join(', ')}</p>
-            </div>
-          </FlowSection>
-        ))}
-      </FlowArt>
+      {services.map(({ description, evidence, title }, index) => (
+        <StorySection
+          innerClassName="story-panel"
+          key={title}
+          navSectionId="servicios"
+          style={panelTones[index % panelTones.length]}
+        >
+          <h3 className="story-title">{title}</h3>
+          <div className="max-w-text">
+            <p className="lead-text">{description}</p>
+            <p className="mt-3">Ejemplos: {evidence.join(', ')}</p>
+          </div>
+        </StorySection>
+      ))}
     </>
   )
 }

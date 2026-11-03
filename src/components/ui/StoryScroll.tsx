@@ -3,103 +3,62 @@
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Children, useRef, type CSSProperties, type ReactNode } from 'react'
+import { useRef, type ReactNode } from 'react'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
 const ENTRY_ROTATION_DEGREES = 30
 
-interface FlowSectionProps {
-  'aria-label'?: string
-  children: ReactNode
-  className?: string
-  style?: CSSProperties | undefined
-}
-
-export function FlowSection({ 'aria-label': ariaLabel, children, className, style }: FlowSectionProps) {
-  return (
-    <section
-      aria-label={ariaLabel}
-      className={`story-section ${className ?? ''}`}
-      data-flow-section
-    >
-      <div className="story-section-inner" style={style}>
-        {children}
-      </div>
-    </section>
-  )
-}
-
-interface FlowArtProps {
-  'aria-label'?: string
-  children: ReactNode
-  className?: string
-  navSectionId?: string
-}
-
-export function FlowArt({ 'aria-label': ariaLabel, children, className, navSectionId }: FlowArtProps) {
+export function StoryScroll({ children }: { children: ReactNode }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const prefersReducedMotion = usePrefersReducedMotion()
-  const sectionCount = Children.count(children)
 
   useGSAP(
     () => {
       const container = containerRef.current
       if (!container || prefersReducedMotion) return
 
-      const sections = Array.from(container.querySelectorAll<HTMLElement>('[data-flow-section]'))
+      const tracks = Array.from(container.querySelectorAll<HTMLElement>('.story-track'))
       const triggers: ScrollTrigger[] = []
+      container.dataset['storyActive'] = 'true'
 
-      sections.forEach((section, index) => {
-        gsap.set(section, { zIndex: index + 1 })
-        const inner = section.querySelector<HTMLElement>('.story-section-inner')
-        if (!inner) return
-
-        if (index > 0) {
-          gsap.set(inner, { rotation: ENTRY_ROTATION_DEGREES, transformOrigin: 'bottom left' })
-          const tween = gsap.to(inner, {
-            ease: 'none',
-            rotation: 0,
-            scrollTrigger: { end: 'top 25%', scrub: true, start: 'top bottom', trigger: section },
-          })
-          if (tween.scrollTrigger) triggers.push(tween.scrollTrigger)
-        }
-
-        if (index < sections.length - 1) {
-          triggers.push(
-            ScrollTrigger.create({
-              end: 'bottom top',
-              pin: true,
-              pinSpacing: false,
-              start: 'bottom bottom',
-              trigger: section,
-            }),
-          )
-        }
+      const resizeObserver = new ResizeObserver((entries) => {
+        entries.forEach(({ target }) => {
+          if (target instanceof HTMLElement) {
+            target.parentElement?.style.setProperty('--story-height', `${target.offsetHeight}px`)
+          }
+        })
+        ScrollTrigger.refresh()
       })
 
-      let isActive = true
-      void document.fonts.ready.then(() => {
-        if (isActive) ScrollTrigger.refresh()
+      tracks.forEach((track, index) => {
+        gsap.set(track, { zIndex: index + 1 })
+        const inner = track.querySelector<HTMLElement>('.story-section-inner')
+        if (!inner) return
+        resizeObserver.observe(inner)
+        if (index === 0) return
+
+        gsap.set(inner, { rotation: ENTRY_ROTATION_DEGREES, transformOrigin: 'top left' })
+        const tween = gsap.to(inner, {
+          ease: 'none',
+          rotation: 0,
+          scrollTrigger: { end: 'top 25%', scrub: true, start: 'top bottom', trigger: track },
+        })
+        if (tween.scrollTrigger) triggers.push(tween.scrollTrigger)
       })
 
       return () => {
-        isActive = false
+        resizeObserver.disconnect()
         triggers.forEach((trigger) => trigger.kill())
+        delete container.dataset['storyActive']
       }
     },
-    { dependencies: [sectionCount, prefersReducedMotion], revertOnUpdate: true, scope: containerRef },
+    { dependencies: [prefersReducedMotion], revertOnUpdate: true, scope: containerRef },
   )
 
   return (
-    <div
-      aria-label={ariaLabel}
-      className={`story-scroll ${className ?? ''}`}
-      data-nav-section={navSectionId}
-      ref={containerRef}
-      role="group"
-    >
+    <div className="story-scroll" ref={containerRef}>
       {children}
     </div>
   )

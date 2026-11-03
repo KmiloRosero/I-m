@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { StorySection } from '@/components/ui/StorySection'
 
 type SectionTone = 'black' | 'cobalt' | 'red' | 'white' | 'yellow'
 
@@ -22,17 +23,15 @@ export function Section({ children, id, title, titleAlign = 'start', tone }: Sec
   const titleId = `${id}-title`
 
   return (
-    <section
-      aria-labelledby={titleId}
-      className={`min-h-[70dvh] px-gutter py-section ${toneClasses[tone]}`}
-      id={id}
-    >
-      <div className="mx-auto max-w-content">
-        <h2 className="section-title" data-align={titleAlign} id={titleId}>
-          {title}
-        </h2>
-        {children}
-      </div>
-    </section>
+    <StorySection id={id}>
+      <section aria-labelledby={titleId} className={`px-gutter py-section ${toneClasses[tone]}`}>
+        <div className="mx-auto max-w-content">
+          <h2 className="section-title" data-align={titleAlign} id={titleId}>
+            {title}
+          </h2>
+          {children}
+        </div>
+      </section>
+    </StorySection>
   )
 }
