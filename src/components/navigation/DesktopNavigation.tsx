@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { navigationItems } from '@/data/navigation'
+import { getSectionHref, navigationItems } from '@/data/navigation'
 
 export function DesktopNavigation({ activeId }: { activeId: string }) {
   return (
@@ -10,7 +10,7 @@ export function DesktopNavigation({ activeId }: { activeId: string }) {
             <Link
               aria-current={activeId === id ? 'true' : undefined}
               className="nav-link"
-              href={`/#${id}`}
+              href={getSectionHref(id)}
             >
               {label}
             </Link>

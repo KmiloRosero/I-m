@@ -14,9 +14,9 @@ export function StackExplorer({ groups, initialTechnology }: StackExplorerProps)
   return (
     <div className="stack-layout">
       <div className="stack-groups">
-        {groups.map(({ category, technologies }) => (
-          <section aria-labelledby={`stack-${category}`} key={category}>
-            <h3 className="stack-category" id={`stack-${category}`}>
+        {groups.map(({ category, technologies }, index) => (
+          <section aria-labelledby={`stack-category-${index}`} key={category}>
+            <h3 className="stack-category" id={`stack-category-${index}`}>
               {category}
             </h3>
             <ul className="flex flex-wrap gap-2">
@@ -24,7 +24,7 @@ export function StackExplorer({ groups, initialTechnology }: StackExplorerProps)
                 <li key={technology.name}>
                   <button
                     aria-pressed={selected.name === technology.name}
-                    className="stack-button"
+                    className="choice-button"
                     onClick={() => setSelected(technology)}
                     type="button"
                   >

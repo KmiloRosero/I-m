@@ -9,6 +9,7 @@ import { useActiveSection } from '@/hooks/useActiveSection'
 
 const MOBILE_MENU_ID = 'mobile-menu'
 const PAGE_CONTENT_ID = 'page-content'
+const DESKTOP_MEDIA_QUERY = '(min-width: 64rem)'
 
 export function SiteNavigation() {
   const activeId = useActiveSection(sectionIds)
@@ -28,16 +29,22 @@ export function SiteNavigation() {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') closeAndRestoreFocus()
     }
+    const desktopQuery = window.matchMedia(DESKTOP_MEDIA_QUERY)
+    const handleViewportChange = (event: MediaQueryListEvent) => {
+      if (event.matches) setIsMenuOpen(false)
+    }
 
     pageContent?.toggleAttribute('inert', true)
     document.body.style.overflow = 'hidden'
     document.addEventListener('keydown', handleKeyDown)
+    desktopQuery.addEventListener('change', handleViewportChange)
     firstLinkRef.current?.focus()
 
     return () => {
       pageContent?.toggleAttribute('inert', false)
       document.body.style.overflow = ''
       document.removeEventListener('keydown', handleKeyDown)
+      desktopQuery.removeEventListener('change', handleViewportChange)
     }
   }, [closeAndRestoreFocus, isMenuOpen])
 

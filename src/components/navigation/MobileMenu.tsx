@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { RefObject } from 'react'
-import { navigationItems } from '@/data/navigation'
+import { getSectionHref, navigationItems } from '@/data/navigation'
 
 interface MobileMenuProps {
   activeId: string
@@ -25,7 +25,7 @@ export function MobileMenu({ activeId, firstLinkRef, id, isOpen, onNavigate }: M
             <Link
               aria-current={activeId === item.id ? 'true' : undefined}
               className="mobile-menu-link"
-              href={`/#${item.id}`}
+              href={getSectionHref(item.id)}
               onClick={onNavigate}
               ref={index === 0 ? firstLinkRef : undefined}
             >
