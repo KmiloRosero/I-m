@@ -13,7 +13,6 @@ npm test
 npm run build
 ```
 
-`npm run terrain` regenera las curvas de nivel del volcán Galeras a partir de datos reales de elevación.
 
 ## Estructura
 

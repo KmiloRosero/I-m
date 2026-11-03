@@ -9,8 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "test": "node --test src/utils/*.test.ts",
-    "typecheck": "tsc --noEmit",
-    "terrain": "node scripts/build-terrain.mjs"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "lucide-react": "^1.66.0",
@@ -20,14 +19,11 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.4",
-    "@types/d3-contour": "^3.0.6",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "d3-contour": "^4.0.2",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.4",
-    "sharp": "^0.35.5",
     "tailwindcss": "^4.3.4",
     "typescript": "6.0.3"
   },

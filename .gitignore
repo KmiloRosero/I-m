@@ -25,6 +25,5 @@ out
 
 .claude/
 .agents/
-.terrain-cache/
 next-env.d.ts
 *.tsbuildinfo
