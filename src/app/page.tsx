@@ -7,6 +7,7 @@ import { HeroSection } from '@/sections/HeroSection'
 import { ProjectsSection } from '@/sections/ProjectsSection'
 import { ServicesSection } from '@/sections/ServicesSection'
 import { SkillsSection } from '@/sections/SkillsSection'
+import { TestimonialsSection } from '@/sections/TestimonialsSection'
 
 export default function HomePage() {
   return (
@@ -15,10 +16,11 @@ export default function HomePage() {
       <div id="page-content">
         <main id="contenido">
           <HeroSection />
-          <SkillsSection />
           <AboutSection />
+          <SkillsSection />
           <ServicesSection />
           <ProjectsSection />
+          <TestimonialsSection />
           <ExperienceSection />
           <ContactSection />
         </main>
