@@ -30,7 +30,7 @@
     margin-top: 2rem;
     color: var(--color-yellow);
     font-family: var(--font-display);
-    font-size: clamp(1.5rem, 9.6vw, 6rem);
+    font-size: clamp(1.5rem, 8.6vw, 6rem);
     font-stretch: 110%;
     font-weight: 800;
     letter-spacing: -0.02em;
