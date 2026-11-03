@@ -1,0 +1,53 @@
+import Image from 'next/image'
+import type { CSSProperties } from 'react'
+import type { ServiceGroup, ServiceVisual as ServiceVisualData } from '@/types/service'
+
+type RevealStyle = CSSProperties & Record<'--reveal-index', number>
+
+const revealStyle = (index: number): RevealStyle => ({ '--reveal-index': index })
+
+function GroupList({ groups, variant }: { groups: readonly ServiceGroup[]; variant: 'routes' | 'tables' }) {
+  return (
+    <div className="service-board" data-variant={variant}>
+      {groups.map(({ items, label }, index) => (
+        <section aria-label={label} className="service-group reveal-item" key={label} style={revealStyle(index)}>
+          <p className="service-group-label">{label}</p>
+          <ul className="service-group-items">
+            {items.map((item) => (
+              <li key={item}>
+                <code>{item}</code>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  )
+}
+
+export function ServiceVisual({ visual }: { visual: ServiceVisualData }) {
+  if (visual.kind !== 'screens') return <GroupList groups={visual.groups} variant={visual.kind} />
+
+  return (
+    <div className="service-screens">
+      {visual.images.map((image, index) => (
+        <figure
+          className="service-frame reveal-item"
+          data-orientation={image.height > image.width ? 'portrait' : 'landscape'}
+          data-position={index === 0 ? 'back' : 'front'}
+          key={image.src}
+          style={revealStyle(index)}
+        >
+          <Image
+            alt={image.alt}
+            height={image.height}
+            sizes="(min-width: 1024px) 34vw, 80vw"
+            src={image.src}
+            width={image.width}
+          />
+          <figcaption>{image.caption}</figcaption>
+        </figure>
+      ))}
+    </div>
+  )
+}
