@@ -12,6 +12,8 @@ export const projects: readonly Project[] = [
     repoUrl: 'https://github.com/KmiloRosero/biomedical-fronted',
     extraRepoUrl: 'https://github.com/KmiloRosero/biomedical-backend',
     demoUrl: 'https://biomedwasted.vercel.app/login',
+    category: null,
+    status: null,
     featured: true,
   },
   {
@@ -26,6 +28,8 @@ export const projects: readonly Project[] = [
     repoUrl: 'https://github.com/KmiloRosero/MercaJusto',
     extraRepoUrl: null,
     demoUrl: 'https://mercajusto.vercel.app/',
+    category: null,
+    status: null,
     featured: false,
   },
   {
@@ -43,6 +47,8 @@ export const projects: readonly Project[] = [
     repoUrl: 'https://github.com/KmiloRosero/MoniWatch',
     extraRepoUrl: null,
     demoUrl: null,
+    category: null,
+    status: null,
     featured: false,
   },
   {
@@ -56,6 +62,8 @@ export const projects: readonly Project[] = [
     repoUrl: 'https://github.com/KmiloRosero/CineTracker',
     extraRepoUrl: null,
     demoUrl: 'https://github.com/KmiloRosero/CineTracker/releases/tag/v1.2.0',
+    category: null,
+    status: null,
     featured: false,
   },
   {
@@ -69,6 +77,8 @@ export const projects: readonly Project[] = [
     repoUrl: 'https://github.com/Ju4nK1807/Reticula',
     extraRepoUrl: null,
     demoUrl: null,
+    category: null,
+    status: null,
     featured: false,
   },
 ]
