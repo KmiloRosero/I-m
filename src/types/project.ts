@@ -1,17 +1,40 @@
 export type ProjectCategory = 'academic' | 'collaborative' | 'freelance' | 'personal'
 
+export type ProjectLayout = 'compact' | 'feature' | 'flow' | 'phone' | 'wide'
+
+export interface ProjectImage {
+  alt: string
+  height: number
+  label: string
+  src: string
+  width: number
+}
+
 export interface Project {
   slug: string
   name: string
   platform: string
-  summary: string
-  stack: readonly string[]
-  features: readonly string[]
+  layout: ProjectLayout
+  category: ProjectCategory | null
+  description: string
+  problem: string | null
+  purpose: string | null
+  solution: string | null
+  technologies: readonly string[]
+  frameworks: readonly string[]
   contribution: string | null
+  collaboration: string | null
+  location: string | null
+  period: string | null
+  status: string | null
+  verifiedFeatures: readonly string[]
+  architecture: readonly string[]
+  flowSteps: readonly string[]
+  screenshots: readonly ProjectImage[]
   repoUrl: string
+  repoLabel: string
   extraRepoUrl: string | null
   demoUrl: string | null
-  category: ProjectCategory | null
-  status: string | null
-  featured: boolean
+  demoLabel: string
+  hasCaseStudy: boolean
 }
