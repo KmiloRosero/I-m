@@ -7,7 +7,6 @@ export const experienceKindLabels: Record<ExperienceKind, string> = {
   collaborative: 'Colaborativo',
   employment: 'Empleo',
   freelance: 'Freelance',
-  local: 'Proyectos locales',
   personal: 'Personal',
 }
 
@@ -47,9 +46,9 @@ export const experience: readonly ExperienceEntry[] = [
   {
     title: 'Webs y asistentes personalizados',
     role: null,
-    kinds: ['local'],
+    kinds: ['freelance'],
     period: null,
-    description: 'Sitios web y asistentes personalizados para proyectos de la región.',
+    description: 'Sitios web y asistentes personalizados para clientes de la región.',
     technologies: [],
     responsibilities: [],
     result: null,

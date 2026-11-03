@@ -1,6 +1,6 @@
 import type { ProjectCategory } from '@/types/project'
 
-export type ExperienceKind = ProjectCategory | 'employment' | 'local'
+export type ExperienceKind = ProjectCategory | 'employment'
 
 export interface ExperienceEntry {
   title: string
