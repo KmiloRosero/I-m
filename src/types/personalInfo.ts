@@ -12,6 +12,8 @@ export interface PersonalInfo {
   location: string
   email: string
   introduction: string
+  about: string
+  interests: readonly string[]
   featuredStack: readonly string[]
   socialLinks: readonly SocialLink[]
   cvUrl: string | null

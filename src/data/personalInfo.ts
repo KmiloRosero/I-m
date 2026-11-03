@@ -10,6 +10,9 @@ export const personalInfo: PersonalInfo = {
   email: 'juancamilorose@gmail.com',
   introduction:
     'Estudio en la Universidad Cooperativa de Colombia, en Pasto. Mis repositorios incluyen aplicaciones web, móviles, de escritorio y para reloj.',
+  about:
+    'Estudio Ingeniería de Software y, mientras avanzo en la carrera, he publicado proyectos web, móviles, de escritorio y para reloj.',
+  interests: [],
   featuredStack: ['TypeScript', 'React', 'React Native', 'Node.js', 'NestJS', 'Spring Boot', 'PostgreSQL'],
   socialLinks: [
     { label: 'GitHub', url: 'https://github.com/KmiloRosero' },
