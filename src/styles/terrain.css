@@ -1,0 +1,16 @@
+@layer components {
+  .contour-field {
+    opacity: 0;
+    transition: opacity var(--duration-reveal) var(--ease-out-strong);
+  }
+
+  .contour-field[data-ready='true'] {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contour-field {
+      transition: none;
+    }
+  }
+}

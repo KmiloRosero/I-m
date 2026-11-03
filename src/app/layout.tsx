@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Anybody, Newsreader } from 'next/font/google'
 import type { ReactNode } from 'react'
-import '@/styles/index.css'
+import './globals.css'
 
 const displayFont = Anybody({
   axes: ['wdth'],
@@ -21,7 +21,13 @@ export const metadata: Metadata = {
   title: 'Camilo Rosero | Portafolio',
   description:
     'Portafolio de Camilo Rosero, estudiante de Ingeniería de Software en la Universidad Cooperativa de Colombia, Pasto.',
-  icons: { icon: '/favicon.svg' },
+  openGraph: {
+    title: 'Camilo Rosero | Portafolio',
+    description:
+      'Portafolio de Camilo Rosero, estudiante de Ingeniería de Software en la Universidad Cooperativa de Colombia, Pasto.',
+    locale: 'es_CO',
+    type: 'website',
+  },
 }
 
 export const viewport: Viewport = {

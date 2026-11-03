@@ -16,8 +16,11 @@ npm run build
 
 ## Estructura
 
-- `src/app`: layout y página principal.
-- `src/components`: `layout`, `sections`, `terrain` y `ui`.
-- `src/data`: perfil, navegación y proyectos. El enlace del CV se configura en `profile.ts`, en el campo `cvUrl`.
-- `src/hooks`, `src/types` y `src/styles`: lógica reutilizable, tipos y tokens de diseño.
-- `src/assets`: imágenes y datos del terreno.
+- `src/app`: layout, página principal, ícono y `globals.css`.
+- `src/sections`: una sección de la página por archivo.
+- `src/components`: `common`, `layout`, `navigation` y `ui`.
+- `src/data` y `src/types`: contenido centralizado y sus tipos. El enlace del CV es `cvUrl` en `personalInfo.ts`.
+- `src/styles`: tokens de diseño y hojas de estilo por responsabilidad.
+- `src/hooks`: lógica reutilizable del cliente.
+- `src/assets/terrain`: datos del Galeras, cargados de forma diferida.
+- `public/images`: imágenes estáticas.

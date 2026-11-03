@@ -1,0 +1,48 @@
+@layer components {
+  .display-name {
+    font-size: clamp(2.5rem, 13.8vw, 5.5rem);
+    font-stretch: 150%;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 0.86;
+  }
+
+  .section-title {
+    font-size: clamp(2.25rem, 10vw, 6.5rem);
+    font-stretch: 115%;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+
+  .item-title,
+  .item-title-featured {
+    font-size: 1.875rem;
+    font-stretch: 125%;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .item-title-featured {
+    color: var(--color-yellow);
+    font-size: clamp(2.25rem, 4vw, 3rem);
+  }
+
+  .lead-text {
+    font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+    line-height: 1.375;
+  }
+
+  @media (min-width: 40rem) {
+    .section-title {
+      font-size: min(8.4vw, 6.5rem);
+      font-stretch: 150%;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .display-name {
+      font-size: min(11.4vw, 10.5rem);
+    }
+  }
+}

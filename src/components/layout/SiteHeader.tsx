@@ -1,0 +1,20 @@
+import { SiteNavigation } from '@/components/navigation/SiteNavigation'
+import { personalInfo } from '@/data/personalInfo'
+
+export function SiteHeader() {
+  return (
+    <header className="fixed inset-x-0 top-0 z-50">
+      <a className="skip-link" href="#contenido">
+        Saltar al contenido
+      </a>
+      <div className="bg-black px-gutter text-white">
+        <div className="mx-auto flex h-header max-w-content items-center justify-between">
+          <a className="font-display font-bold [font-stretch:125%]" href="#inicio">
+            {personalInfo.name}
+          </a>
+          <SiteNavigation />
+        </div>
+      </div>
+    </header>
+  )
+}

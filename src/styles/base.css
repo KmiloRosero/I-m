@@ -1,0 +1,42 @@
+@layer base {
+  html {
+    background-color: var(--color-black);
+    color: var(--color-white);
+    font-family: var(--font-body);
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--spacing-header);
+    touch-action: manipulation;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    font-optical-sizing: auto;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background-color: var(--color-yellow);
+    color: var(--color-black);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}

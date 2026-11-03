@@ -1,0 +1,32 @@
+@theme inline {
+  --color-cobalt: #1433d6;
+  --color-red: #d81e1e;
+  --color-yellow: #ffd100;
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-graphite: #262626;
+  --color-smoke: #5f5f5f;
+  --color-fog: #e8e8e6;
+
+  --font-display: var(--font-anybody), 'Arial Narrow', sans-serif;
+  --font-body: var(--font-newsreader), Georgia, serif;
+
+  --spacing-gutter: clamp(1rem, 2.2vw, 2rem);
+  --spacing-section: clamp(4rem, 10vw, 6rem);
+  --spacing-header: 4rem;
+
+  --container-content: 96rem;
+  --container-text: 62ch;
+
+  --shadow-block: 0.5rem 0.5rem 0 var(--color-black);
+
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+:root {
+  --duration-press: 150ms;
+  --duration-indicator: 200ms;
+  --duration-drawer: 300ms;
+  --duration-reveal: 600ms;
+}

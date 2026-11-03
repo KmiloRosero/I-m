@@ -1,12 +1,12 @@
 import { SiteFooter } from '@/components/layout/SiteFooter'
 import { SiteHeader } from '@/components/layout/SiteHeader'
-import { AboutSection } from '@/components/sections/AboutSection'
-import { ContactSection } from '@/components/sections/ContactSection'
-import { ExperienceSection } from '@/components/sections/ExperienceSection'
-import { HeroSection } from '@/components/sections/HeroSection'
-import { ProjectsSection } from '@/components/sections/ProjectsSection'
-import { ServicesSection } from '@/components/sections/ServicesSection'
-import { TechnicalProfileSection } from '@/components/sections/TechnicalProfileSection'
+import { AboutSection } from '@/sections/AboutSection'
+import { ContactSection } from '@/sections/ContactSection'
+import { ExperienceSection } from '@/sections/ExperienceSection'
+import { HeroSection } from '@/sections/HeroSection'
+import { ProjectsSection } from '@/sections/ProjectsSection'
+import { ServicesSection } from '@/sections/ServicesSection'
+import { SkillsSection } from '@/sections/SkillsSection'
 
 export default function HomePage() {
   return (
@@ -15,7 +15,7 @@ export default function HomePage() {
       <div id="page-content">
         <main id="contenido">
           <HeroSection />
-          <TechnicalProfileSection />
+          <SkillsSection />
           <AboutSection />
           <ServicesSection />
           <ProjectsSection />

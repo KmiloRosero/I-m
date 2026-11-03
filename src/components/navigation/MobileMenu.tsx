@@ -13,7 +13,7 @@ export function MobileMenu({ activeId, firstLinkRef, id, isOpen, onNavigate }: M
   return (
     <nav
       aria-label="Menú móvil"
-      className="mobile-menu absolute inset-x-0 top-16 -z-10 h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain bg-yellow px-4 py-8 text-black lg:hidden"
+      className="mobile-menu"
       data-open={isOpen}
       id={id}
       inert={!isOpen}
@@ -23,7 +23,7 @@ export function MobileMenu({ activeId, firstLinkRef, id, isOpen, onNavigate }: M
           <li key={item.id}>
             <a
               aria-current={activeId === item.id ? 'true' : undefined}
-              className="block py-1 font-display text-[clamp(2rem,10vw,3.5rem)] leading-tight font-bold [font-stretch:125%] aria-[current=true]:text-cobalt"
+              className="mobile-menu-link"
               href={`#${item.id}`}
               onClick={onNavigate}
               ref={index === 0 ? firstLinkRef : undefined}

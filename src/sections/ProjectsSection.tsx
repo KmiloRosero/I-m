@@ -1,4 +1,4 @@
-import { SectionShell } from '@/components/ui/SectionShell'
+import { Section } from '@/components/ui/Section'
 import { projects } from '@/data/projects'
 import type { Project } from '@/types/project'
 
@@ -32,16 +32,16 @@ function ProjectEntry({ project }: { project: Project }) {
         <h3
           className={
             project.featured
-              ? 'text-4xl leading-none font-bold text-yellow [font-stretch:125%] sm:text-5xl'
-              : 'text-3xl leading-none font-bold [font-stretch:125%]'
+              ? 'item-title-featured'
+              : 'item-title'
           }
         >
           {project.name}
         </h3>
         <p className="mt-3">{project.platform}</p>
       </div>
-      <div className="flex max-w-[62ch] flex-col gap-4 md:col-span-7">
-        <p className="text-xl leading-snug">{project.summary}</p>
+      <div className="flex max-w-text flex-col gap-4 md:col-span-7">
+        <p className="lead-text">{project.summary}</p>
         <p>{project.stack.join(', ')}</p>
         <ProjectLinks project={project} />
       </div>
@@ -51,12 +51,12 @@ function ProjectEntry({ project }: { project: Project }) {
 
 export function ProjectsSection() {
   return (
-    <SectionShell id="proyectos" title="Proyectos" tone="black">
+    <Section id="proyectos" title="Proyectos" tone="black">
       <ul className="mt-12">
         {projects.map((project) => (
           <ProjectEntry key={project.slug} project={project} />
         ))}
       </ul>
-    </SectionShell>
+    </Section>
   )
 }
