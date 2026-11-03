@@ -1,5 +1,5 @@
-import { profile } from '../../data/profile'
-import { ContourField } from '../terrain/ContourField'
+import { profile } from '@/data/profile'
+import { ContourField } from '@/components/terrain/ContourField'
 
 export function HeroSection() {
   return (

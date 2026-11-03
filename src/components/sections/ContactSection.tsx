@@ -1,4 +1,4 @@
-import { profile } from '../../data/profile'
+import { profile } from '@/data/profile'
 
 const contactLinks = [
   { href: `mailto:${profile.email}`, label: profile.email },

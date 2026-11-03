@@ -1,5 +1,7 @@
+'use client'
+
 import { useEffect, useState } from 'react'
-import terrainMeta from '../../assets/terrain/galeras-meta.json'
+import terrainMeta from '@/assets/terrain/galeras-meta.json'
 
 interface ContourPath {
   level: number
@@ -33,7 +35,7 @@ export function ContourField() {
 
   useEffect(() => {
     let isActive = true
-    void import('../../assets/terrain/galeras-contours.json').then((module) => {
+    void import('@/assets/terrain/galeras-contours.json').then((module) => {
       if (isActive) setData(module.default)
     })
     return () => {

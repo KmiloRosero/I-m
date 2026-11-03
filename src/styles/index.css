@@ -1,16 +1,14 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/anybody/wdth.css';
-@import '@fontsource-variable/newsreader/opsz.css';
 
-@theme {
+@theme inline {
   --color-night: #101c26;
   --color-ridge: #1f303d;
   --color-bone: #ede6d8;
   --color-mist: #a9b4b3;
   --color-sulfur: #e7c84b;
 
-  --font-display: 'Anybody Variable', 'Arial Narrow', sans-serif;
-  --font-body: 'Newsreader Variable', Georgia, serif;
+  --font-display: var(--font-anybody), 'Arial Narrow', sans-serif;
+  --font-body: var(--font-newsreader), Georgia, serif;
 
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
 }

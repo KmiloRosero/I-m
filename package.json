@@ -4,33 +4,33 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "terrain": "node scripts/build-terrain.mjs",
-    "typecheck": "tsc -b",
-    "build": "tsc -b && vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "terrain": "node scripts/build-terrain.mjs"
   },
   "dependencies": {
-    "@fontsource-variable/anybody": "^5.3.0",
-    "@fontsource-variable/newsreader": "^5.3.0",
-    "@tailwindcss/vite": "^4.3.4",
     "lucide-react": "^1.66.0",
-    "motion": "^14.9.0",
+    "next": "^16.4.4",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1",
-    "tailwindcss": "^4.3.4"
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.4",
     "@types/d3-contour": "^3.0.6",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^6.1.2",
     "d3-contour": "^4.0.2",
-    "oxlint": "^1.89.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.4",
     "sharp": "^0.35.5",
-    "typescript": "~7.0.2",
-    "vite": "^8.3.5"
+    "tailwindcss": "^4.3.4",
+    "typescript": "6.0.3"
+  },
+  "engines": {
+    "node": ">=20.9.0"
   }
 }

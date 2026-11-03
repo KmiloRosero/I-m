@@ -1,4 +1,4 @@
-import { projects, type Project } from '../../data/projects'
+import { projects, type Project } from '@/data/projects'
 
 function ProjectLinks({ project }: { project: Project }) {
   const links = [
