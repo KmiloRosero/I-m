@@ -4,7 +4,7 @@ import { experience, experienceKindLabels } from '@/data/experience'
 
 export function ExperienceSection() {
   return (
-    <Section id="experiencia" title="Experiencia" tone="white">
+    <Section id="experiencia" title="Experiencia" titleAlign="center" tone="white">
       <ol className="timeline">
         {experience.map(({ description, href, kind, period, result, role, technologies, title }) => (
           <li className="timeline-entry" key={title}>

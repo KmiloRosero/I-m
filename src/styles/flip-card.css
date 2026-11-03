@@ -6,6 +6,11 @@
   .flip-card-inner {
     display: grid;
     transform-style: preserve-3d;
+    transition: transform var(--duration-flip) var(--ease-in-out-strong);
+  }
+
+  .flip-card-inner[data-flipped='true'] {
+    transform: rotateY(180deg);
   }
 
   .flip-card-face {
@@ -38,6 +43,10 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .flip-card-inner {
+      transition: none;
+    }
+
     .flip-card-face {
       transition: opacity var(--duration-indicator) var(--ease-out-strong);
     }

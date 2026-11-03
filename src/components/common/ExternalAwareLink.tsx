@@ -1,6 +1,10 @@
 import type { SocialLink } from '@/types/personalInfo'
 
-export function ExternalAwareLink({ label, url }: SocialLink) {
+interface ExternalAwareLinkProps extends SocialLink {
+  context?: string
+}
+
+export function ExternalAwareLink({ context, label, url }: ExternalAwareLinkProps) {
   const isExternal = url.startsWith('https://')
 
   return (
@@ -11,6 +15,8 @@ export function ExternalAwareLink({ label, url }: SocialLink) {
       target={isExternal ? '_blank' : undefined}
     >
       {label}
+      {context ? <span className="sr-only"> de {context}</span> : null}
+      {isExternal ? <span className="sr-only"> (se abre en una pestaña nueva)</span> : null}
     </a>
   )
 }

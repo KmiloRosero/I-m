@@ -8,6 +8,7 @@
   }
 
   .section-title {
+    font-family: var(--font-display);
     font-size: clamp(1.9rem, 10vw, 6.5rem);
     font-stretch: 115%;
     font-weight: 800;
@@ -51,6 +52,16 @@
     .section-title {
       font-size: min(8.4vw, 6.5rem);
       font-stretch: 150%;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .section-title[data-align='center'] {
+      text-align: center;
+    }
+
+    .section-title[data-align='end'] {
+      text-align: right;
     }
   }
 

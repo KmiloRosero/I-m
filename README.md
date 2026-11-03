@@ -24,3 +24,9 @@ npm run build
 - `src/hooks`: lógica reutilizable del cliente.
 - `src/assets/terrain`: datos del Galeras, cargados de forma diferida.
 - `public/images`: imágenes estáticas.
+
+## Despliegue en Vercel
+
+1. Importa el repositorio `KmiloRosero/I-m` en Vercel; detecta Next.js sin configuración adicional.
+2. Usa Node.js 20.9 o superior.
+3. Publica. Cada push a `main` genera un despliegue nuevo.

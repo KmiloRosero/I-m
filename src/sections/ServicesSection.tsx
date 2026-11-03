@@ -3,7 +3,7 @@ import { services } from '@/data/services'
 
 export function ServicesSection() {
   return (
-    <Section id="servicios" title="Servicios" tone="red">
+    <Section id="servicios" title="Servicios" titleAlign="end" tone="red">
       <p className="lead-text mt-6 max-w-text">
         Soy estudiante y desarrollador junior. Esto es lo que ya he hecho en proyectos reales y puedo
         ofrecer con un alcance claro.

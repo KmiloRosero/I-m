@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import terrainMeta from '@/assets/terrain/galeras-meta.json'
 
 interface ContourPath {
@@ -18,6 +18,7 @@ const SUMMIT_ZONE_METERS = 3600
 const VIEW_SCALE = 0.72
 const PEAK_POSITION_X = 0.66
 const PEAK_POSITION_Y = 0.46
+const LOAD_MARGIN = '400px'
 
 function getStroke(level: number): string {
   return level >= SUMMIT_ZONE_METERS ? 'var(--color-red)' : 'currentColor'
@@ -33,28 +34,42 @@ function getViewBox(size: number): string {
 export function ContourField() {
   const [data, setData] = useState<ContourData | null>(null)
   const [hasFailed, setHasFailed] = useState(false)
+  const figureRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
+    const figure = figureRef.current
+    if (!figure) return
+
     let isActive = true
-    import('@/assets/terrain/galeras-contours.json')
-      .then((contourModule) => {
-        if (isActive) setData(contourModule.default)
-      })
-      .catch(() => {
-        if (isActive) setHasFailed(true)
-      })
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return
+        observer.disconnect()
+        import('@/assets/terrain/galeras-contours.json')
+          .then((contourModule) => {
+            if (isActive) setData(contourModule.default)
+          })
+          .catch(() => {
+            if (isActive) setHasFailed(true)
+          })
+      },
+      { rootMargin: LOAD_MARGIN },
+    )
+    observer.observe(figure)
+
     return () => {
       isActive = false
+      observer.disconnect()
     }
   }, [])
 
   if (hasFailed) return null
 
   return (
-    <figure className="mt-10">
+    <figure className="mt-10" ref={figureRef}>
       <svg
         aria-hidden="true"
-        className="contour-field aspect-[16/10] w-full"
+        className="contour-field aspect-[16/10] w-full lg:aspect-[21/9]"
         data-ready={data !== null}
         fill="none"
         preserveAspectRatio="xMidYMid slice"

@@ -13,7 +13,7 @@ export function ProjectLinks({ project }: { project: Project }) {
       {links.map(({ label, url }) =>
         url ? (
           <li key={url}>
-            <ExternalAwareLink label={label} url={url} />
+            <ExternalAwareLink context={project.name} label={label} url={url} />
           </li>
         ) : null,
       )}

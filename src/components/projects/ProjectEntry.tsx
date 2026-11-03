@@ -41,7 +41,7 @@ export function ProjectEntry({ project }: { project: Project }) {
             data-variant="primary"
             href={`/proyectos/${project.slug}`}
           >
-            Ver caso de estudio
+            Ver caso de estudio<span className="sr-only"> de {project.name}</span>
           </Link>
         ) : null}
       </div>

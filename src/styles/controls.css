@@ -1,5 +1,7 @@
 @layer components {
   .text-link {
+    display: inline-block;
+    padding-block: 0.25rem;
     text-decoration: underline;
     text-decoration-thickness: 2px;
     text-underline-offset: 0.2em;
