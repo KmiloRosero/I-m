@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { SiteNavigation } from '@/components/navigation/SiteNavigation'
 import { personalInfo } from '@/data/personalInfo'
 
@@ -9,9 +10,9 @@ export function SiteHeader() {
       </a>
       <div className="bg-black px-gutter text-white">
         <div className="mx-auto flex h-header max-w-content items-center justify-between">
-          <a className="font-display font-bold [font-stretch:125%]" href="#inicio">
+          <Link className="font-display font-bold [font-stretch:125%]" href="/#inicio">
             {personalInfo.name}
-          </a>
+          </Link>
           <SiteNavigation />
         </div>
       </div>

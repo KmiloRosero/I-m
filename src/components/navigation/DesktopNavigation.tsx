@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { navigationItems } from '@/data/navigation'
 
 export function DesktopNavigation({ activeId }: { activeId: string }) {
@@ -6,13 +7,13 @@ export function DesktopNavigation({ activeId }: { activeId: string }) {
       <ul className="flex gap-7">
         {navigationItems.map(({ id, label }) => (
           <li key={id}>
-            <a
+            <Link
               aria-current={activeId === id ? 'true' : undefined}
               className="nav-link"
-              href={`#${id}`}
+              href={`/#${id}`}
             >
               {label}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>

@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import { Anybody, Newsreader } from 'next/font/google'
 import type { ReactNode } from 'react'
+import { SiteFooter } from '@/components/layout/SiteFooter'
+import { SiteHeader } from '@/components/layout/SiteHeader'
 import './globals.css'
 
 const displayFont = Anybody({
@@ -41,7 +43,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       data-scroll-behavior="smooth"
       lang="es"
     >
-      <body>{children}</body>
+      <body>
+        <SiteHeader />
+        <div id="page-content">
+          {children}
+          <SiteFooter />
+        </div>
+      </body>
     </html>
   )
 }

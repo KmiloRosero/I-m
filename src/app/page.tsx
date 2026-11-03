@@ -1,5 +1,3 @@
-import { SiteFooter } from '@/components/layout/SiteFooter'
-import { SiteHeader } from '@/components/layout/SiteHeader'
 import { AboutSection } from '@/sections/AboutSection'
 import { ContactSection } from '@/sections/ContactSection'
 import { ExperienceSection } from '@/sections/ExperienceSection'
@@ -11,21 +9,15 @@ import { TestimonialsSection } from '@/sections/TestimonialsSection'
 
 export default function HomePage() {
   return (
-    <>
-      <SiteHeader />
-      <div id="page-content">
-        <main id="contenido">
-          <HeroSection />
-          <AboutSection />
-          <SkillsSection />
-          <ServicesSection />
-          <ProjectsSection />
-          <TestimonialsSection />
-          <ExperienceSection />
-          <ContactSection />
-        </main>
-        <SiteFooter />
-      </div>
-    </>
+    <main id="contenido">
+      <HeroSection />
+      <AboutSection />
+      <SkillsSection />
+      <ServicesSection />
+      <ProjectsSection />
+      <TestimonialsSection />
+      <ExperienceSection />
+      <ContactSection />
+    </main>
   )
 }

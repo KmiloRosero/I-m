@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { RefObject } from 'react'
 import { navigationItems } from '@/data/navigation'
 
@@ -21,15 +22,15 @@ export function MobileMenu({ activeId, firstLinkRef, id, isOpen, onNavigate }: M
       <ul className="flex flex-col gap-2">
         {navigationItems.map((item, index) => (
           <li key={item.id}>
-            <a
+            <Link
               aria-current={activeId === item.id ? 'true' : undefined}
               className="mobile-menu-link"
-              href={`#${item.id}`}
+              href={`/#${item.id}`}
               onClick={onNavigate}
               ref={index === 0 ? firstLinkRef : undefined}
             >
               {item.label}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>

@@ -1,10 +1,12 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 const VIEWPORT_READING_LINE = '-45% 0px -54% 0px'
 
 export function useActiveSection(sectionIds: readonly string[]): string {
+  const pathname = usePathname()
   const [activeId, setActiveId] = useState(sectionIds[0] ?? '')
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export function useActiveSection(sectionIds: readonly string[]): string {
     })
 
     return () => observer.disconnect()
-  }, [sectionIds])
+  }, [pathname, sectionIds])
 
-  return activeId
+  return pathname === '/' ? activeId : ''
 }
