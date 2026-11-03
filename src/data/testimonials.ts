@@ -1,3 +1,7 @@
 import type { Testimonial } from '@/types/testimonial'
 
-export const testimonials: readonly Testimonial[] = []
+const IS_TESTIMONIALS_SECTION_ENABLED = true
+
+const testimonials: readonly Testimonial[] = []
+
+export const visibleTestimonials = IS_TESTIMONIALS_SECTION_ENABLED ? testimonials : []

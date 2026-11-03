@@ -1,4 +1,4 @@
-import { testimonials } from '@/data/testimonials'
+import { visibleTestimonials } from '@/data/testimonials'
 
 interface NavigationItem {
   id: string
@@ -6,7 +6,7 @@ interface NavigationItem {
 }
 
 const testimonialItems: readonly NavigationItem[] =
-  testimonials.length > 0 ? [{ id: 'testimonios', label: 'Testimonios' }] : []
+  visibleTestimonials.length > 0 ? [{ id: 'testimonios', label: 'Testimonios' }] : []
 
 export const navigationItems: readonly NavigationItem[] = [
   { id: 'inicio', label: 'Inicio' },
