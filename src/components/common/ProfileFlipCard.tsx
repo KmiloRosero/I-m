@@ -3,9 +3,12 @@
 import { LazyMotion, MotionConfig, domAnimation, m } from 'motion/react'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
+import { ExternalAwareLink } from '@/components/common/ExternalAwareLink'
 import { personalInfo } from '@/data/personalInfo'
+import { getCvLinks } from '@/utils/professionalLinks'
 
 const FLIP_TRANSITION = { type: 'spring', duration: 0.7, bounce: 0.12 } as const
+const cvLinks = getCvLinks()
 
 export function ProfileFlipCard() {
   const [isFlipped, setIsFlipped] = useState(false)
@@ -91,10 +94,8 @@ export function ProfileFlipCard() {
                 >
                   Volver a la foto
                 </button>
-                {personalInfo.cvUrl ? (
-                  <a className="text-link" href={personalInfo.cvUrl} rel="noreferrer" target="_blank">
-                    Ver CV
-                  </a>
+                {cvLinks.length > 0 ? (
+                  cvLinks.map((link) => <ExternalAwareLink key={link.url} {...link} />)
                 ) : (
                   <p>CV disponible pronto</p>
                 )}

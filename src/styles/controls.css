@@ -5,6 +5,12 @@
     text-underline-offset: 0.2em;
   }
 
+  .service-list {
+    display: grid;
+    gap: 3.5rem;
+    margin-top: 3.5rem;
+  }
+
   .button-link {
     display: block;
     cursor: pointer;
@@ -34,6 +40,17 @@
 
     .button-link:hover {
       box-shadow: var(--shadow-press);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .service-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 5rem;
+    }
+
+    .service-list > :nth-child(even) {
+      margin-top: 6rem;
     }
   }
 
