@@ -6,7 +6,7 @@ import { getProfessionalLinks } from '@/utils/professionalLinks'
 
 export function AboutSection() {
   const facts = [
-    { label: 'Estudio', value: 'Ingeniería de Software' },
+    { label: 'Estudio', value: personalInfo.degree },
     { label: 'Universidad', value: personalInfo.university },
     { label: 'Semestre', value: personalInfo.semester },
     { label: 'Vivo en', value: personalInfo.location },

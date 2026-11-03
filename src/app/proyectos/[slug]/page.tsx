@@ -4,7 +4,9 @@ import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { ProjectLinks } from '@/components/projects/ProjectLinks'
 import { ProjectMedia } from '@/components/projects/ProjectMedia'
-import { caseStudies } from '@/data/projects'
+import { getSectionHref } from '@/data/navigation'
+import { caseStudies, getCaseStudy } from '@/data/projects'
+import { getProjectMeta } from '@/utils/projectMeta'
 
 interface CaseStudyPageProps {
   params: Promise<{ slug: string }>
@@ -18,7 +20,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: CaseStudyPageProps): Promise<Metadata> {
   const { slug } = await params
-  const project = caseStudies.find((study) => study.slug === slug)
+  const project = getCaseStudy(slug)
 
   return project
     ? {
@@ -54,24 +56,20 @@ function TextList({ items }: { items: readonly string[] }) {
 
 export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
   const { slug } = await params
-  const index = caseStudies.findIndex((study) => study.slug === slug)
-  const project = caseStudies[index]
+  const project = getCaseStudy(slug)
 
   if (!project) notFound()
 
-  const nextProject = caseStudies[(index + 1) % caseStudies.length] ?? project
+  const nextProject = caseStudies[(caseStudies.indexOf(project) + 1) % caseStudies.length] ?? project
 
   return (
     <main id="contenido">
       <header className="case-hero" data-layout={project.layout}>
         <div className="mx-auto max-w-content">
-          <Link className="text-link" href="/#proyectos">
+          <Link className="text-link" href={getSectionHref('proyectos')}>
             Volver a proyectos
           </Link>
-          <p className="mt-10">
-            {project.platform}
-            {project.status ? `. ${project.status}` : ''}
-          </p>
+          <p className="mt-10">{getProjectMeta(project)}</p>
           <h1 className="case-title">{project.name}</h1>
           <p className="lead-text mt-6 max-w-text">{project.description}</p>
           <div className="mt-6">

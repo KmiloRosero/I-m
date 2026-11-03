@@ -1,11 +1,14 @@
+import { projectNames } from '@/data/projectNames'
 import type { SkillGroup } from '@/types/skill'
 
-const BIOMEDICAL = 'Biomedical Waste Platform'
-const CINETRACKER = 'CineTracker'
-const MERCAJUSTO = 'MercaJusto'
-const MONIWATCH = 'MoniWatch'
-const PORTFOLIO = 'Este portafolio'
-const RETICULA = 'Retícula'
+const {
+  biomedical: BIOMEDICAL,
+  cineTracker: CINETRACKER,
+  mercaJusto: MERCAJUSTO,
+  moniWatch: MONIWATCH,
+  portfolio: PORTFOLIO,
+  reticula: RETICULA,
+} = projectNames
 
 export const skillGroups: readonly SkillGroup[] = [
   {

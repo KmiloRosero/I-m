@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { ExternalAwareLink } from '@/components/common/ExternalAwareLink'
 import { CurrentYear } from '@/components/layout/CurrentYear'
-import { navigationItems } from '@/data/navigation'
+import { getSectionHref, navigationItems } from '@/data/navigation'
 import { personalInfo } from '@/data/personalInfo'
 import { getProfessionalLinks } from '@/utils/professionalLinks'
 
@@ -29,7 +29,7 @@ export function SiteFooter() {
             <ul className="site-footer-links">
               {navigationItems.map(({ id, label }) => (
                 <li key={id}>
-                  <Link className="text-link" href={`/#${id}`}>
+                  <Link className="text-link" href={getSectionHref(id)}>
                     {label}
                   </Link>
                 </li>

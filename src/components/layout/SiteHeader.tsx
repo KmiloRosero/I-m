@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { SiteNavigation } from '@/components/navigation/SiteNavigation'
+import { getSectionHref } from '@/data/navigation'
 import { personalInfo } from '@/data/personalInfo'
 
 export function SiteHeader() {
@@ -10,7 +11,7 @@ export function SiteHeader() {
       </a>
       <div className="bg-black px-gutter text-white">
         <div className="mx-auto flex h-header max-w-content items-center justify-between">
-          <Link className="font-display font-bold [font-stretch:125%]" href="/#inicio">
+          <Link className="font-display font-bold [font-stretch:125%]" href={getSectionHref('inicio')}>
             {personalInfo.name}
           </Link>
           <SiteNavigation />

@@ -1,21 +1,31 @@
 import type { PersonalInfo } from '@/types/personalInfo'
 
+const FIRST_NAME = 'Camilo'
+const LAST_NAME = 'Rosero'
+const FULL_NAME = `${FIRST_NAME} ${LAST_NAME}`
+const DEGREE = 'Ingeniería de Software'
+const UNIVERSITY = 'Universidad Cooperativa de Colombia'
+
+export const GITHUB_PROFILE_URL = 'https://github.com/KmiloRosero'
+
 export const personalInfo: PersonalInfo = {
-  name: 'Camilo Rosero',
-  studies: 'Estudiante de Ingeniería de Software',
+  name: FULL_NAME,
+  firstName: FIRST_NAME,
+  lastName: LAST_NAME,
+  degree: DEGREE,
+  studies: `Estudiante de ${DEGREE}`,
   position: 'Desarrollador junior',
   semester: 'Quinto semestre',
-  university: 'Universidad Cooperativa de Colombia',
+  university: UNIVERSITY,
   location: 'Pasto, Nariño, Colombia',
   email: 'juancamilorose@gmail.com',
-  introduction:
-    'Estudio en la Universidad Cooperativa de Colombia, en Pasto. Mis repositorios incluyen aplicaciones web, móviles, de escritorio y para reloj.',
-  about:
-    'Estudio Ingeniería de Software y, mientras avanzo en la carrera, he publicado proyectos web, móviles, de escritorio y para reloj.',
+  metaDescription: `Portafolio de ${FULL_NAME}, estudiante de ${DEGREE} en la ${UNIVERSITY}, Pasto.`,
+  introduction: `Estudio en la ${UNIVERSITY}, en Pasto. Mis repositorios incluyen aplicaciones web, móviles, de escritorio y para reloj.`,
+  about: `Estudio ${DEGREE} y, mientras avanzo en la carrera, he publicado proyectos web, móviles, de escritorio y para reloj.`,
   interests: [],
   featuredStack: ['TypeScript', 'React', 'React Native', 'Node.js', 'NestJS', 'Spring Boot', 'PostgreSQL'],
   socialLinks: [
-    { label: 'GitHub', url: 'https://github.com/KmiloRosero' },
+    { label: 'GitHub', url: GITHUB_PROFILE_URL },
     { label: 'LinkedIn', url: 'https://www.linkedin.com/in/camilo-rosero-35138a42b/' },
   ],
   cvUrl: null,

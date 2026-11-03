@@ -1,29 +1,32 @@
+import { projectNames } from '@/data/projectNames'
 import type { Service } from '@/types/service'
+
+const { biomedical, cineTracker, mercaJusto, moniWatch, portfolio } = projectNames
 
 export const services: readonly Service[] = [
   {
     title: 'Interfaces web',
     description: 'Construyo interfaces con React, TypeScript y Tailwind CSS.',
-    evidence: ['Biomedical Waste Platform', 'Este portafolio'],
+    evidence: [biomedical, portfolio],
   },
   {
     title: 'Páginas responsive',
     description: 'Hago sitios que funcionan en celular, tablet y escritorio.',
-    evidence: ['Este portafolio'],
+    evidence: [portfolio],
   },
   {
     title: 'Backend y APIs',
     description: 'Desarrollo APIs con Node.js o Spring Boot.',
-    evidence: ['MoniWatch', 'MercaJusto', 'Biomedical Waste Platform'],
+    evidence: [moniWatch, mercaJusto, biomedical],
   },
   {
     title: 'Bases de datos',
     description: 'Integro PostgreSQL, MySQL o SQLite en aplicaciones.',
-    evidence: ['MoniWatch', 'Biomedical Waste Platform', 'CineTracker'],
+    evidence: [moniWatch, biomedical, cineTracker],
   },
   {
     title: 'Desarrollo con apoyo de IA',
     description: 'Uso herramientas de IA como apoyo para programar.',
-    evidence: ['CineTracker', 'MercaJusto'],
+    evidence: [cineTracker, mercaJusto],
   },
 ]

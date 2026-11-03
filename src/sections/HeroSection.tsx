@@ -18,8 +18,8 @@ export function HeroSection() {
 
         <div className="flex flex-col gap-6 sm:gap-8">
           <h1 className="display-name" id="hero-title">
-            <span className="hero-rise block [--hero-delay:80ms]">Camilo</span>
-            <span className="hero-rise block [--hero-delay:140ms]">Rosero</span>
+            <span className="hero-rise block [--hero-delay:80ms]">{personalInfo.firstName}</span>
+            <span className="hero-rise block [--hero-delay:140ms]">{personalInfo.lastName}</span>
           </h1>
           <p className="lead-text hero-rise max-w-[44ch] [--hero-delay:220ms]">
             {personalInfo.studies} y {personalInfo.position.toLowerCase()}.{' '}

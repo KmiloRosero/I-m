@@ -1,4 +1,13 @@
+import { GITHUB_PROFILE_URL } from '@/data/personalInfo'
+import { projectNames } from '@/data/projectNames'
 import type { Project, ProjectCategory } from '@/types/project'
+
+export const projectCategories: readonly ProjectCategory[] = [
+  'academic',
+  'collaborative',
+  'freelance',
+  'personal',
+]
 
 export const projectCategoryLabels: Record<ProjectCategory, string> = {
   academic: 'Académicos',
@@ -10,7 +19,7 @@ export const projectCategoryLabels: Record<ProjectCategory, string> = {
 export const projects: readonly Project[] = [
   {
     slug: 'biomedical-waste-platform',
-    name: 'Biomedical Waste Platform',
+    name: projectNames.biomedical,
     platform: 'Plataforma web',
     layout: 'feature',
     category: 'collaborative',
@@ -54,16 +63,16 @@ export const projects: readonly Project[] = [
         width: 2880,
       },
     ],
-    repoUrl: 'https://github.com/KmiloRosero/biomedical-fronted',
+    repoUrl: `${GITHUB_PROFILE_URL}/biomedical-fronted`,
     repoLabel: 'Código del frontend',
-    extraRepoUrl: 'https://github.com/KmiloRosero/biomedical-backend',
+    extraRepoUrl: `${GITHUB_PROFILE_URL}/biomedical-backend`,
     demoUrl: 'https://biomedwasted.vercel.app/login',
     demoLabel: 'Abrir demo',
     hasCaseStudy: true,
   },
   {
     slug: 'cinetracker',
-    name: 'CineTracker',
+    name: projectNames.cineTracker,
     platform: 'App de escritorio',
     layout: 'wide',
     category: 'personal',
@@ -131,16 +140,16 @@ export const projects: readonly Project[] = [
         width: 1440,
       },
     ],
-    repoUrl: 'https://github.com/KmiloRosero/CineTracker',
+    repoUrl: `${GITHUB_PROFILE_URL}/CineTracker`,
     repoLabel: 'Ver código',
     extraRepoUrl: null,
-    demoUrl: 'https://github.com/KmiloRosero/CineTracker/releases/tag/v1.2.0',
+    demoUrl: `${GITHUB_PROFILE_URL}/CineTracker/releases/tag/v1.2.0`,
     demoLabel: 'Descargar',
     hasCaseStudy: true,
   },
   {
     slug: 'mercajusto',
-    name: 'MercaJusto',
+    name: projectNames.mercaJusto,
     platform: 'App móvil',
     layout: 'phone',
     category: 'academic',
@@ -180,7 +189,7 @@ export const projects: readonly Project[] = [
         width: 780,
       },
     ],
-    repoUrl: 'https://github.com/KmiloRosero/MercaJusto',
+    repoUrl: `${GITHUB_PROFILE_URL}/MercaJusto`,
     repoLabel: 'Ver código',
     extraRepoUrl: null,
     demoUrl: 'https://mercajusto.vercel.app/',
@@ -189,7 +198,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: 'moniwatch',
-    name: 'MoniWatch',
+    name: projectNames.moniWatch,
     platform: 'Wear OS y móvil',
     layout: 'flow',
     category: 'personal',
@@ -219,7 +228,7 @@ export const projects: readonly Project[] = [
     ],
     flowSteps: ['El celular configura', 'El backend protege', 'El reloj paga'],
     screenshots: [],
-    repoUrl: 'https://github.com/KmiloRosero/MoniWatch',
+    repoUrl: `${GITHUB_PROFILE_URL}/MoniWatch`,
     repoLabel: 'Ver código',
     extraRepoUrl: null,
     demoUrl: null,
@@ -228,7 +237,7 @@ export const projects: readonly Project[] = [
   },
   {
     slug: 'reticula',
-    name: 'Retícula',
+    name: projectNames.reticula,
     platform: 'Juego en el navegador',
     layout: 'compact',
     category: 'collaborative',
@@ -261,3 +270,7 @@ export const projects: readonly Project[] = [
 ]
 
 export const caseStudies: readonly Project[] = projects.filter(({ hasCaseStudy }) => hasCaseStudy)
+
+export function getCaseStudy(slug: string): Project | undefined {
+  return caseStudies.find((study) => study.slug === slug)
+}

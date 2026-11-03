@@ -63,7 +63,7 @@ export function ProfileFlipCard() {
         </article>
 
         <article className="flip-card-face" data-side="back" inert={!isFlipped}>
-          <p className="item-title">Hola, soy Camilo</p>
+          <p className="item-title">Hola, soy {personalInfo.firstName}</p>
           <p className="lead-text">{personalInfo.introduction}</p>
           <div>
             <p className="mb-2 font-display font-bold">Stack</p>

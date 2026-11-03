@@ -1,6 +1,6 @@
 export type ProjectCategory = 'academic' | 'collaborative' | 'freelance' | 'personal'
 
-export type ProjectLayout = 'compact' | 'feature' | 'flow' | 'phone' | 'wide'
+type ProjectLayout = 'compact' | 'feature' | 'flow' | 'phone' | 'wide'
 
 export interface ProjectImage {
   alt: string

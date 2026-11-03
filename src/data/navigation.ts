@@ -19,4 +19,8 @@ export const navigationItems: readonly NavigationItem[] = [
   { id: 'contacto', label: 'Contacto' },
 ]
 
+export function getSectionHref(id: string): string {
+  return `/#${id}`
+}
+
 export const sectionIds: readonly string[] = navigationItems.map(({ id }) => id)

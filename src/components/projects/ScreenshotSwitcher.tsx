@@ -34,7 +34,7 @@ export function ScreenshotSwitcher({ images, sizes }: ScreenshotSwitcherProps) {
           <li key={image.src}>
             <button
               aria-pressed={index === activeIndex}
-              className="filter-button"
+              className="choice-button"
               onClick={() => setActiveIndex(index)}
               type="button"
             >

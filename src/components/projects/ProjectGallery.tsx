@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 import { ProjectEntry } from '@/components/projects/ProjectEntry'
-import { projectCategoryLabels, projects } from '@/data/projects'
+import { projectCategories, projectCategoryLabels, projects } from '@/data/projects'
 import type { ProjectCategory } from '@/types/project'
 
-const availableCategories = (Object.keys(projectCategoryLabels) as ProjectCategory[]).filter(
-  (category) => projects.some((project) => project.category === category),
+const availableCategories = projectCategories.filter((category) =>
+  projects.some((project) => project.category === category),
 )
 
 export function ProjectGallery() {
@@ -21,7 +21,7 @@ export function ProjectGallery() {
         <li>
           <button
             aria-pressed={activeCategory === null}
-            className="filter-button"
+            className="choice-button"
             onClick={() => setActiveCategory(null)}
             type="button"
           >
@@ -32,7 +32,7 @@ export function ProjectGallery() {
           <li key={category}>
             <button
               aria-pressed={activeCategory === category}
-              className="filter-button"
+              className="choice-button"
               onClick={() => setActiveCategory(category)}
               type="button"
             >

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { ProjectLinks } from '@/components/projects/ProjectLinks'
 import { ProjectMedia } from '@/components/projects/ProjectMedia'
 import type { Project } from '@/types/project'
+import { getProjectMeta } from '@/utils/projectMeta'
 
 const mediaSizes: Record<Project['layout'], string> = {
   compact: '100vw',
@@ -17,10 +18,7 @@ export function ProjectEntry({ project }: { project: Project }) {
   return (
     <article className="project-entry" data-layout={project.layout}>
       <header className="project-heading">
-        <p>
-          {project.platform}
-          {project.status ? `. ${project.status}` : ''}
-        </p>
+        <p>{getProjectMeta(project)}</p>
         <h3 className="project-name">{project.name}</h3>
       </header>
 

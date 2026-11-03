@@ -10,12 +10,15 @@ export const experienceKindLabels: Record<ExperienceKind, string> = {
   personal: 'Personal',
 }
 
+const OCTOBER_2026_REPOSITORY = 'Repositorio creado en octubre de 2026'
+const APRIL_2026_REPOSITORY = 'Repositorio creado en abril de 2026'
+
 const projectTimeline = [
-  { slug: 'reticula', period: 'Repositorio creado en octubre de 2026' },
-  { slug: 'moniwatch', period: 'Repositorio creado en octubre de 2026' },
-  { slug: 'mercajusto', period: 'Repositorio creado en octubre de 2026' },
-  { slug: 'cinetracker', period: 'Repositorio creado en octubre de 2026' },
-  { slug: 'biomedical-waste-platform', period: 'Repositorio creado en abril de 2026' },
+  { slug: 'reticula', period: OCTOBER_2026_REPOSITORY },
+  { slug: 'moniwatch', period: OCTOBER_2026_REPOSITORY },
+  { slug: 'mercajusto', period: OCTOBER_2026_REPOSITORY },
+  { slug: 'cinetracker', period: OCTOBER_2026_REPOSITORY },
+  { slug: 'biomedical-waste-platform', period: APRIL_2026_REPOSITORY },
 ]
 
 const projectEntries: ExperienceEntry[] = projectTimeline.flatMap(({ period, slug }) => {
@@ -39,11 +42,11 @@ const projectEntries: ExperienceEntry[] = projectTimeline.flatMap(({ period, slu
 
 export const experience: readonly ExperienceEntry[] = [
   {
-    title: 'Ingeniería de Software',
+    title: personalInfo.degree,
     role: 'Estudiante',
     kind: 'academic',
     period: personalInfo.semester,
-    description: `${personalInfo.university}, en Pasto.`,
+    description: `${personalInfo.university}, ${personalInfo.location}.`,
     technologies: [],
     responsibilities: [],
     result: null,
