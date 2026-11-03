@@ -1,19 +1,24 @@
 import Link from 'next/link'
 import { Section } from '@/components/ui/Section'
 import { experience, experienceKindLabels } from '@/data/experience'
-import type { ExperienceEntry } from '@/types/experience'
+import type { ExperienceEntry, ExperienceKind } from '@/types/experience'
+
+function formatKinds(kinds: readonly ExperienceKind[]): string {
+  const [first, ...rest] = kinds.map((kind) => experienceKindLabels[kind])
+  return [first, ...rest.map((label) => label.toLowerCase())].join(' y ')
+}
 
 function TimelineEntry({ entry }: { entry: ExperienceEntry }) {
-  const { description, href, kind, period, responsibilities, result, role, technologies, title } =
+  const { description, href, kinds, period, responsibilities, result, role, technologies, title } =
     entry
 
   return (
     <li className="timeline-entry">
-      <p className="timeline-kind" data-kind={kind}>
-        {experienceKindLabels[kind]}
+      <p className="timeline-kind" data-kind={kinds[0]}>
+        {formatKinds(kinds)}
       </p>
       <h3 className="timeline-title">{title}</h3>
-      <p className="mt-1">{period}</p>
+      {period ? <p className="mt-1">{period}</p> : null}
       {role ? <p>{role}</p> : null}
       <p className="mt-3">{description}</p>
       {responsibilities.length > 0 ? (

@@ -7,30 +7,22 @@ export const experienceKindLabels: Record<ExperienceKind, string> = {
   collaborative: 'Colaborativo',
   employment: 'Empleo',
   freelance: 'Freelance',
+  local: 'Proyectos locales',
   personal: 'Personal',
 }
 
-const OCTOBER_2026_REPOSITORY = 'Repositorio creado en octubre de 2026'
-const APRIL_2026_REPOSITORY = 'Repositorio creado en abril de 2026'
+const projectTimeline = ['reticula', 'moniwatch', 'mercajusto', 'cinetracker', 'biomedical-waste-platform']
 
-const projectTimeline = [
-  { slug: 'reticula', period: OCTOBER_2026_REPOSITORY },
-  { slug: 'moniwatch', period: OCTOBER_2026_REPOSITORY },
-  { slug: 'mercajusto', period: OCTOBER_2026_REPOSITORY },
-  { slug: 'cinetracker', period: OCTOBER_2026_REPOSITORY },
-  { slug: 'biomedical-waste-platform', period: APRIL_2026_REPOSITORY },
-]
-
-const projectEntries: ExperienceEntry[] = projectTimeline.flatMap(({ period, slug }) => {
+const projectEntries: ExperienceEntry[] = projectTimeline.flatMap((slug) => {
   const project = projects.find((candidate) => candidate.slug === slug)
-  if (!project?.category) return []
+  if (!project || project.categories.length === 0) return []
 
   return [
     {
       title: project.name,
-      role: null,
-      kind: project.category,
-      period,
+      role: project.contribution,
+      kinds: project.categories,
+      period: null,
       description: project.description,
       technologies: project.frameworks,
       responsibilities: [],
@@ -44,9 +36,20 @@ export const experience: readonly ExperienceEntry[] = [
   {
     title: personalInfo.degree,
     role: 'Estudiante',
-    kind: 'academic',
+    kinds: ['academic'],
     period: personalInfo.semester,
     description: `${personalInfo.university}, ${personalInfo.location}.`,
+    technologies: [],
+    responsibilities: [],
+    result: null,
+    href: null,
+  },
+  {
+    title: 'Webs y asistentes personalizados',
+    role: null,
+    kinds: ['local'],
+    period: null,
+    description: 'Sitios web y asistentes personalizados para proyectos de la región.',
     technologies: [],
     responsibilities: [],
     result: null,

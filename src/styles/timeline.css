@@ -47,8 +47,9 @@
   }
 
   .timeline-title {
-    font-size: clamp(1.75rem, 3.4vw, 3rem);
+    font-size: clamp(1.4rem, 3.4vw, 3rem);
     font-stretch: 125%;
+    hyphens: auto;
     font-weight: 800;
     letter-spacing: -0.015em;
     line-height: 1.05;
