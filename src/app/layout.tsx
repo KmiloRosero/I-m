@@ -20,7 +20,7 @@ const bodyFont = Newsreader({
 })
 
 export const metadata: Metadata = {
-  title: 'Camilo Rosero | Portafolio',
+  title: { default: 'Camilo Rosero | Portafolio', template: '%s | Camilo Rosero' },
   description:
     'Portafolio de Camilo Rosero, estudiante de Ingeniería de Software en la Universidad Cooperativa de Colombia, Pasto.',
   openGraph: {

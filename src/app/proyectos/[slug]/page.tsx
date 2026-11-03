@@ -21,7 +21,15 @@ export async function generateMetadata({ params }: CaseStudyPageProps): Promise<
   const project = caseStudies.find((study) => study.slug === slug)
 
   return project
-    ? { title: `${project.name} | Camilo Rosero`, description: project.description }
+    ? {
+        title: project.name,
+        description: project.description,
+        openGraph: {
+          title: project.name,
+          description: project.description,
+          images: ['/opengraph-image'],
+        },
+      }
     : {}
 }
 
