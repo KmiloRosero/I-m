@@ -16,9 +16,9 @@ npm run build
 
 ## Estructura
 
-- `src/app`: layout, página principal, ícono y `globals.css`.
+- `src/app`: layout, página principal, casos de estudio en `proyectos/[slug]`, ícono y `globals.css`.
 - `src/sections`: una sección de la página por archivo.
-- `src/components`: `common`, `layout`, `navigation` y `ui`.
+- `src/components`: `common`, `layout`, `navigation`, `projects` y `ui`.
 - `src/data` y `src/types`: contenido centralizado y sus tipos. El enlace del CV es `cvUrl` en `personalInfo.ts`.
 - `src/styles`: tokens de diseño y hojas de estilo por responsabilidad.
 - `src/hooks`: lógica reutilizable del cliente.

@@ -1,0 +1,64 @@
+@layer components {
+  .case-hero {
+    padding: calc(var(--spacing-header) + 2rem) var(--spacing-gutter) 4rem;
+    background-color: var(--color-black);
+    color: var(--color-white);
+  }
+
+  .case-hero[data-layout='feature'] {
+    background-color: var(--color-cobalt);
+  }
+
+  .case-hero[data-layout='phone'] {
+    background-color: #1f6b3d;
+  }
+
+  .case-hero[data-layout='flow'] {
+    background-color: #c9f45a;
+    color: #0a0c08;
+  }
+
+  .case-title {
+    margin-top: 0.5rem;
+    font-size: clamp(1.85rem, 9vw, 7.5rem);
+    font-stretch: 125%;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .case-block {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+
+  .case-block-title {
+    font-size: 1.25rem;
+    font-stretch: 125%;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .case-block-body {
+    max-width: var(--container-text);
+    font-size: clamp(1.25rem, 1.8vw, 1.625rem);
+    line-height: 1.375;
+  }
+
+  .case-block-body .project-features {
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+
+  .case-screens[data-layout='phone'] {
+    max-width: 24rem;
+  }
+
+  @media (min-width: 64rem) {
+    .case-block {
+      grid-template-columns: 16rem minmax(0, 1fr);
+      gap: 3rem;
+    }
+  }
+}
