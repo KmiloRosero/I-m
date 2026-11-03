@@ -1,32 +1,4 @@
 @layer components {
-  .project-gallery {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 5rem;
-    margin-top: 3rem;
-  }
-
-  .project-entry {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 1.5rem;
-  }
-
-  .project-body {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    max-width: var(--container-text);
-  }
-
-  .project-name {
-    font-size: clamp(1.75rem, 5vw, 4.5rem);
-    font-stretch: 125%;
-    font-weight: 800;
-    letter-spacing: -0.015em;
-    line-height: 1;
-  }
-
   .project-features {
     display: grid;
     gap: 0.25rem;
@@ -58,53 +30,6 @@
     padding-left: 16%;
   }
 
-  .project-entry[data-layout='feature'] {
-    padding-top: 2rem;
-    border-top: 0.5rem solid var(--color-yellow);
-  }
-
-  .project-entry[data-layout='feature'] .project-name {
-    color: var(--color-yellow);
-    font-size: clamp(1.9rem, 8vw, 7rem);
-  }
-
-  .project-entry[data-layout='feature'] .project-image {
-    outline: 2px solid var(--color-white);
-  }
-
-  .project-entry[data-layout='phone'] {
-    padding: clamp(1.25rem, 3vw, 2.5rem);
-    background-color: var(--color-project-green);
-  }
-
-  .project-entry[data-layout='phone'] .project-media {
-    max-width: 17rem;
-  }
-
-  .project-entry[data-layout='flow'] {
-    padding: clamp(1.25rem, 3vw, 2.5rem);
-    background-color: var(--color-project-lime);
-    color: var(--color-project-ink);
-  }
-
-  .project-entry[data-layout='flow'] .project-name {
-    font-size: clamp(1.75rem, 3.8vw, 3.5rem);
-  }
-
-  .project-entry[data-layout='flow'] .button-link {
-    background-color: var(--color-project-ink);
-    color: var(--color-white);
-  }
-
-  .project-entry[data-layout='compact'] {
-    padding: clamp(1.25rem, 3vw, 2.5rem);
-    background-color: var(--color-project-night);
-  }
-
-  .project-entry[data-layout='compact'] .project-name {
-    color: var(--color-project-amber);
-  }
-
   .screenshot-stage {
     position: relative;
     aspect-ratio: 16 / 10;
@@ -119,65 +44,6 @@
 
   .screenshot-stage img[data-active='true'] {
     opacity: 1;
-  }
-
-  @media (min-width: 64rem) {
-    .project-gallery {
-      gap: 7rem;
-    }
-
-    .project-entry {
-      column-gap: 3rem;
-    }
-
-    .project-entry[data-layout='feature'] {
-      grid-template-areas:
-        'heading heading'
-        'body media';
-      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    }
-
-    .project-entry[data-layout='wide'] {
-      grid-template-areas:
-        'media media'
-        'heading body';
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    }
-
-    .project-entry[data-layout='phone'] {
-      grid-template-areas:
-        'media heading'
-        'media body';
-      grid-template-rows: auto 1fr;
-      grid-template-columns: 17rem minmax(0, 1fr);
-      width: 82%;
-    }
-
-    .project-entry[data-layout='flow'] {
-      grid-template-areas:
-        'heading media'
-        'body media';
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      width: 82%;
-      margin-left: auto;
-    }
-
-    .project-entry[data-layout='compact'] {
-      grid-template-areas: 'heading body';
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    }
-
-    .project-heading {
-      grid-area: heading;
-    }
-
-    .project-body {
-      grid-area: body;
-    }
-
-    .project-media {
-      grid-area: media;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
