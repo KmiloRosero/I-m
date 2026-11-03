@@ -7,6 +7,7 @@
 
   .button-link {
     display: block;
+    cursor: pointer;
     padding: 0.75rem 1.25rem;
     color: var(--color-black);
     font-family: var(--font-display);
@@ -26,13 +27,13 @@
     background-color: var(--color-white);
   }
 
-  @media (hover: hover) {
+  @media (hover: hover) and (pointer: fine) {
     .text-link:hover {
       text-decoration-thickness: 4px;
     }
 
     .button-link:hover {
-      box-shadow: var(--shadow-block);
+      box-shadow: var(--shadow-press);
     }
   }
 

@@ -19,6 +19,7 @@
   --container-text: 62ch;
 
   --shadow-block: 0.5rem 0.5rem 0 var(--color-black);
+  --shadow-press: 0.25rem 0.25rem 0 var(--color-red);
 
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);

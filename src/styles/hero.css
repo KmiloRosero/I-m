@@ -1,0 +1,73 @@
+@layer components {
+  .hero-band {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 16rem;
+    background-color: var(--color-red);
+    animation: hero-band-wipe 700ms var(--ease-out-strong) both;
+  }
+
+  .hero-rise {
+    animation: hero-rise 700ms var(--ease-out-strong) both;
+    animation-delay: var(--hero-delay, 0ms);
+  }
+
+  .hero-card-enter {
+    rotate: 1.5deg;
+    animation: hero-card-enter 800ms var(--ease-out-strong) 150ms both;
+  }
+
+  @media (min-width: 64rem) {
+    .hero-band {
+      inset: 0 0 0 auto;
+      width: 34%;
+      height: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-band,
+    .hero-rise,
+    .hero-card-enter {
+      animation: none;
+    }
+  }
+
+  @keyframes hero-band-wipe {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+
+    to {
+      clip-path: inset(0);
+    }
+  }
+
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      translate: 0 1.5rem;
+    }
+
+    to {
+      opacity: 1;
+      translate: 0;
+    }
+  }
+
+  @keyframes hero-card-enter {
+    from {
+      opacity: 0;
+      rotate: -3deg;
+      scale: 0.97;
+      translate: 0 1.5rem;
+    }
+
+    to {
+      opacity: 1;
+      rotate: 1.5deg;
+      scale: 1;
+      translate: 0;
+    }
+  }
+}

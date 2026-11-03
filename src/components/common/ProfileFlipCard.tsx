@@ -1,0 +1,108 @@
+'use client'
+
+import { LazyMotion, MotionConfig, domAnimation, m } from 'motion/react'
+import Image from 'next/image'
+import { useEffect, useRef, useState } from 'react'
+import { personalInfo } from '@/data/personalInfo'
+
+const FLIP_TRANSITION = { type: 'spring', duration: 0.7, bounce: 0.12 } as const
+
+export function ProfileFlipCard() {
+  const [isFlipped, setIsFlipped] = useState(false)
+  const hasInteractedRef = useRef(false)
+  const showProfileRef = useRef<HTMLButtonElement>(null)
+  const showPhotoRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!hasInteractedRef.current) return
+    const target = isFlipped ? showPhotoRef : showProfileRef
+    target.current?.focus({ preventScroll: true })
+  }, [isFlipped])
+
+  function toggleCard() {
+    hasInteractedRef.current = true
+    setIsFlipped((current) => !current)
+  }
+
+  return (
+    <LazyMotion features={domAnimation}>
+      <MotionConfig reducedMotion="user">
+        <div aria-label="Tarjeta de presentación" className="flip-card" role="group">
+          <m.div
+            animate={{ rotateY: isFlipped ? 180 : 0 }}
+            className="flip-card-inner"
+            initial={false}
+            transition={FLIP_TRANSITION}
+          >
+            <article className="flip-card-face" data-side="front" inert={isFlipped}>
+              <div className="flip-card-photo">
+                <Image
+                  alt={`Fotografía de ${personalInfo.name}`}
+                  className="object-cover object-[50%_32%]"
+                  fill
+                  preload
+                  sizes="(min-width: 1024px) 28vw, (min-width: 640px) 26rem, 100vw"
+                  src="/images/profile/camilo-rosero.png"
+                />
+              </div>
+              <div className="flex flex-col gap-3 bg-black p-4 text-white">
+                <div>
+                  <p className="item-title">{personalInfo.name}</p>
+                  <p className="mt-2 leading-snug">{personalInfo.studies}</p>
+                  <p className="leading-snug">{personalInfo.position}</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <a className="button-link" data-variant="primary" href="#proyectos">
+                    Ver proyectos
+                  </a>
+                  <button
+                    className="button-link"
+                    data-variant="secondary"
+                    onClick={toggleCard}
+                    ref={showProfileRef}
+                    type="button"
+                  >
+                    Ver mi perfil
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article className="flip-card-face" data-side="back" inert={!isFlipped}>
+              <p className="item-title">Hola, soy Camilo</p>
+              <p className="lead-text">{personalInfo.introduction}</p>
+              <div>
+                <p className="mb-2 font-display font-bold">Stack</p>
+                <ul className="flex flex-wrap gap-1.5">
+                  {personalInfo.featuredStack.map((technology) => (
+                    <li className="stack-tag" key={technology}>
+                      {technology}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2">
+                <button
+                  className="button-link"
+                  data-variant="secondary"
+                  onClick={toggleCard}
+                  ref={showPhotoRef}
+                  type="button"
+                >
+                  Volver a la foto
+                </button>
+                {personalInfo.cvUrl ? (
+                  <a className="text-link" href={personalInfo.cvUrl} rel="noreferrer" target="_blank">
+                    Ver CV
+                  </a>
+                ) : (
+                  <p>CV disponible pronto</p>
+                )}
+              </div>
+            </article>
+          </m.div>
+        </div>
+      </MotionConfig>
+    </LazyMotion>
+  )
+}

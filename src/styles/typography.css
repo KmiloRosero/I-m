@@ -17,6 +17,7 @@
 
   .item-title,
   .item-title-featured {
+    font-family: var(--font-display);
     font-size: 1.875rem;
     font-stretch: 125%;
     font-weight: 700;
@@ -42,7 +43,13 @@
 
   @media (min-width: 48rem) {
     .display-name {
-      font-size: min(11.4vw, 10.5rem);
+      font-size: min(13.4vw, 8rem);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .display-name {
+      font-size: min(9.2vw, 8.75rem);
     }
   }
 }

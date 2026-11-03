@@ -5,11 +5,14 @@ export interface SocialLink {
 
 export interface PersonalInfo {
   name: string
-  role: string
+  studies: string
+  position: string
   semester: string
   university: string
   location: string
   email: string
+  introduction: string
+  featuredStack: readonly string[]
   socialLinks: readonly SocialLink[]
   cvUrl: string | null
 }
