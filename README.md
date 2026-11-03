@@ -9,6 +9,7 @@ npm install
 npm run dev
 npm run typecheck
 npm run lint
+npm test
 npm run build
 ```
 
@@ -30,3 +31,5 @@ npm run build
 1. Importa el repositorio `KmiloRosero/I-m` en Vercel; detecta Next.js sin configuración adicional.
 2. Usa Node.js 20.9 o superior.
 3. Publica. Cada push a `main` genera un despliegue nuevo.
+
+La URL canónica y el sitemap usan el dominio de producción que Vercel entrega en `VERCEL_PROJECT_PRODUCTION_URL`; no hay que configurar variables.

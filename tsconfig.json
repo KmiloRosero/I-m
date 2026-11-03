@@ -32,7 +32,8 @@
       ]
     },
     "noImplicitReturns": true,
-    "exactOptionalPropertyTypes": true
+    "exactOptionalPropertyTypes": true,
+    "allowImportingTsExtensions": true
   },
   "include": [
     "next-env.d.ts",
