@@ -1,23 +1,9 @@
 import { GITHUB_PROFILE_URL } from '@/data/personalInfo'
 import { projectNames } from '@/data/projectNames'
-import type { Project, ProjectCategory } from '@/types/project'
+import type { Project } from '@/types/project'
 
 const SOLO_CONTRIBUTION = 'Desarrollé el proyecto completo.'
 const HALF_CONTRIBUTION = 'Realicé la mitad del desarrollo.'
-
-export const projectCategories: readonly ProjectCategory[] = [
-  'academic',
-  'collaborative',
-  'freelance',
-  'personal',
-]
-
-export const projectCategoryLabels: Record<ProjectCategory, string> = {
-  academic: 'Académicos',
-  collaborative: 'Colaborativos',
-  freelance: 'Freelance',
-  personal: 'Personales',
-}
 
 export const projects: readonly Project[] = [
   {
@@ -25,6 +11,7 @@ export const projects: readonly Project[] = [
     name: projectNames.biomedical,
     platform: 'Plataforma web',
     layout: 'feature',
+    cubeColors: { face: 'var(--color-cobalt)', top: 'var(--color-yellow)' },
     categories: ['academic', 'collaborative'],
     description:
       'Plataforma para registrar residuos biomédicos, seguir su estado y gestionar alertas, rutas y estadísticas.',
@@ -78,6 +65,7 @@ export const projects: readonly Project[] = [
     name: projectNames.cineTracker,
     platform: 'App de escritorio',
     layout: 'wide',
+    cubeColors: { face: 'var(--color-project-cine)', top: 'var(--color-white)' },
     categories: ['personal'],
     description: 'Diario privado de películas y series, con recomendaciones basadas en tus gustos.',
     problem:
@@ -155,6 +143,7 @@ export const projects: readonly Project[] = [
     name: projectNames.mercaJusto,
     platform: 'App móvil',
     layout: 'phone',
+    cubeColors: { face: 'var(--color-project-green)', top: 'var(--color-white)' },
     categories: ['academic'],
     description:
       'Conecta a productores campesinos de Nariño con compradores urbanos, sin intermediarios.',
@@ -204,6 +193,7 @@ export const projects: readonly Project[] = [
     name: projectNames.moniWatch,
     platform: 'Wear OS y móvil',
     layout: 'flow',
+    cubeColors: { face: 'var(--color-project-lime)', top: 'var(--color-project-ink)' },
     categories: ['personal'],
     description: 'Pagos desde la muñeca con Nequi o tarjeta: el celular configura y el reloj paga.',
     problem: 'Pagar con el celular obliga a sacarlo del bolsillo para compras pequeñas y frecuentes.',
@@ -243,6 +233,7 @@ export const projects: readonly Project[] = [
     name: projectNames.reticula,
     platform: 'Juego en el navegador',
     layout: 'compact',
+    cubeColors: { face: 'var(--color-project-amber)', top: 'var(--color-project-night)' },
     categories: ['collaborative'],
     description: 'Entrenador de puntería 3D para practicar shooters y coordinación ojo-mano.',
     problem: null,

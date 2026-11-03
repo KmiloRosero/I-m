@@ -10,11 +10,17 @@ export interface ProjectImage {
   width: number
 }
 
+interface CubeColors {
+  face: string
+  top: string
+}
+
 export interface Project {
   slug: string
   name: string
   platform: string
   layout: ProjectLayout
+  cubeColors: CubeColors
   categories: readonly ProjectCategory[]
   description: string
   problem: string | null

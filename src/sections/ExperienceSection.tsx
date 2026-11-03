@@ -1,12 +1,8 @@
 import Link from 'next/link'
 import { Section } from '@/components/ui/Section'
-import { experience, experienceKindLabels } from '@/data/experience'
-import type { ExperienceEntry, ExperienceKind } from '@/types/experience'
-
-function formatKinds(kinds: readonly ExperienceKind[]): string {
-  const [first, ...rest] = kinds.map((kind) => experienceKindLabels[kind])
-  return [first, ...rest.map((label) => label.toLowerCase())].join(' y ')
-}
+import { experience } from '@/data/experience'
+import type { ExperienceEntry } from '@/types/experience'
+import { formatKinds } from '@/utils/categoryLabels'
 
 function TimelineEntry({ entry }: { entry: ExperienceEntry }) {
   const { description, href, kinds, period, responsibilities, result, role, technologies, title } =

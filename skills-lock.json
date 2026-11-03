@@ -43,6 +43,13 @@
       "computedHash": "c49e6e0fab4f449909556e1371e82c4dbabd58800064a1a14db64712587dc718",
       "installMode": "copy"
     },
+    "ui-ux-pro-max": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
+      "computedHash": "1c584be8d06885d32534d2db379d4a86475dde1239137c8374a972100859b87f",
+      "installMode": "copy"
+    },
     "web-design-guidelines": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
