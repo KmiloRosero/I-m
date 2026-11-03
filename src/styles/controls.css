@@ -7,10 +7,19 @@
     text-underline-offset: 0.2em;
   }
 
-  .service-list {
-    display: grid;
-    gap: 3.5rem;
-    margin-top: 3.5rem;
+  .choice-button {
+    min-height: 2.75rem;
+    padding: 0.25rem 0.75rem;
+    border: 2px solid currentColor;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+
+  .choice-button[aria-pressed='true'] {
+    background-color: var(--choice-active-background, var(--color-yellow));
+    border-color: var(--choice-active-background, var(--color-yellow));
+    color: var(--choice-active-color, var(--color-black));
   }
 
   .button-link {
@@ -43,16 +52,10 @@
     .button-link:hover {
       box-shadow: var(--shadow-press);
     }
-  }
 
-  @media (min-width: 64rem) {
-    .service-list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: 5rem;
-    }
-
-    .service-list > :nth-child(even) {
-      margin-top: 6rem;
+    .choice-button[aria-pressed='false']:hover {
+      background-color: var(--choice-hover-background, var(--color-white));
+      color: var(--color-black);
     }
   }
 

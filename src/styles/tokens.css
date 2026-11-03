@@ -5,8 +5,11 @@
   --color-black: #000000;
   --color-white: #ffffff;
   --color-graphite: #262626;
-  --color-smoke: #5f5f5f;
-  --color-fog: #e8e8e6;
+  --color-project-ink: #0a0c08;
+  --color-project-lime: #c9f45a;
+  --color-project-green: #1f6b3d;
+  --color-project-night: #0e141c;
+  --color-project-amber: #ffd34d;
 
   --font-display: var(--font-anybody), 'Arial Narrow', sans-serif;
   --font-body: var(--font-newsreader), Georgia, serif;

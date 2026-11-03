@@ -17,6 +17,10 @@
   }
 
   .stack-groups {
+    --choice-active-background: var(--color-cobalt);
+    --choice-active-color: var(--color-white);
+    --choice-hover-background: var(--color-yellow);
+
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 2.5rem;
@@ -30,33 +34,12 @@
     line-height: 1.2;
   }
 
-  .stack-button {
-    min-height: 2.75rem;
-    padding: 0.25rem 0.75rem;
-    border: 2px solid var(--color-black);
-    cursor: pointer;
-    font-family: var(--font-display);
-    font-weight: 600;
-  }
-
-  .stack-button[aria-pressed='true'] {
-    background-color: var(--color-cobalt);
-    border-color: var(--color-cobalt);
-    color: var(--color-white);
-  }
-
   .stack-panel {
     position: sticky;
     bottom: 0;
     padding: 1.5rem;
     background-color: var(--color-black);
     color: var(--color-white);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .stack-button[aria-pressed='false']:hover {
-      background-color: var(--color-yellow);
-    }
   }
 
   @media (min-width: 40rem) {

@@ -10,12 +10,12 @@
   }
 
   .case-hero[data-layout='phone'] {
-    background-color: #1f6b3d;
+    background-color: var(--color-project-green);
   }
 
   .case-hero[data-layout='flow'] {
-    background-color: #c9f45a;
-    color: #0a0c08;
+    background-color: var(--color-project-lime);
+    color: var(--color-project-ink);
   }
 
   .case-title {
