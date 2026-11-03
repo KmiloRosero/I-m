@@ -106,16 +106,6 @@ function toSvgPath(geometry) {
     .join('')
 }
 
-async function writeHeightMap(elevations, min, max) {
-  const pixels = Buffer.alloc(OUTPUT_SIZE * OUTPUT_SIZE)
-  elevations.forEach((value, index) => {
-    pixels[index] = Math.round(((value - min) / (max - min)) * 255)
-  })
-  await sharp(pixels, { raw: { width: OUTPUT_SIZE, height: OUTPUT_SIZE, channels: 1 } })
-    .png({ compressionLevel: 9 })
-    .toFile(join(OUTPUT_DIR, 'galeras-height.png'))
-}
-
 async function writeContours(elevations, size, min, max) {
   const first = Math.ceil(min / CONTOUR_INTERVAL_METERS) * CONTOUR_INTERVAL_METERS
   const thresholds = []
@@ -142,7 +132,6 @@ for (let pass = 0; pass < SMOOTHING_PASSES; pass += 1) {
 const min = heightGrid.reduce((lowest, value) => Math.min(lowest, value), Infinity)
 const max = heightGrid.reduce((highest, value) => Math.max(highest, value), -Infinity)
 
-await writeHeightMap(heightGrid, min, max)
 await writeContours(contourGrid, CONTOUR_GRID_SIZE, min, max)
 await writeFile(
   join(OUTPUT_DIR, 'galeras-meta.json'),
