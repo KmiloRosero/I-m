@@ -17,7 +17,10 @@ export interface PersonalInfo {
   metaDescription: string
   introduction: string
   about: string
+  personality: string
+  workStyle: string
   interests: readonly string[]
+  ambition: string
   featuredStack: readonly string[]
   socialLinks: readonly SocialLink[]
   cvUrl: string | null

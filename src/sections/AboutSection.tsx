@@ -17,9 +17,26 @@ export function AboutSection() {
       <div className="mt-10 grid gap-10 lg:grid-cols-12">
         <div className="lg:col-span-7">
           <p className="about-statement">{personalInfo.about}</p>
-          {personalInfo.interests.length > 0 ? (
-            <p className="lead-text mt-6">Fuera del código: {personalInfo.interests.join(', ')}.</p>
-          ) : null}
+          <div className="about-details">
+            <div>
+              <h3 className="about-label">Cómo soy</h3>
+              <p className="lead-text">
+                {personalInfo.personality} {personalInfo.workStyle}
+              </p>
+            </div>
+            <div>
+              <h3 className="about-label">Fuera del código</h3>
+              <ul className="about-interests">
+                {personalInfo.interests.map((interest) => (
+                  <li key={interest}>{interest}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="about-ambition">
+              <h3 className="about-label">Lo que viene</h3>
+              <p className="about-ambition-text">{personalInfo.ambition}</p>
+            </div>
+          </div>
         </div>
 
         <div className="flex flex-col gap-8 lg:col-span-4 lg:col-start-9">
