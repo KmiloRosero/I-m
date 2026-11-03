@@ -20,7 +20,7 @@ const PEAK_POSITION_X = 0.66
 const PEAK_POSITION_Y = 0.46
 
 function getStroke(level: number): string {
-  return level >= SUMMIT_ZONE_METERS ? 'var(--color-sulfur)' : 'var(--color-bone)'
+  return level >= SUMMIT_ZONE_METERS ? 'var(--color-red)' : 'currentColor'
 }
 
 function getViewBox(size: number): string {
@@ -32,39 +32,52 @@ function getViewBox(size: number): string {
 
 export function ContourField() {
   const [data, setData] = useState<ContourData | null>(null)
+  const [hasFailed, setHasFailed] = useState(false)
 
   useEffect(() => {
     let isActive = true
-    void import('@/assets/terrain/galeras-contours.json').then((module) => {
-      if (isActive) setData(module.default)
-    })
+    import('@/assets/terrain/galeras-contours.json')
+      .then((contourModule) => {
+        if (isActive) setData(contourModule.default)
+      })
+      .catch(() => {
+        if (isActive) setHasFailed(true)
+      })
     return () => {
       isActive = false
     }
   }, [])
 
+  if (hasFailed) return null
+
   return (
-    <svg
-      aria-hidden="true"
-      className="contour-field absolute inset-0 size-full"
-      data-ready={data !== null}
-      fill="none"
-      preserveAspectRatio="xMidYMid slice"
-      viewBox={data ? getViewBox(data.size) : undefined}
-    >
-      {data?.paths.map(({ level, d }) => {
-        const isIndexContour = level % INDEX_CONTOUR_METERS === 0
-        return (
-          <path
-            key={level}
-            d={d}
-            stroke={getStroke(level)}
-            strokeOpacity={isIndexContour ? 0.9 : 0.5}
-            strokeWidth={isIndexContour ? 1.5 : 0.9}
-            vectorEffect="non-scaling-stroke"
-          />
-        )
-      })}
-    </svg>
+    <figure className="mt-10">
+      <svg
+        aria-hidden="true"
+        className="contour-field aspect-[16/10] w-full"
+        data-ready={data !== null}
+        fill="none"
+        preserveAspectRatio="xMidYMid slice"
+        viewBox={data ? getViewBox(data.size) : undefined}
+      >
+        {data?.paths.map(({ level, d }) => {
+          const isIndexContour = level % INDEX_CONTOUR_METERS === 0
+          return (
+            <path
+              key={level}
+              d={d}
+              stroke={getStroke(level)}
+              strokeOpacity={isIndexContour ? 1 : 0.6}
+              strokeWidth={isIndexContour ? 2 : 1}
+              vectorEffect="non-scaling-stroke"
+            />
+          )
+        })}
+      </svg>
+      <figcaption className="mt-3 text-base">
+        El volcán Galeras, junto a Pasto: curvas de nivel reales, cada 200 metros. Datos de
+        elevación: {terrainMeta.source}.
+      </figcaption>
+    </figure>
   )
 }

@@ -1,34 +1,58 @@
+import Image from 'next/image'
+import profilePhoto from '@/assets/images/profile/camilo-rosero.webp'
 import { profile } from '@/data/profile'
-import { ContourField } from '@/components/terrain/ContourField'
 
 export function HeroSection() {
   return (
     <section
       aria-labelledby="hero-title"
-      className="relative isolate flex min-h-dvh flex-col justify-end overflow-hidden px-4 pb-8 pt-24 sm:px-8 sm:pb-10"
+      className="flex min-h-dvh flex-col justify-end gap-6 overflow-hidden bg-cobalt px-4 pt-24 pb-8 text-white sm:gap-8 sm:px-8 sm:pb-10"
       id="inicio"
     >
-      <div className="absolute inset-x-0 top-0 -z-10 h-[72%]">
-        <ContourField />
-        <div className="absolute inset-0 bg-linear-to-t from-night via-transparent via-45% to-transparent" />
+      <div className="flex flex-col gap-8 md:flex-row-reverse md:items-end md:justify-between">
+        <div className="relative w-[clamp(10rem,48vw,15rem)] shrink-0 self-end md:w-[23vw] md:max-w-88">
+          <div className="absolute inset-0 translate-x-2 translate-y-2 -rotate-2 bg-red sm:translate-x-4 sm:translate-y-4" />
+          <Image
+            alt={`Fotografía de ${profile.name}`}
+            className="relative aspect-[3/4] w-full rotate-2 object-cover object-[50%_35%]"
+            placeholder="blur"
+            preload
+            sizes="(min-width: 768px) 23vw, 48vw"
+            src={profilePhoto}
+          />
+        </div>
+
+        <h1
+          className="text-[clamp(2.5rem,13.8vw,5.5rem)] leading-[0.86] font-extrabold tracking-tight [font-stretch:150%] md:text-[11.4vw] 2xl:text-[10.5rem]"
+          id="hero-title"
+        >
+          <span className="block">Camilo</span>
+          <span className="block">Rosero</span>
+        </h1>
       </div>
 
-      <h1
-        className="text-[clamp(3.25rem,15.5vw,14rem)] leading-[0.86] font-extrabold tracking-tight [font-stretch:150%]"
-        id="hero-title"
-      >
-        <span className="block">Camilo</span>
-        <span className="block">Rosero</span>
-      </h1>
-
-      <div className="mt-6 flex max-w-[1400px] flex-col gap-4 sm:mt-8 md:flex-row md:items-end md:justify-between">
-        <p className="max-w-[46ch] text-xl leading-snug sm:text-2xl">
-          {profile.role}, {profile.semester.toLowerCase()} en la {profile.university}. Hago
-          aplicaciones web, móviles, de escritorio y para reloj.
+      <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <p className="max-w-[44ch] text-xl leading-snug sm:text-2xl">
+          {profile.role}. {profile.semester} en la {profile.university}.
         </p>
-        <p className="max-w-[34ch] text-base text-mist md:text-right">
-          Al fondo, el volcán Galeras, junto a Pasto: curvas de nivel reales, cada 200 metros.
-        </p>
+        <ul className="flex flex-wrap gap-3">
+          <li>
+            <a
+              className="block bg-yellow px-5 py-3 font-display font-bold text-black transition-transform duration-150 ease-(--ease-out-strong) active:scale-[0.97] motion-reduce:transition-none"
+              href="#proyectos"
+            >
+              Ver proyectos
+            </a>
+          </li>
+          <li>
+            <a
+              className="block bg-white px-5 py-3 font-display font-bold text-black transition-transform duration-150 ease-(--ease-out-strong) active:scale-[0.97] motion-reduce:transition-none"
+              href="#contacto"
+            >
+              Contactarme
+            </a>
+          </li>
+        </ul>
       </div>
     </section>
   )
