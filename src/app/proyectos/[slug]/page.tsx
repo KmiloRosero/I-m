@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: CaseStudyPageProps): Promise<
     ? {
         title: project.name,
         description: project.description,
+        alternates: { canonical: `/proyectos/${project.slug}` },
         openGraph: {
           title: project.name,
           description: project.description,

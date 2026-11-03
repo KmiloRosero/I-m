@@ -5,6 +5,7 @@ import { SiteFooter } from '@/components/layout/SiteFooter'
 import { SiteHeader } from '@/components/layout/SiteHeader'
 import { brandColors } from '@/data/brandColors'
 import { personalInfo } from '@/data/personalInfo'
+import { siteUrl } from '@/utils/siteUrl'
 import './globals.css'
 
 const displayFont = Anybody({
@@ -24,6 +25,7 @@ const bodyFont = Newsreader({
 const SITE_TITLE = `${personalInfo.name} | Portafolio`
 
 export const metadata: Metadata = {
+  metadataBase: siteUrl,
   title: { default: SITE_TITLE, template: `%s | ${personalInfo.name}` },
   description: personalInfo.metaDescription,
   openGraph: {
