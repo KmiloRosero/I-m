@@ -6,13 +6,13 @@ import { projectCategories, projectCategoryLabels, projects } from '@/data/proje
 import type { ProjectCategory } from '@/types/project'
 
 const availableCategories = projectCategories.filter((category) =>
-  projects.some((project) => project.category === category),
+  projects.some((project) => project.categories.includes(category)),
 )
 
 export function ProjectGallery() {
   const [activeCategory, setActiveCategory] = useState<ProjectCategory | null>(null)
   const visibleProjects = activeCategory
-    ? projects.filter((project) => project.category === activeCategory)
+    ? projects.filter((project) => project.categories.includes(activeCategory))
     : projects
 
   return (

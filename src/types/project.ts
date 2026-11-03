@@ -15,7 +15,7 @@ export interface Project {
   name: string
   platform: string
   layout: ProjectLayout
-  category: ProjectCategory | null
+  categories: readonly ProjectCategory[]
   description: string
   problem: string | null
   purpose: string | null

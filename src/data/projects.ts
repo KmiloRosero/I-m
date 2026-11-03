@@ -2,6 +2,9 @@ import { GITHUB_PROFILE_URL } from '@/data/personalInfo'
 import { projectNames } from '@/data/projectNames'
 import type { Project, ProjectCategory } from '@/types/project'
 
+const SOLO_CONTRIBUTION = 'Desarrollé el proyecto completo.'
+const HALF_CONTRIBUTION = 'Realicé la mitad del desarrollo.'
+
 export const projectCategories: readonly ProjectCategory[] = [
   'academic',
   'collaborative',
@@ -22,7 +25,7 @@ export const projects: readonly Project[] = [
     name: projectNames.biomedical,
     platform: 'Plataforma web',
     layout: 'feature',
-    category: 'collaborative',
+    categories: ['academic', 'collaborative'],
     description:
       'Plataforma para registrar residuos biomédicos, seguir su estado y gestionar alertas, rutas y estadísticas.',
     problem:
@@ -32,11 +35,11 @@ export const projects: readonly Project[] = [
       'Un frontend en React conectado a una API en Spring Boot, con módulos de residuos, alertas, rutas, estadísticas y administración.',
     technologies: ['TypeScript', 'Java', 'SQL', 'MySQL', 'Supabase', 'Leaflet', 'API de OpenAI'],
     frameworks: ['React', 'Vite', 'Tailwind CSS', 'Zustand', 'Spring Boot'],
-    contribution: null,
-    collaboration: 'Proyecto en equipo: el historial del backend registra commits de varios autores.',
+    contribution: HALF_CONTRIBUTION,
+    collaboration: 'Proyecto final de la universidad, desarrollado en equipo.',
     location: null,
     period: null,
-    status: 'Frontend publicado',
+    status: 'Proyecto final universitario',
     verifiedFeatures: [
       'Registro, consulta, edición y eliminación de residuos',
       'Filtros por tipo de residuo y por entidad',
@@ -66,7 +69,7 @@ export const projects: readonly Project[] = [
     repoUrl: `${GITHUB_PROFILE_URL}/biomedical-fronted`,
     repoLabel: 'Código del frontend',
     extraRepoUrl: `${GITHUB_PROFILE_URL}/biomedical-backend`,
-    demoUrl: 'https://biomedwasted.vercel.app/login',
+    demoUrl: null,
     demoLabel: 'Abrir demo',
     hasCaseStudy: true,
   },
@@ -75,7 +78,7 @@ export const projects: readonly Project[] = [
     name: projectNames.cineTracker,
     platform: 'App de escritorio',
     layout: 'wide',
-    category: 'personal',
+    categories: ['personal'],
     description: 'Diario privado de películas y series, con recomendaciones basadas en tus gustos.',
     problem:
       'Quien ve series y películas en varias plataformas no tiene un lugar privado para llevar lo visto y decidir qué ver.',
@@ -84,7 +87,7 @@ export const projects: readonly Project[] = [
       'Una app de escritorio con catálogo, estadísticas y listas generadas por IA, donde cada sugerencia es un título real de TMDB.',
     technologies: ['JavaScript', 'SQLite', 'TMDB', 'API de Anthropic', 'API de Gemini'],
     frameworks: ['Electron', 'React', 'Vite', 'Tailwind CSS', 'Vitest'],
-    contribution: null,
+    contribution: SOLO_CONTRIBUTION,
     collaboration: null,
     location: null,
     period: null,
@@ -152,7 +155,7 @@ export const projects: readonly Project[] = [
     name: projectNames.mercaJusto,
     platform: 'App móvil',
     layout: 'phone',
-    category: 'academic',
+    categories: ['academic'],
     description:
       'Conecta a productores campesinos de Nariño con compradores urbanos, sin intermediarios.',
     problem: 'Los intermediarios encarecen la comida para quien compra y reducen el ingreso de quien cultiva.',
@@ -161,7 +164,7 @@ export const projects: readonly Project[] = [
       'Una app con flujos propios para comprador, productor y repartidor, y un backend que agrupa las entregas en rutas.',
     technologies: ['TypeScript', 'PostgreSQL', 'Prisma', 'Leaflet'],
     frameworks: ['React Native', 'Expo', 'Zustand', 'Node.js', 'Express'],
-    contribution: null,
+    contribution: SOLO_CONTRIBUTION,
     collaboration: null,
     location: 'Nariño, Colombia',
     period: null,
@@ -201,7 +204,7 @@ export const projects: readonly Project[] = [
     name: projectNames.moniWatch,
     platform: 'Wear OS y móvil',
     layout: 'flow',
-    category: 'personal',
+    categories: ['personal'],
     description: 'Pagos desde la muñeca con Nequi o tarjeta: el celular configura y el reloj paga.',
     problem: 'Pagar con el celular obliga a sacarlo del bolsillo para compras pequeñas y frecuentes.',
     purpose: 'Pagar desde el reloj en pocos toques y saber de inmediato si el dinero se movió.',
@@ -209,7 +212,7 @@ export const projects: readonly Project[] = [
       'Una app de celular para configurar, una app para Wear OS que paga y un backend que protege cada transacción.',
     technologies: ['TypeScript', 'PostgreSQL', 'Prisma', 'Docker'],
     frameworks: ['NestJS', 'Expo', 'React Native', 'Wear OS'],
-    contribution: null,
+    contribution: SOLO_CONTRIBUTION,
     collaboration: null,
     location: null,
     period: null,
@@ -240,14 +243,14 @@ export const projects: readonly Project[] = [
     name: projectNames.reticula,
     platform: 'Juego en el navegador',
     layout: 'compact',
-    category: 'collaborative',
+    categories: ['collaborative'],
     description: 'Entrenador de puntería 3D para practicar shooters y coordinación ojo-mano.',
     problem: null,
     purpose: null,
     solution: null,
     technologies: ['JavaScript', 'Web Audio API'],
     frameworks: ['Three.js', 'Vite'],
-    contribution: null,
+    contribution: HALF_CONTRIBUTION,
     collaboration: 'Proyecto desarrollado con un compañero de trabajo.',
     location: null,
     period: null,
