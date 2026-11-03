@@ -1,3 +1,5 @@
+import type { BlockType } from '@/utils/blockTextures'
+
 export type ProjectCategory = 'academic' | 'collaborative' | 'freelance' | 'personal'
 
 type ProjectLayout = 'compact' | 'feature' | 'flow' | 'phone' | 'wide'
@@ -10,17 +12,12 @@ export interface ProjectImage {
   width: number
 }
 
-interface CubeColors {
-  face: string
-  top: string
-}
-
 export interface Project {
   slug: string
   name: string
   platform: string
   layout: ProjectLayout
-  cubeColors: CubeColors
+  block: BlockType
   categories: readonly ProjectCategory[]
   description: string
   problem: string | null

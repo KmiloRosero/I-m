@@ -3,20 +3,23 @@
 import { useState, type CSSProperties } from 'react'
 import { ProjectDialog } from '@/components/projects/ProjectDialog'
 import { projects } from '@/data/projects'
+import { createBlockTexture } from '@/utils/blockTextures'
 
 type CubeStyle = CSSProperties & Record<`--cube-${string}`, number | string>
 
 const CUBES_ID = 'project-cubes'
 const centerIndex = (projects.length - 1) / 2
+const blockTextures = projects.map(({ block }, index) => createBlockTexture(block, index + 1))
 
-function getCubeStyle(index: number, face: string, top: string): CubeStyle {
+function getCubeStyle(index: number): CubeStyle {
   const offset = index - centerIndex
+  const texture = blockTextures[index]
   return {
     '--cube-arc': centerIndex - Math.abs(offset),
-    '--cube-face': face,
     '--cube-index': index,
     '--cube-offset': offset,
-    '--cube-top': top,
+    '--cube-side': texture ? `url("${texture.side}")` : 'none',
+    '--cube-top': texture ? `url("${texture.top}")` : 'none',
   }
 }
 
@@ -56,8 +59,8 @@ export function ProjectChest() {
         </button>
 
         <ul aria-label="Proyectos del cofre" className="chest-cubes" id={CUBES_ID} inert={!isOpen}>
-          {projects.map(({ cubeColors, name, slug }, index) => (
-            <li key={slug} style={getCubeStyle(index, cubeColors.face, cubeColors.top)}>
+          {projects.map(({ name, slug }, index) => (
+            <li key={slug} style={getCubeStyle(index)}>
               <button
                 aria-haspopup="dialog"
                 className="project-cube-button"
