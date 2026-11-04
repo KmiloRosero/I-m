@@ -2,6 +2,9 @@
   --color-cobalt: #1433d6;
   --color-red: #d81e1e;
   --color-yellow: #ffd100;
+  /* Neuro Noise palette, used by the hero shader and its accents. */
+  --color-cyan: #00e5ff;
+  --color-electric: #1f51ff;
   --color-black: #000000;
   --color-white: #ffffff;
   --color-graphite: #262626;

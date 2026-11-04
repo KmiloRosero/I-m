@@ -17,6 +17,15 @@
     opacity: 1;
   }
 
+  /* Over the blue shader, primary actions use its own cyan instead of yellow. */
+  .hero {
+    --shadow-press: 0.25rem 0.25rem 0 var(--color-electric);
+  }
+
+  .hero .button-link[data-variant='primary'] {
+    background-color: var(--color-cyan);
+  }
+
   .hero-rise {
     animation: hero-rise 700ms var(--ease-out-strong) both;
     animation-delay: var(--hero-delay, 0ms);

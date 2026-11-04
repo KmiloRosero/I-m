@@ -15,7 +15,7 @@ export function HeroSection() {
     <StorySection id="inicio">
       <section
         aria-labelledby="hero-title"
-        className="relative flex min-h-dvh flex-col justify-end overflow-hidden bg-cobalt px-gutter pt-24 pb-10 text-white"
+        className="hero relative flex min-h-dvh flex-col justify-end overflow-hidden bg-cobalt px-gutter pt-24 pb-10 text-white"
       >
         {/* Only the blue area: the red band covers the top on mobile and the right 34% on desktop. */}
         <NeuroNoiseBackground className="top-64 lg:top-0 lg:right-[34%]" />
