@@ -1,0 +1,41 @@
+@layer components {
+  .story-scroll {
+    width: 100%;
+    overflow-x: clip;
+  }
+
+  .story-track {
+    position: relative;
+  }
+
+  .story-section {
+    width: 100%;
+    overflow: clip;
+  }
+
+  .story-section-inner {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    transform-origin: top left;
+  }
+
+  .story-section-inner > section {
+    flex: 1 0 auto;
+  }
+
+  .story-scroll[data-story-active='true'] .story-track:not(:last-child)::after {
+    display: block;
+    height: 100svh;
+    content: '';
+  }
+
+  .story-scroll[data-story-active='true'] .story-track + .story-track {
+    margin-top: -100svh;
+  }
+
+  .story-scroll[data-story-active='true'] .story-section {
+    position: sticky;
+    top: min(0px, calc(100svh - var(--story-height, 100svh)));
+  }
+}
