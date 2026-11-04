@@ -8,6 +8,9 @@ export interface PersonalInfo {
   firstName: string
   lastName: string
   degree: string
+  title: string
+  /** Roles the hero cycles through; the first one is `title`. */
+  heroRoles: readonly string[]
   studies: string
   position: string
   semester: string

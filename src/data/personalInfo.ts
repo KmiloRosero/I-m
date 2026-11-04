@@ -1,6 +1,6 @@
 import type { PersonalInfo } from '@/types/personalInfo'
 
-const FIRST_NAME = 'Camilo'
+const FIRST_NAME = 'Kmilo'
 const LAST_NAME = 'Rosero'
 const FULL_NAME = `${FIRST_NAME} ${LAST_NAME}`
 const DEGREE = 'Ingeniería de Software'
@@ -13,6 +13,8 @@ export const personalInfo: PersonalInfo = {
   firstName: FIRST_NAME,
   lastName: LAST_NAME,
   degree: DEGREE,
+  title: 'Ingeniero en Software',
+  heroRoles: ['Ingeniero en Software', 'Desarrollador full-stack', 'Web, móvil y escritorio'],
   studies: `Estudiante de ${DEGREE}`,
   position: 'Desarrollador junior',
   semester: 'Quinto semestre',

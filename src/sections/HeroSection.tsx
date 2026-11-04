@@ -1,5 +1,6 @@
 import { ProfileFlipCard } from '@/components/common/ProfileFlipCard'
 import { ButtonLink } from '@/components/ui/ButtonLink'
+import { MorphingText } from '@/components/ui/liquid-text'
 import { StorySection } from '@/components/ui/StorySection'
 import { personalInfo } from '@/data/personalInfo'
 
@@ -18,10 +19,16 @@ export function HeroSection() {
           </div>
 
           <div className="flex flex-col gap-6 sm:gap-8">
-            <h1 className="display-name" id="hero-title">
-              <span className="hero-rise block [--hero-delay:80ms]">{personalInfo.firstName}</span>
-              <span className="hero-rise block [--hero-delay:140ms]">{personalInfo.lastName}</span>
-            </h1>
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <h1 className="display-name" id="hero-title">
+                <span className="hero-rise block [--hero-delay:80ms]">{personalInfo.firstName}</span>
+                <span className="hero-rise block [--hero-delay:140ms]">{personalInfo.lastName}</span>
+                <span className="sr-only">, {personalInfo.title}</span>
+              </h1>
+              <div className="hero-rise [--hero-delay:180ms]">
+                <MorphingText className="hero-role" texts={personalInfo.heroRoles} />
+              </div>
+            </div>
             <p className="lead-text hero-rise max-w-[44ch] [--hero-delay:220ms]">
               {personalInfo.studies} y {personalInfo.position.toLowerCase()}.{' '}
               {personalInfo.semester} en la {personalInfo.university}.
