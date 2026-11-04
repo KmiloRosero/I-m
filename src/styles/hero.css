@@ -7,6 +7,16 @@
     animation: hero-band-wipe 700ms var(--ease-out-strong) both;
   }
 
+  /* The shader canvas fades in over the cobalt fallback once its first frame is drawn. */
+  .neuro-noise {
+    opacity: 0;
+    transition: opacity 900ms var(--ease-out-strong);
+  }
+
+  .neuro-noise[data-ready='true'] {
+    opacity: 1;
+  }
+
   .hero-rise {
     animation: hero-rise 700ms var(--ease-out-strong) both;
     animation-delay: var(--hero-delay, 0ms);
@@ -38,6 +48,10 @@
     .hero-card-enter,
     .liquid-enter {
       animation: none;
+    }
+
+    .neuro-noise {
+      transition: none;
     }
   }
 

@@ -1,6 +1,7 @@
 import { ProfileFlipCard } from '@/components/common/ProfileFlipCard'
 import { ButtonLink } from '@/components/ui/ButtonLink'
 import { MorphingText } from '@/components/ui/liquid-text'
+import { NeuroNoiseBackground } from '@/components/ui/NeuroNoiseBackground'
 import { StorySection } from '@/components/ui/StorySection'
 import { personalInfo } from '@/data/personalInfo'
 
@@ -13,6 +14,8 @@ export function HeroSection() {
         aria-labelledby="hero-title"
         className="relative flex min-h-dvh flex-col justify-end overflow-hidden bg-cobalt px-gutter pt-24 pb-10 text-white"
       >
+        {/* Only the blue area: the red band covers the top on mobile and the right 34% on desktop. */}
+        <NeuroNoiseBackground className="top-64 lg:top-0 lg:right-[34%]" />
         <div aria-hidden="true" className="hero-band" />
 
         <div className="relative mx-auto flex w-full max-w-content flex-col gap-10 lg:flex-row-reverse lg:items-end lg:justify-between">
