@@ -203,7 +203,7 @@
     max-width: 100%;
     overflow: hidden;
     font-family: var(--font-display);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     -webkit-line-clamp: 2;
     line-height: 1.2;
@@ -212,39 +212,91 @@
     transition: opacity 200ms var(--ease-out-strong);
   }
 
-  .xp-stop[aria-selected='true'] .xp-stop-date {
+  .xp-stop[data-active='true'] .xp-stop-date {
     background: var(--color-black);
     color: var(--color-yellow);
   }
 
-  .xp-stop[aria-selected='true'] .xp-stop-dot {
+  .xp-stop[data-active='true'] .xp-stop-dot {
     background: var(--color-yellow);
     scale: 1.5;
   }
 
-  .xp-stop[aria-selected='true'] .xp-stop-label {
+  .xp-stop[data-active='true'] .xp-stop-label {
     font-weight: 800;
     opacity: 1;
   }
 
-  /* ── Detail card ─────────────────────────────────────────── */
+  /* ── Card carousel ───────────────────────────────────────── */
 
-  .xp-detail {
-    margin-top: 1.5rem;
+  .xp-hint {
+    margin-top: 0.25rem;
+    font-size: 0.9375rem;
+    opacity: 0.65;
+    text-align: center;
+  }
+
+  /* Cards sit in a row and snap to the centre. Neighbours peek in at the
+     sides so it is clear the row continues. */
+  .xp-cards {
+    --xp-card: min(58rem, 86%);
+    --xp-gap: clamp(1rem, 2.5vw, 2rem);
+
+    position: relative;
+    display: flex;
+    gap: var(--xp-gap);
+    margin: 1rem calc(var(--spacing-gutter) * -1) 0;
+    padding: 0.5rem 0 1.75rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    cursor: grab;
+  }
+
+  .xp-cards::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Spacers let the first and last cards reach the centre. */
+  .xp-cards::before,
+  .xp-cards::after {
+    flex: 0 0 calc((100% - var(--xp-card)) / 2 - var(--xp-gap));
+    content: '';
+  }
+
+  /* While a mouse drags, snapping would fight the pointer. */
+  .xp-cards[data-dragging='true'] {
+    scroll-snap-type: none;
+    cursor: grabbing;
+    user-select: none;
+  }
+
+  .xp-card {
+    flex: 0 0 var(--xp-card);
+    container-type: inline-size;
     border: 3px solid var(--color-black);
     background: var(--color-white);
     box-shadow: 0.625rem 0.625rem 0 var(--color-black);
+    opacity: 0.45;
+    scale: 0.96;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    transition:
+      opacity 300ms var(--ease-out-strong),
+      scale 300ms var(--ease-out-strong);
+  }
+
+  .xp-card[data-active='true'] {
+    opacity: 1;
+    scale: 1;
   }
 
   .xp-detail-body {
     display: grid;
     gap: 2rem;
+    height: 100%;
     padding: clamp(1.5rem, 4vw, 3rem);
-    animation: xp-slide-forward 280ms var(--ease-out-strong);
-  }
-
-  .xp-detail-body[data-direction='back'] {
-    animation-name: xp-slide-back;
   }
 
   .xp-detail-main {
@@ -282,8 +334,9 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Sized from the card, not the viewport, so long titles never overflow. */
   .xp-detail-title {
-    font-size: clamp(2rem, 5vw, 4rem);
+    font-size: clamp(1.75rem, 6cqi, 3.25rem);
     font-stretch: 125%;
     font-weight: 800;
     hyphens: auto;
@@ -416,7 +469,9 @@
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
     gap: 1rem;
-    padding: 0.75rem clamp(0.75rem, 3vw, 1.5rem);
+    max-width: 58rem;
+    margin: 0 auto;
+    padding: 0.75rem 0;
     border-top: 3px solid var(--color-black);
   }
 
@@ -500,7 +555,7 @@
     }
   }
 
-  @media (min-width: 64rem) {
+  @container (min-width: 44rem) {
     .xp-detail-body {
       grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
       gap: 3.5rem;
@@ -521,11 +576,11 @@
       color: var(--color-black);
     }
 
-    .xp-stop[aria-selected='false']:hover .xp-stop-label {
+    .xp-stop[data-active='false']:hover .xp-stop-label {
       opacity: 1;
     }
 
-    .xp-stop[aria-selected='false']:hover .xp-stop-dot {
+    .xp-stop[data-active='false']:hover .xp-stop-dot {
       scale: 1.25;
     }
   }
@@ -535,9 +590,9 @@
       animation: none;
     }
 
-    .xp-detail-body,
-    .xp-detail-body[data-direction='back'] {
-      animation-name: xp-fade;
+    .xp-card {
+      scale: 1;
+      transition: none;
     }
 
     .xp-track-fill,
@@ -548,20 +603,6 @@
     .xp-link,
     .xp-step {
       transition: none;
-    }
-  }
-
-  @keyframes xp-slide-forward {
-    from {
-      opacity: 0;
-      translate: 1.5rem 0;
-    }
-  }
-
-  @keyframes xp-slide-back {
-    from {
-      opacity: 0;
-      translate: -1.5rem 0;
     }
   }
 
