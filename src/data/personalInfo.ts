@@ -17,7 +17,10 @@ export const personalInfo: PersonalInfo = {
   title: 'Ingeniero en Software',
   heroRoles: ['Ingeniero\nen Software', 'Desarrollador\nfull-stack', 'Web, móvil\ny escritorio'],
   studies: `Estudiante de ${DEGREE}`,
-  position: 'Desarrollador junior',
+  position: 'Desarrollador freelance',
+  availability: 'Disponible para proyectos freelance',
+  // Format: https://wa.me/57XXXXXXXXXX (country code, no spaces or +).
+  whatsappUrl: null,
   semester: 'Quinto semestre',
   university: UNIVERSITY,
   location: 'Pasto, Nariño, Colombia',

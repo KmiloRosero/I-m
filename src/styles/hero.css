@@ -1,7 +1,8 @@
 @layer components {
+  /* On phones the band sits under the photo, which now comes after the name. */
   .hero-band {
     position: absolute;
-    inset: 0 0 auto;
+    inset: auto 0 0;
     height: 16rem;
     background-color: var(--color-red);
     animation: hero-band-wipe 700ms var(--ease-out-strong) both;
@@ -24,6 +25,45 @@
 
   .hero .button-link[data-variant='primary'] {
     background-color: var(--color-cyan);
+  }
+
+  .hero-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Availability pill: a translucent chip so the shader still reads behind it. */
+  .hero-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.4375rem 1rem;
+    border: 1px solid rgb(255 255 255 / 0.3);
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.45);
+    backdrop-filter: blur(6px);
+    font-family: var(--font-display);
+    font-size: clamp(0.8125rem, 1.4vw, 0.9375rem);
+    font-weight: 700;
+  }
+
+  .hero-status-dot {
+    position: relative;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: #22c55e;
+  }
+
+  /* A slow ring says "live" without pulling focus from the name. */
+  .hero-status-dot::after {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    content: '';
+    animation: hero-status-ping 2.4s var(--ease-out-strong) infinite;
   }
 
   .hero-rise {
@@ -59,7 +99,8 @@
     .hero-band,
     .hero-rise,
     .hero-card-enter,
-    .liquid-enter {
+    .liquid-enter,
+    .hero-status-dot::after {
       animation: none;
     }
 
@@ -93,6 +134,19 @@
       opacity: 1;
       filter: blur(0);
       translate: 0;
+    }
+  }
+
+  @keyframes hero-status-ping {
+    from {
+      opacity: 0.6;
+      scale: 1;
+    }
+
+    70%,
+    to {
+      opacity: 0;
+      scale: 2.6;
     }
   }
 

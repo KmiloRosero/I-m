@@ -15,6 +15,10 @@ export interface PersonalInfo {
   heroRoles: readonly string[]
   studies: string
   position: string
+  /** Short status shown in the hero, e.g. availability for work. */
+  availability: string
+  /** wa.me link for WhatsApp; the hero shows a WhatsApp button only when set. */
+  whatsappUrl: string | null
   semester: string
   university: string
   location: string

@@ -29,7 +29,14 @@
     content: '';
     scale: 0 1;
     transform-origin: left;
-    transition: scale var(--duration-indicator) var(--ease-out-strong);
+    transition:
+      scale var(--duration-indicator) var(--ease-out-strong),
+      background-color var(--duration-indicator) var(--ease-out-strong);
+  }
+
+  /* Over the hero the indicator takes the shader's cyan, like its buttons. */
+  [data-section='inicio'] .nav-link::after {
+    background-color: var(--color-cyan);
   }
 
   .nav-link[aria-current='true']::after {

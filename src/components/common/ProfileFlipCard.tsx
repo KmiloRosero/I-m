@@ -42,7 +42,7 @@ export function ProfileFlipCard() {
           <div className="flex flex-col gap-3 bg-black p-4 text-white">
             <div>
               <p className="item-title">{personalInfo.name}</p>
-              <p className="mt-2 leading-snug">{personalInfo.studies}</p>
+              <p className="mt-2 leading-snug">{personalInfo.title} en formación</p>
               <p className="leading-snug">{personalInfo.position}</p>
             </div>
             <div className="flex flex-wrap gap-2">
