@@ -46,6 +46,12 @@
     opacity: 1;
   }
 
+  /* Phone screenshots are shown whole, centred, instead of cropped to 16:10. */
+  .screenshot-stage img[data-orientation='portrait'] {
+    padding-block: clamp(1rem, 3vw, 2rem);
+    object-fit: contain;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .screenshot-stage img {
       transition: none;

@@ -39,7 +39,7 @@ function ServicePreview({ service }: { service: Service }) {
           width={main.width}
         />
         {/* Desktop plus phone: show the phone on top, like a responsive preview. */}
-        {landscape && portrait ? (
+        {visual.previewPair && landscape && portrait ? (
           <Image
             alt=""
             className="service-card-phone"

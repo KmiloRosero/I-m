@@ -80,6 +80,7 @@ export const services: readonly Service[] = [
     evidence: [PORTFOLIO, EMAS],
     visual: {
       kind: 'screens',
+      previewPair: true,
       images: [
         {
           alt: 'Este portafolio en un computador',
@@ -104,24 +105,31 @@ export const services: readonly Service[] = [
     title: 'Apps móviles',
     summary: 'Apps para Android e iOS con React Native, y hasta para el reloj.',
     description:
-      'Desarrollo apps móviles con React Native y Expo, con flujos por rol y conectadas a su propio backend.',
+      'Desarrollo apps móviles con React Native y Expo, con flujos por rol, mapas en vivo y conectadas a su propio backend.',
     includes: [
-      'Navegación por roles con Expo Router',
-      'Notificaciones push',
-      'Versión web publicada desde el mismo código',
+      'Una sola app con flujos por rol: comprador, productor y repartidor',
+      'Seguimiento en vivo del repartidor en el mapa',
+      'Pagos en línea, notificaciones push y modo oscuro',
       'Apps para relojes con Wear OS',
     ],
-    tools: ['React Native', 'Expo', 'TypeScript', 'Zustand'],
+    tools: ['React Native', 'Expo', 'TypeScript', 'Zustand', 'Leaflet'],
     evidence: [MERCAJUSTO, MONIWATCH],
     visual: {
       kind: 'screens',
       images: [
         {
-          alt: 'Pantalla de bienvenida de MercaJusto con un productor y su cosecha',
+          alt: 'MercaJusto: inicio del comprador, seguimiento en vivo, inicio del productor y ruta del repartidor',
           caption: mercaJusto,
-          height: 1688,
-          src: '/images/projects/mercajusto/onboarding.png',
-          width: 780,
+          height: 900,
+          src: '/images/projects/mercajusto/portada.jpg',
+          width: 1600,
+        },
+        {
+          alt: 'Seguimiento en vivo de un pedido de MercaJusto, con el repartidor en el mapa',
+          caption: 'Seguimiento en vivo',
+          height: 1169,
+          src: '/images/projects/mercajusto/06-seguimiento.jpg',
+          width: 540,
         },
       ],
     },
@@ -171,7 +179,7 @@ export const services: readonly Service[] = [
     includes: [
       'Arquitectura en capas: controladores, servicios y repositorios',
       'Autenticación y permisos',
-      'Pagos idempotentes y webhooks con firma verificada',
+      'Pagos con Wompi: idempotentes y con webhooks de firma verificada',
       'Manejo de errores centralizado',
     ],
     tools: ['Node.js', 'Express', 'NestJS', 'Spring Boot'],
@@ -179,8 +187,8 @@ export const services: readonly Service[] = [
     visual: {
       kind: 'routes',
       groups: [
-        { label: moniWatch, items: ['/auth', '/payment-methods', '/transactions', '/webhooks'] },
-        { label: mercaJusto, items: ['/api/products', '/api/orders', '/api/payments', '/api/routes'] },
+        { label: moniWatch, items: ['/auth', '/payment-methods', '/devices', '/transactions', '/webhooks/wompi'] },
+        { label: mercaJusto, items: ['/api/products', '/api/cart', '/api/orders', '/api/payments', '/api/courier'] },
         { label: biomedical, items: ['/api/wastes', '/api/alerts', '/api/statistics'] },
       ],
     },
@@ -208,7 +216,7 @@ export const services: readonly Service[] = [
           label: `${biomedical}, MySQL`,
           items: ['rutas', 'flota_transporte', 'manifiestos_transporte', 'lotes_tratamiento'],
         },
-        { label: `${mercaJusto}, PostgreSQL`, items: ['Product', 'Order', 'DeliveryRoute', 'Review'] },
+        { label: `${mercaJusto}, PostgreSQL`, items: ['Product', 'CartItem', 'Order', 'DeliveryRoute', 'Review'] },
       ],
     },
   },

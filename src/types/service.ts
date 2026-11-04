@@ -14,7 +14,12 @@ export interface ServiceGroup {
 }
 
 export type ServiceVisual =
-  | { kind: 'screens'; images: readonly ServiceImage[] }
+  | {
+      kind: 'screens'
+      images: readonly ServiceImage[]
+      /** Card preview shows the phone shot on top of the desktop one. */
+      previewPair?: boolean
+    }
   | { kind: 'routes'; groups: readonly ServiceGroup[] }
   | { kind: 'tables'; groups: readonly ServiceGroup[] }
 

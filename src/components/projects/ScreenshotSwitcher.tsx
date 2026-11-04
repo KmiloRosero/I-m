@@ -21,6 +21,7 @@ export function ScreenshotSwitcher({ images, sizes }: ScreenshotSwitcherProps) {
             <Image
               alt={isActive ? image.alt : ''}
               data-active={isActive}
+              data-orientation={image.height > image.width ? 'portrait' : 'landscape'}
               fill
               key={image.src}
               sizes={sizes}
