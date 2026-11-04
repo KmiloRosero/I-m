@@ -19,24 +19,6 @@
     animation: liquid-enter 1300ms var(--ease-out-strong) 120ms backwards;
   }
 
-  .hero-eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-family: var(--font-display);
-    font-size: clamp(0.8125rem, 1.4vw, 1rem);
-    font-stretch: 125%;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .hero-eyebrow-rule {
-    width: 2.5rem;
-    height: 0.25rem;
-    background-color: var(--color-yellow);
-  }
-
   .hero-card-enter {
     rotate: 1.5deg;
     animation: hero-card-enter 800ms var(--ease-out-strong) 150ms both;

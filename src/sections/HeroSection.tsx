@@ -20,12 +20,8 @@ export function HeroSection() {
             <ProfileFlipCard />
           </div>
 
-          <div className="hero-copy flex min-w-0 flex-col gap-8 sm:gap-10 lg:flex-1">
-            <p className="hero-eyebrow hero-rise [--hero-delay:60ms]">
-              <span aria-hidden="true" className="hero-eyebrow-rule" />
-              Portafolio · Pasto, Colombia
-            </p>
-            <h1 className="hero-morph -mt-4 sm:-mt-6" id="hero-title">
+          <div className="hero-copy flex min-w-0 flex-col items-center gap-8 text-center sm:gap-10 lg:flex-1 lg:self-center">
+            <h1 className="hero-morph w-full" id="hero-title">
               <span className="sr-only">
                 {personalInfo.name}, {personalInfo.title}
               </span>
@@ -36,7 +32,7 @@ export function HeroSection() {
                 texts={heroTexts}
               />
             </h1>
-            <ul className="hero-rise flex flex-wrap gap-3 [--hero-delay:700ms]">
+            <ul className="hero-rise flex flex-wrap justify-center gap-3 [--hero-delay:700ms]">
               <li>
                 <ButtonLink href="#proyectos" variant="primary">
                   Ver proyectos
