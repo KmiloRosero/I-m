@@ -5,6 +5,9 @@ import { NeuroNoiseBackground } from '@/components/ui/NeuroNoiseBackground'
 import { StorySection } from '@/components/ui/StorySection'
 import { personalInfo } from '@/data/personalInfo'
 
+// Palette for the band beside the photo, low → high.
+const HERO_BAND_COLORS = ['#000000', '#8A0B0B', '#FF2A1F', '#FFE8E3']
+
 const heroTexts = [`${personalInfo.firstName}\n${personalInfo.lastName}`, ...personalInfo.heroRoles]
 
 export function HeroSection() {
@@ -16,7 +19,9 @@ export function HeroSection() {
       >
         {/* Only the blue area: the red band covers the top on mobile and the right 34% on desktop. */}
         <NeuroNoiseBackground className="top-64 lg:top-0 lg:right-[34%]" />
-        <div aria-hidden="true" className="hero-band" />
+        <div aria-hidden="true" className="hero-band">
+          <NeuroNoiseBackground colors={HERO_BAND_COLORS} />
+        </div>
 
         <div className="relative mx-auto flex w-full max-w-content flex-col gap-10 lg:flex-row-reverse lg:items-end lg:justify-between">
           <div className="hero-card-enter w-full max-w-md self-end lg:w-[28vw] lg:max-w-104 lg:shrink-0">

@@ -29,7 +29,11 @@
     animation: liquid-enter 1300ms var(--ease-out-strong) 120ms backwards;
   }
 
+  /* Over the dark shader the default black block shadow disappears, so the
+     hero card gets a red offset block and a faint light edge instead. */
   .hero-card-enter {
+    --shadow-block: 0 0 0 1px rgb(255 255 255 / 0.16), 0.5rem 0.5rem 0 var(--color-red);
+
     rotate: 1.5deg;
     animation: hero-card-enter 800ms var(--ease-out-strong) 150ms both;
   }

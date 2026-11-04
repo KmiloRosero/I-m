@@ -8,15 +8,9 @@ import { cn } from '@/lib/utils'
 import { NEURO_NOISE_FRAGMENT, NEURO_NOISE_VERTEX } from './neuroNoiseShader'
 
 // Recipe values, packed exactly as the shader header lists them.
-// Colours low → high: #000000, #1F51FF, #00E5FF, #EAFDFF (the last 4 slots unused).
-const COLORS = new Float32Array([
-  0.0, 0.0, 0.0,
-  0.122, 0.318, 1.0,
-  0.0, 0.898, 1.0,
-  0.918, 0.992, 1.0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-])
-const COLOR_COUNT = 4
+/** The recipe's palette, low → high. */
+export const NEURO_NOISE_BLUE = ['#000000', '#1F51FF', '#00E5FF', '#EAFDFF'] as const
+const MAX_COLORS = 8
 const TIME_SCALE = 0.86
 const SHAPE = [1.26, 0.35, 0.28, 0.0] as const
 const SURFACE = [1.82, 1.0, -0.03, 1.48] as const
@@ -27,6 +21,18 @@ const CURSOR_STRENGTH = 0.45
 const CURSOR_RADIUS = 0.46
 
 const MAX_DPR = 2
+
+/** Packs hex colours into the shader's u_colors[8] (unused slots stay black). */
+function packColors(colors: readonly string[]): Float32Array {
+  const packed = new Float32Array(MAX_COLORS * 3)
+  colors.slice(0, MAX_COLORS).forEach((hex, index) => {
+    const value = Number.parseInt(hex.replace('#', ''), 16)
+    packed[index * 3] = ((value >> 16) & 255) / 255
+    packed[index * 3 + 1] = ((value >> 8) & 255) / 255
+    packed[index * 3 + 2] = (value & 255) / 255
+  })
+  return packed
+}
 /** How fast the ripple fades in and out when the pointer enters or leaves (per second). */
 const PRESENCE_RATE = 5
 /** Time used for the single still frame under reduced motion. */
@@ -65,6 +71,8 @@ function createProgram(gl: WebGLRenderingContext) {
 
 interface NeuroNoiseBackgroundProps {
   className?: string
+  /** Palette low → high, up to 8 colours. Defaults to the recipe's blues. */
+  colors?: readonly string[]
 }
 
 /**
@@ -72,13 +80,17 @@ interface NeuroNoiseBackgroundProps {
  * (https://shaders.paper.design/neuro-noise, Apache-2.0).
  * Fills its positioned parent; the parent's own background shows if WebGL is unavailable.
  */
-export function NeuroNoiseBackground({ className }: NeuroNoiseBackgroundProps) {
+export function NeuroNoiseBackground({ className, colors = NEURO_NOISE_BLUE }: NeuroNoiseBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const reducedMotion = usePrefersReducedMotion()
+  // A string key keeps the effect stable when callers pass a new array with the same colours.
+  const colorKey = colors.join(',')
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
+    const palette = colorKey.split(',')
+    const packedColors = packColors(palette)
     const gl = canvas.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' })
     if (!gl) return
 
@@ -110,7 +122,7 @@ export function NeuroNoiseBackground({ className }: NeuroNoiseBackgroundProps) {
           (name) => [name, gl.getUniformLocation(program!, name)],
         ),
       )
-      gl.uniform3fv(uniforms.u_colors!, COLORS)
+      gl.uniform3fv(uniforms.u_colors!, packedColors)
       gl.uniform4f(uniforms.u_shape!, ...SHAPE)
       gl.uniform4f(uniforms.u_surface!, ...SURFACE)
       gl.uniform4f(uniforms.u_finish!, ...FINISH)
@@ -132,7 +144,7 @@ export function NeuroNoiseBackground({ className }: NeuroNoiseBackgroundProps) {
     const draw = (seconds: number) => {
       if (!program) return
       resize()
-      gl.uniform4f(uniforms.u_scene!, canvas.width, canvas.height, seconds * TIME_SCALE, COLOR_COUNT)
+      gl.uniform4f(uniforms.u_scene!, canvas.width, canvas.height, seconds * TIME_SCALE, palette.length)
       gl.uniform4f(uniforms.u_space!, 0, 0, pointer.x, pointer.y)
       gl.uniform4f(uniforms.u_cursor!, presence, CURSOR_EFFECT_RIPPLE, CURSOR_STRENGTH, CURSOR_RADIUS)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
@@ -228,7 +240,7 @@ export function NeuroNoiseBackground({ className }: NeuroNoiseBackgroundProps) {
       document.documentElement.removeEventListener('pointerleave', onPointerLeave)
       if (program) gl.deleteProgram(program)
     }
-  }, [reducedMotion])
+  }, [reducedMotion, colorKey])
 
   return (
     <div aria-hidden="true" className={cn('pointer-events-none absolute inset-0', className)}>
