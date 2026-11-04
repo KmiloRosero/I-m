@@ -19,6 +19,9 @@ const PORTFOLIO = repo(portfolio, 'I-m')
 const EMAS = repo('Sitio de EMAS', 'Emas')
 const LIBRARY_API = repo('API REST de biblioteca', 'API-REST')
 const CONSTRUCTION = repo('Gestión de obras', 'Construction-management')
+const SEAT_PICKER = repo('Choose Seats', 'Choose-Seats')
+const MUSIC_PLAYER = repo('Kmusic', 'Spotify')
+const MEDICAL_SYSTEM = repo('Medical Management System', 'fronted')
 
 export const serviceTypes: readonly { id: ServiceType; label: string }[] = [
   { id: 'web', label: 'Web' },
@@ -32,33 +35,58 @@ export const services: readonly Service[] = [
     id: 'interfaces-web',
     type: 'web',
     title: 'Interfaces web',
-    summary: 'Interfaces en React y TypeScript, cuidando cada estado y cada interacción.',
+    summary: 'Reproductores, paneles, reservas y plataformas en React, publicados y en uso.',
     description:
-      'Construyo interfaces con React, TypeScript y Tailwind CSS, cuidando cada estado y cada interacción.',
+      'Construyo interfaces con React, TypeScript y Tailwind CSS: desde un reproductor de música hasta un sistema médico o un selector de asientos.',
     includes: [
       'Componentes reutilizables y accesibles con teclado',
       'Estados de carga, vacío y error',
+      'Paneles con inicio de sesión, rutas y datos de una API',
       'Animaciones con propósito que respetan "reducir movimiento"',
-      'Conexión con APIs y manejo del estado',
     ],
-    tools: ['React', 'TypeScript', 'Tailwind CSS', 'Zustand', 'Vite'],
-    evidence: [BIOMEDICAL, PORTFOLIO],
+    tools: ['React', 'TypeScript', 'Tailwind CSS', 'React Router', 'Zustand', 'Vite'],
+    evidence: [SEAT_PICKER, MUSIC_PLAYER, MEDICAL_SYSTEM, BIOMEDICAL, PORTFOLIO],
     visual: {
-      kind: 'screens',
+      kind: 'gallery',
       images: [
+        {
+          alt: 'Choose Seats: mapa de asientos de un avión con dos asientos elegidos y el total a pagar',
+          caption: 'Choose Seats',
+          height: 900,
+          href: 'https://choose-seats.vercel.app',
+          src: '/images/services/interfaces/choose-seats.jpg',
+          width: 1440,
+        },
+        {
+          alt: 'Kmusic: lista de reproducción con cinco canciones y el reproductor abajo',
+          caption: 'Kmusic',
+          height: 900,
+          href: 'https://spotify-lime-iota.vercel.app',
+          src: '/images/services/interfaces/kmusic.jpg',
+          width: 1440,
+        },
+        {
+          alt: 'Medical Management System: panel con próximas citas y resultados de laboratorio',
+          caption: 'Medical Management System',
+          height: 900,
+          href: 'https://fronted-nine-sigma.vercel.app',
+          src: '/images/services/interfaces/medical-system.jpg',
+          width: 1440,
+        },
+        {
+          alt: 'Pantalla de acceso de BioMedWaste',
+          caption: 'BioMedWaste',
+          height: 1800,
+          href: 'https://biomedwasted.vercel.app/login',
+          src: '/images/projects/biomedical/login.png',
+          width: 2880,
+        },
         {
           alt: 'Inicio de este portafolio en escritorio',
           caption: portfolio,
           height: 900,
           src: '/images/projects/portfolio/desktop.png',
           width: 1440,
-        },
-        {
-          alt: 'Pantalla de acceso de BioMedWaste',
-          caption: biomedical,
-          height: 1800,
-          src: '/images/projects/biomedical/login.png',
-          width: 2880,
         },
       ],
     },

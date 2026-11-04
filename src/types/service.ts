@@ -8,6 +8,11 @@ interface ServiceImage {
   width: number
 }
 
+/** A screenshot of a published interface, optionally linking to the live site. */
+export interface GalleryImage extends ServiceImage {
+  href?: string
+}
+
 export interface ServiceGroup {
   label: string
   items: readonly string[]
@@ -20,6 +25,7 @@ export type ServiceVisual =
       /** Card preview shows the phone shot on top of the desktop one. */
       previewPair?: boolean
     }
+  | { kind: 'gallery'; images: readonly GalleryImage[] }
   | { kind: 'routes'; groups: readonly ServiceGroup[] }
   | { kind: 'tables'; groups: readonly ServiceGroup[] }
 

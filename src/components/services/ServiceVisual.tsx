@@ -1,6 +1,7 @@
+import { ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'
 import type { CSSProperties } from 'react'
-import type { ServiceGroup, ServiceVisual as ServiceVisualData } from '@/types/service'
+import type { GalleryImage, ServiceGroup, ServiceVisual as ServiceVisualData } from '@/types/service'
 
 type StaggerStyle = CSSProperties & Record<'--stagger-index', number>
 
@@ -25,7 +26,38 @@ function GroupList({ groups, variant }: { groups: readonly ServiceGroup[]; varia
   )
 }
 
+function Gallery({ images }: { images: readonly GalleryImage[] }) {
+  return (
+    <ul className="service-gallery">
+      {images.map((image, index) => (
+        <li className="service-pop" key={image.src} style={staggerStyle(index)}>
+          <figure className="service-gallery-item">
+            <Image
+              alt={image.alt}
+              height={image.height}
+              sizes="(min-width: 1024px) 18rem, (min-width: 640px) 45vw, 85vw"
+              src={image.src}
+              width={image.width}
+            />
+            <figcaption>
+              <span>{image.caption}</span>
+              {image.href ? (
+                <a href={image.href} rel="noreferrer" target="_blank">
+                  Ver sitio
+                  <ArrowUpRight aria-hidden="true" className="size-4" />
+                  <span className="sr-only"> de {image.caption} (se abre en una pestaña nueva)</span>
+                </a>
+              ) : null}
+            </figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 export function ServiceVisual({ visual }: { visual: ServiceVisualData }) {
+  if (visual.kind === 'gallery') return <Gallery images={visual.images} />
   if (visual.kind !== 'screens') return <GroupList groups={visual.groups} variant={visual.kind} />
 
   return (

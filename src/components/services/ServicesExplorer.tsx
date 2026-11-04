@@ -21,6 +21,22 @@ interface ServicesExplorerProps {
 
 function ServicePreview({ service }: { service: Service }) {
   const { visual } = service
+  if (visual.kind === 'gallery') {
+    return (
+      <span className="service-card-mosaic">
+        {visual.images.slice(0, 4).map((image) => (
+          <Image
+            alt=""
+            height={image.height}
+            key={image.src}
+            sizes="(min-width: 1024px) 12rem, (min-width: 640px) 22vw, 45vw"
+            src={image.src}
+            width={image.width}
+          />
+        ))}
+      </span>
+    )
+  }
   if (visual.kind === 'screens') {
     const isPortrait = (image: { height: number; width: number }) => image.height > image.width
     const landscape = visual.images.find((image) => !isPortrait(image))
