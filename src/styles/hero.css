@@ -12,6 +12,35 @@
     animation-delay: var(--hero-delay, 0ms);
   }
 
+  /* Name lines assemble from a liquid blob: the inner text sharpens from a blur
+     while the wrapper's SVG alpha threshold turns that blur into a solid, gooey edge.
+     The threshold only applies during the animation, so the name rests crisp. */
+  .liquid-in {
+    --liquid-duration: 1300ms;
+
+    display: block;
+    animation: liquid-shell var(--liquid-duration) linear var(--liquid-delay, 0ms) backwards;
+  }
+
+  .liquid-in > span {
+    display: block;
+    animation: liquid-text var(--liquid-duration) var(--ease-out-strong) var(--liquid-delay, 0ms)
+      backwards;
+  }
+
+  .hero-role-row {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+  }
+
+  .hero-role-rule {
+    flex-shrink: 0;
+    width: clamp(1.75rem, 4vw, 3.5rem);
+    height: 0.3rem;
+    background-color: var(--color-yellow);
+  }
+
   .hero-card-enter {
     rotate: 1.5deg;
     animation: hero-card-enter 800ms var(--ease-out-strong) 150ms both;
@@ -28,7 +57,9 @@
   @media (prefers-reduced-motion: reduce) {
     .hero-band,
     .hero-rise,
-    .hero-card-enter {
+    .hero-card-enter,
+    .liquid-in,
+    .liquid-in > span {
       animation: none;
     }
   }
@@ -40,6 +71,35 @@
 
     to {
       clip-path: inset(0);
+    }
+  }
+
+  @keyframes liquid-shell {
+    from,
+    99% {
+      filter: url(#hero-liquid) blur(0.6px);
+    }
+
+    to {
+      filter: none;
+    }
+  }
+
+  @keyframes liquid-text {
+    from {
+      opacity: 0;
+      filter: blur(24px);
+      translate: 0 0.12em;
+    }
+
+    55% {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 1;
+      filter: blur(0);
+      translate: 0;
     }
   }
 

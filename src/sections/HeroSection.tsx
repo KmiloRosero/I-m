@@ -18,22 +18,34 @@ export function HeroSection() {
             <ProfileFlipCard />
           </div>
 
-          <div className="flex flex-col gap-6 sm:gap-8">
-            <div className="flex flex-col gap-3 sm:gap-4">
+          <div className="flex flex-col gap-8 sm:gap-10">
+            <div className="flex flex-col gap-4 sm:gap-5">
               <h1 className="display-name" id="hero-title">
-                <span className="hero-rise block [--hero-delay:80ms]">{personalInfo.firstName}</span>
-                <span className="hero-rise block [--hero-delay:140ms]">{personalInfo.lastName}</span>
+                <span className="liquid-in [--liquid-delay:120ms]">
+                  <span>{personalInfo.firstName}</span>
+                </span>
+                <span className="liquid-in [--liquid-delay:320ms]">
+                  <span>{personalInfo.lastName}</span>
+                </span>
                 <span className="sr-only">, {personalInfo.title}</span>
               </h1>
-              <div className="hero-rise [--hero-delay:180ms]">
+              <div className="hero-role-row hero-rise [--hero-delay:760ms]">
+                <span aria-hidden="true" className="hero-role-rule" />
                 <MorphingText className="hero-role" texts={personalInfo.heroRoles} />
               </div>
             </div>
-            <p className="lead-text hero-rise max-w-[44ch] [--hero-delay:220ms]">
-              {personalInfo.studies} y {personalInfo.position.toLowerCase()}.{' '}
-              {personalInfo.semester} en la {personalInfo.university}.
-            </p>
-            <ul className="hero-rise flex flex-wrap gap-3 [--hero-delay:280ms]">
+            <svg aria-hidden="true" className="absolute size-0" focusable="false">
+              <defs>
+                <filter height="200%" id="hero-liquid" width="140%" x="-20%" y="-50%">
+                  <feColorMatrix
+                    in="SourceGraphic"
+                    type="matrix"
+                    values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 255 -140"
+                  />
+                </filter>
+              </defs>
+            </svg>
+            <ul className="hero-rise flex flex-wrap gap-3 [--hero-delay:900ms]">
               <li>
                 <ButtonLink href="#proyectos" variant="primary">
                   Ver proyectos
