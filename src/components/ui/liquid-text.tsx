@@ -19,8 +19,8 @@ function blurFor(fraction: number): string {
   return `blur(${Math.min(8 / fraction - 8, MAX_BLUR)}px)`
 }
 
-function useMorphingText(texts: readonly string[], enabled: boolean) {
-  const containerRef = useRef<HTMLDivElement>(null)
+function useMorphingText(texts: readonly string[], enabled: boolean, firstHoldTime: number) {
+  const containerRef = useRef<HTMLSpanElement>(null)
   const currentRef = useRef<HTMLSpanElement>(null)
   const nextRef = useRef<HTMLSpanElement>(null)
 
@@ -35,6 +35,8 @@ function useMorphingText(texts: readonly string[], enabled: boolean) {
     let elapsed = 0
     let lastTime: number | null = null
     let frameId = 0
+
+    const holdTime = () => (index % texts.length === 0 ? firstHoldTime : HOLD_TIME)
 
     const showResting = () => {
       current.textContent = texts[index % texts.length] ?? ''
@@ -60,7 +62,7 @@ function useMorphingText(texts: readonly string[], enabled: boolean) {
       elapsed += delta
 
       if (phase === 'hold') {
-        if (elapsed >= HOLD_TIME) {
+        if (elapsed >= holdTime()) {
           phase = 'morph'
           elapsed = 0
         }
@@ -104,14 +106,21 @@ function useMorphingText(texts: readonly string[], enabled: boolean) {
       index = 0
       showResting()
     }
-  }, [texts, enabled])
+  }, [texts, enabled, firstHoldTime])
 
   return { containerRef, currentRef, nextRef }
 }
 
 interface MorphingTextProps {
   className?: string
+  /** Texts to cycle through. Use `\n` for a line break; set `lines` to the most lines any text uses. */
   texts: readonly string[]
+  /** Lines of height to reserve, so the layout doesn't jump between texts. */
+  lines?: number
+  /** Seconds the first text holds before each cycle, e.g. to keep a name on screen longer. */
+  firstHoldTime?: number
+  /** Class on the inner wrapper, e.g. a CSS entrance animation. */
+  innerClassName?: string
 }
 
 /**
@@ -119,27 +128,39 @@ interface MorphingTextProps {
  * It is decorative: it renders `aria-hidden`, so callers must expose the text another way.
  * With `prefers-reduced-motion` it shows the first text without animating.
  */
-function MorphingText({ texts, className }: MorphingTextProps) {
+function MorphingText({
+  texts,
+  className,
+  lines = 1,
+  firstHoldTime = HOLD_TIME,
+  innerClassName,
+}: MorphingTextProps) {
   const reducedMotion = usePrefersReducedMotion()
-  const { containerRef, currentRef, nextRef } = useMorphingText(texts, !reducedMotion)
+  const { containerRef, currentRef, nextRef } = useMorphingText(texts, !reducedMotion, firstHoldTime)
   const filterId = `morph-threshold-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
 
   return (
-    <div
+    <span
       aria-hidden="true"
-      className={cn('relative h-[1.15em] w-full whitespace-nowrap leading-none', className)}
+      className={cn('relative block w-full', className)}
       ref={containerRef}
-      style={reducedMotion ? undefined : { filter: `url(#${filterId}) blur(0.6px)` }}
+      style={{
+        height: `${lines}lh`,
+        whiteSpace: lines > 1 ? 'pre-line' : 'nowrap',
+        filter: reducedMotion ? undefined : `url(#${filterId}) blur(0.6px)`,
+      }}
     >
-      <span className="absolute inset-x-0 top-0 block" ref={currentRef}>
-        {texts[0]}
-      </span>
-      <span className="absolute inset-x-0 top-0 block opacity-0" ref={nextRef}>
-        {texts[1]}
+      <span className={cn('absolute inset-0 block', innerClassName)}>
+        <span className="absolute inset-x-0 top-0 block" ref={currentRef}>
+          {texts[0]}
+        </span>
+        <span className="absolute inset-x-0 top-0 block opacity-0" ref={nextRef}>
+          {texts[1]}
+        </span>
       </span>
       <svg className="absolute size-0" focusable="false">
         <defs>
-          <filter id={filterId}>
+          <filter height="160%" id={filterId} width="130%" x="-15%" y="-30%">
             <feColorMatrix
               in="SourceGraphic"
               type="matrix"
@@ -151,7 +172,7 @@ function MorphingText({ texts, className }: MorphingTextProps) {
           </filter>
         </defs>
       </svg>
-    </div>
+    </span>
   )
 }
 

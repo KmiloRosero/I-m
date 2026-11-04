@@ -1,18 +1,26 @@
 @layer components {
-  .display-name {
-    font-size: clamp(2.5rem, 13.8vw, 5.5rem);
-    font-stretch: 150%;
-    font-weight: 800;
-    letter-spacing: -0.025em;
-    line-height: 0.86;
+  /* The hero column is a size container so the morphing name scales to the
+     space it actually has next to the profile card. */
+  .hero-copy {
+    container-type: inline-size;
   }
 
-  .hero-role {
+  /* The divisor is the widest morph line ("Desarrollador") measured in ems, plus a
+     little air, so every text fits the column on one line per row. */
+  .hero-morph {
     font-family: var(--font-display);
-    font-size: clamp(1.125rem, 5.2vw, 3rem);
-    font-stretch: 110%;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+    font-size: min(100cqi / 8.3, 8rem);
+    font-stretch: 100%;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 0.95;
+  }
+
+  @media (min-width: 40rem) {
+    .hero-morph {
+      font-size: min(100cqi / 10.4, 8rem);
+      font-stretch: 125%;
+    }
   }
 
   .section-title {
@@ -90,17 +98,7 @@
     }
   }
 
-  @media (min-width: 48rem) {
-    .display-name {
-      font-size: min(13.4vw, 8rem);
-    }
-  }
-
   @media (min-width: 64rem) {
-    .display-name {
-      font-size: min(9.2vw, 8.75rem);
-    }
-
     .section-title[data-align='center'] {
       text-align: center;
     }

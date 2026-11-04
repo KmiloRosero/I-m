@@ -14,7 +14,7 @@ export const personalInfo: PersonalInfo = {
   lastName: LAST_NAME,
   degree: DEGREE,
   title: 'Ingeniero en Software',
-  heroRoles: ['Ingeniero en Software', 'Desarrollador full-stack', 'Web, móvil y escritorio'],
+  heroRoles: ['Ingeniero\nen Software', 'Desarrollador\nfull-stack', 'Web, móvil\ny escritorio'],
   studies: `Estudiante de ${DEGREE}`,
   position: 'Desarrollador junior',
   semester: 'Quinto semestre',

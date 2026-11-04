@@ -9,7 +9,7 @@ export interface PersonalInfo {
   lastName: string
   degree: string
   title: string
-  /** Roles the hero cycles through; the first one is `title`. */
+  /** Roles the hero morphs through after the name; `\n` marks the line break. */
   heroRoles: readonly string[]
   studies: string
   position: string

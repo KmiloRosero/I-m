@@ -4,6 +4,8 @@ import { MorphingText } from '@/components/ui/liquid-text'
 import { StorySection } from '@/components/ui/StorySection'
 import { personalInfo } from '@/data/personalInfo'
 
+const heroTexts = [`${personalInfo.firstName}\n${personalInfo.lastName}`, ...personalInfo.heroRoles]
+
 export function HeroSection() {
   return (
     <StorySection id="inicio">
@@ -18,34 +20,23 @@ export function HeroSection() {
             <ProfileFlipCard />
           </div>
 
-          <div className="flex flex-col gap-8 sm:gap-10">
-            <div className="flex flex-col gap-4 sm:gap-5">
-              <h1 className="display-name" id="hero-title">
-                <span className="liquid-in [--liquid-delay:120ms]">
-                  <span>{personalInfo.firstName}</span>
-                </span>
-                <span className="liquid-in [--liquid-delay:320ms]">
-                  <span>{personalInfo.lastName}</span>
-                </span>
-                <span className="sr-only">, {personalInfo.title}</span>
-              </h1>
-              <div className="hero-role-row hero-rise [--hero-delay:760ms]">
-                <span aria-hidden="true" className="hero-role-rule" />
-                <MorphingText className="hero-role" texts={personalInfo.heroRoles} />
-              </div>
-            </div>
-            <svg aria-hidden="true" className="absolute size-0" focusable="false">
-              <defs>
-                <filter height="200%" id="hero-liquid" width="140%" x="-20%" y="-50%">
-                  <feColorMatrix
-                    in="SourceGraphic"
-                    type="matrix"
-                    values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 255 -140"
-                  />
-                </filter>
-              </defs>
-            </svg>
-            <ul className="hero-rise flex flex-wrap gap-3 [--hero-delay:900ms]">
+          <div className="hero-copy flex min-w-0 flex-col gap-8 sm:gap-10 lg:flex-1">
+            <p className="hero-eyebrow hero-rise [--hero-delay:60ms]">
+              <span aria-hidden="true" className="hero-eyebrow-rule" />
+              Portafolio · Pasto, Colombia
+            </p>
+            <h1 className="hero-morph -mt-4 sm:-mt-6" id="hero-title">
+              <span className="sr-only">
+                {personalInfo.name}, {personalInfo.title}
+              </span>
+              <MorphingText
+                firstHoldTime={3.4}
+                innerClassName="liquid-enter"
+                lines={2}
+                texts={heroTexts}
+              />
+            </h1>
+            <ul className="hero-rise flex flex-wrap gap-3 [--hero-delay:700ms]">
               <li>
                 <ButtonLink href="#proyectos" variant="primary">
                   Ver proyectos
