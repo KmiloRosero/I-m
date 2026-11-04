@@ -8,6 +8,8 @@ export interface PersonalInfo {
   firstName: string
   lastName: string
   degree: string
+  /** Technical high-school degree already completed. */
+  technicalDegree: string
   title: string
   /** Roles the hero morphs through after the name; `\n` marks the line break. */
   heroRoles: readonly string[]

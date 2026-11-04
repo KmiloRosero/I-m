@@ -6,10 +6,13 @@ import { getProfessionalLinks } from '@/utils/professionalLinks'
 
 export function AboutSection() {
   const facts = [
-    { label: 'Estudio', value: personalInfo.degree },
-    { label: 'Universidad', value: personalInfo.university },
-    { label: 'Semestre', value: personalInfo.semester },
-    { label: 'Vivo en', value: personalInfo.location },
+    {
+      label: 'Estudio',
+      values: [personalInfo.degree, `Egresado como ${personalInfo.technicalDegree}`],
+    },
+    { label: 'Universidad', values: [personalInfo.university] },
+    { label: 'Semestre', values: [personalInfo.semester] },
+    { label: 'Vivo en', values: [personalInfo.location] },
   ]
 
   return (
@@ -41,10 +44,12 @@ export function AboutSection() {
 
         <div className="flex flex-col gap-8 lg:col-span-4 lg:col-start-9">
           <dl className="grid gap-3">
-            {facts.map(({ label, value }) => (
+            {facts.map(({ label, values }) => (
               <div key={label}>
                 <dt className="font-display font-bold">{label}</dt>
-                <dd>{value}</dd>
+                {values.map((value) => (
+                  <dd key={value}>{value}</dd>
+                ))}
               </div>
             ))}
           </dl>

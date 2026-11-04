@@ -34,7 +34,7 @@ function getViewBox(size: number): string {
 export function ContourField() {
   const [data, setData] = useState<ContourData | null>(null)
   const [hasFailed, setHasFailed] = useState(false)
-  const figureRef = useRef<HTMLElement>(null)
+  const figureRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const figure = figureRef.current
@@ -66,9 +66,9 @@ export function ContourField() {
   if (hasFailed) return null
 
   return (
-    <figure className="mt-10" ref={figureRef}>
+    // Elevation data: Mapzen Terrain Tiles (AWS Open Data), see galeras-meta.json.
+    <div aria-hidden="true" className="mt-10" ref={figureRef}>
       <svg
-        aria-hidden="true"
         className="contour-field aspect-[16/10] w-full lg:aspect-[21/9]"
         data-ready={data !== null}
         fill="none"
@@ -89,10 +89,6 @@ export function ContourField() {
           )
         })}
       </svg>
-      <figcaption className="mt-3 text-base">
-        El volcán Galeras, junto a Pasto: curvas de nivel reales, cada 200 metros. Datos de
-        elevación: {terrainMeta.source}.
-      </figcaption>
-    </figure>
+    </div>
   )
 }

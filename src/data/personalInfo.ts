@@ -13,6 +13,7 @@ export const personalInfo: PersonalInfo = {
   firstName: FIRST_NAME,
   lastName: LAST_NAME,
   degree: DEGREE,
+  technicalDegree: 'Técnico Industrial Especializado en Informática',
   title: 'Ingeniero en Software',
   heroRoles: ['Ingeniero\nen Software', 'Desarrollador\nfull-stack', 'Web, móvil\ny escritorio'],
   studies: `Estudiante de ${DEGREE}`,
