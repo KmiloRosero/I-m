@@ -24,10 +24,16 @@ export const personalInfo: PersonalInfo = {
   email: 'juancamilorose@gmail.com',
   metaDescription: `Portafolio de ${FULL_NAME}, estudiante de ${DEGREE} en la ${UNIVERSITY}, Pasto.`,
   introduction: `Estudio en la ${UNIVERSITY}, en Pasto. Mis repositorios incluyen aplicaciones web, móviles, de escritorio y para reloj.`,
-  about: `Estudio ${DEGREE} y, mientras avanzo en la carrera, he publicado proyectos web, móviles, de escritorio y para reloj.`,
+  about: `Estudio ${DEGREE} y, mientras avanzo en la carrera, he publicado proyectos web, móviles, de escritorio y para reloj, además de juegos. También he trabajado para diferentes negocios locales en mi ciudad y en municipios de Nariño.`,
   personality: 'Soy extrovertido y, a la vez, tranquilo.',
   workStyle: 'Me gusta trabajar de forma ordenada y con calma.',
-  interests: ['El deporte', 'Los videojuegos', 'Salir con mis amigos', 'Escuchar música mientras conduzco'],
+  interests: [
+    'El deporte',
+    'Los videojuegos',
+    'Salir con mis amigos',
+    'Escuchar música mientras conduzco',
+    'Amante de las salchipapas y los buenos cafés ☕',
+  ],
   ambition:
     'Tengo varios proyectos por construir que quiero que sean revolucionarios, y la meta es que algún día llenen mi garaje de coches.',
   featuredStack: ['TypeScript', 'React', 'React Native', 'Node.js', 'NestJS', 'Spring Boot', 'PostgreSQL'],

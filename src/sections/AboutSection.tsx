@@ -1,4 +1,3 @@
-import { ContourField } from '@/components/common/ContourField'
 import { ExternalAwareLink } from '@/components/common/ExternalAwareLink'
 import { Section } from '@/components/ui/Section'
 import { personalInfo } from '@/data/personalInfo'
@@ -8,7 +7,7 @@ export function AboutSection() {
   const facts = [
     {
       label: 'Estudio',
-      values: [personalInfo.degree, `Egresado como ${personalInfo.technicalDegree}`],
+      values: [personalInfo.degree, `Egresado del ${personalInfo.technicalDegree}`],
     },
     { label: 'Universidad', values: [personalInfo.university] },
     { label: 'Semestre', values: [personalInfo.semester] },
@@ -62,7 +61,6 @@ export function AboutSection() {
           </ul>
         </div>
       </div>
-      <ContourField />
     </Section>
   )
 }

@@ -22,7 +22,6 @@ npm run build
 - `src/data` y `src/types`: contenido centralizado y sus tipos. El enlace del CV es `cvUrl` en `personalInfo.ts`.
 - `src/styles`: tokens de diseño y hojas de estilo por responsabilidad.
 - `src/hooks`: lógica reutilizable del cliente.
-- `src/assets/terrain`: datos del Galeras, cargados de forma diferida.
 - `public/images`: imágenes estáticas.
 
 ## Despliegue en Vercel
