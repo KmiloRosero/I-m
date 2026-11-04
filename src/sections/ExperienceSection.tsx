@@ -1,48 +1,36 @@
-import Link from 'next/link'
+import { ExperienceTimeline } from '@/components/experience/ExperienceTimeline'
 import { Section } from '@/components/ui/Section'
-import { experience } from '@/data/experience'
-import type { ExperienceEntry } from '@/types/experience'
-import { formatKinds } from '@/utils/categoryLabels'
+import { experience, experienceGroups, FIRST_REPO_YEAR, PUBLIC_REPO_COUNT } from '@/data/experience'
 
-function TimelineEntry({ entry }: { entry: ExperienceEntry }) {
-  const { description, href, kinds, period, responsibilities, result, role, technologies, title } =
-    entry
-
-  return (
-    <li className="timeline-entry">
-      <p className="timeline-kind" data-kind={kinds[0]}>
-        {formatKinds(kinds)}
-      </p>
-      <h3 className="timeline-title">{title}</h3>
-      {period ? <p className="mt-1">{period}</p> : null}
-      {role ? <p>{role}</p> : null}
-      <p className="mt-3">{description}</p>
-      {responsibilities.length > 0 ? (
-        <ul className="project-features mt-2">
-          {responsibilities.map((responsibility) => (
-            <li key={responsibility}>{responsibility}</li>
-          ))}
-        </ul>
-      ) : null}
-      {technologies.length > 0 ? <p className="mt-2">{technologies.join(', ')}</p> : null}
-      {result ? <p className="mt-2 font-display font-bold">{result}</p> : null}
-      {href ? (
-        <Link className="text-link mt-2" href={href}>
-          Ver caso de estudio de {title}
-        </Link>
-      ) : null}
-    </li>
-  )
+function countStats() {
+  const liveSites = new Set(
+    experience.flatMap((entry) => entry.links.filter((link) => link.kind === 'demo').map((link) => link.href)),
+  ).size
+  return [
+    { value: String(FIRST_REPO_YEAR), label: 'primer repositorio en GitHub' },
+    { value: String(PUBLIC_REPO_COUNT), label: 'repositorios públicos' },
+    { value: String(liveSites), label: 'proyectos en línea' },
+  ]
 }
 
 export function ExperienceSection() {
   return (
     <Section id="experiencia" title="Experiencia" titleAlign="center" tone="white">
-      <ol className="timeline">
-        {experience.map((entry) => (
-          <TimelineEntry entry={entry} key={entry.title} />
+      <p className="lead-text mx-auto mt-6 max-w-text text-center">
+        Lo que he estudiado, construido y entregado, con las fechas de cada proyecto en GitHub.
+      </p>
+      <dl className="xp-stats">
+        {countStats().map(({ value, label }) => (
+          <div key={label}>
+            <dt className="sr-only">{label}</dt>
+            <dd className="xp-stat-value">{value}</dd>
+            <dd aria-hidden="true" className="xp-stat-label">
+              {label}
+            </dd>
+          </div>
         ))}
-      </ol>
+      </dl>
+      <ExperienceTimeline entries={experience} groups={experienceGroups} />
     </Section>
   )
 }
