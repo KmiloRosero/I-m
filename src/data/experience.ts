@@ -38,7 +38,12 @@ function projectLinks(project: Project): ExperienceLink[] {
 }
 
 /** Builds an entry from a featured project; dates come from its GitHub activity. */
-function fromProject(slug: string, era: string, period: string, highlightCount = 3): ExperienceEntry[] {
+function fromProject(
+  slug: string,
+  era: string,
+  period: string,
+  { highlightCount = 3, railLabel }: { highlightCount?: number; railLabel?: string } = {},
+): ExperienceEntry[] {
   const project = projects.find((candidate) => candidate.slug === slug)
   if (!project) return []
 
@@ -48,6 +53,7 @@ function fromProject(slug: string, era: string, period: string, highlightCount =
       group: 'projects',
       era,
       title: project.name,
+      ...(railLabel ? { railLabel } : {}),
       role: [project.platform, project.contribution].filter(Boolean).join(' · ') || null,
       kinds: project.categories,
       period,
@@ -67,6 +73,7 @@ export const experience: readonly ExperienceEntry[] = [
     group: 'work',
     era: 'Hoy',
     title: 'Desarrollo para negocios locales',
+    railLabel: 'Negocios locales',
     role: 'Freelance',
     kinds: ['freelance'],
     period: 'Actualmente',
@@ -100,7 +107,7 @@ export const experience: readonly ExperienceEntry[] = [
   },
 
   // ── 2026 ────────────────────────────────────────────────────
-  ...fromProject('mercajusto', '2026', 'Oct. – nov. 2026', 4),
+  ...fromProject('mercajusto', '2026', 'Oct. – nov. 2026', { highlightCount: 4 }),
   ...fromProject('moniwatch', '2026', 'Oct. 2026'),
   ...fromProject('reticula', '2026', 'Oct. 2026'),
   ...fromProject('cinetracker', '2026', 'Oct. 2026'),
@@ -146,12 +153,13 @@ export const experience: readonly ExperienceEntry[] = [
     status: null,
     links: [repoLink('API-REST', 'Biblioteca'), repoLink('Construction-management', 'Obras'), repoLink('proxy-backend', 'AI Proxy')],
   },
-  ...fromProject('biomedical-waste-platform', '2026', 'Abr. – may. 2026'),
+  ...fromProject('biomedical-waste-platform', '2026', 'Abr. – may. 2026', { railLabel: 'BioMedWaste' }),
   {
     id: 'fundamentos',
     group: 'education',
     era: '2026',
     title: 'Patrones y estructuras de datos',
+    railLabel: 'Patrones y estructuras',
     role: 'Talleres de la carrera',
     kinds: ['academic'],
     period: 'Feb. – abr. 2026',
@@ -177,6 +185,7 @@ export const experience: readonly ExperienceEntry[] = [
     group: 'projects',
     era: '2024',
     title: 'Primer repositorio',
+    railLabel: 'Primer repositorio',
     role: 'Simulador bancario en Python',
     kinds: ['personal'],
     period: 'Sep. 2024',
@@ -191,8 +200,9 @@ export const experience: readonly ExperienceEntry[] = [
   {
     id: 'tecnico',
     group: 'education',
-    era: 'Formación previa',
+    era: 'Antes',
     title: personalInfo.technicalDegree,
+    railLabel: 'Técnico en Informática',
     role: 'Egresado',
     kinds: ['academic'],
     period: null,

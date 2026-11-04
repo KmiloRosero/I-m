@@ -17,6 +17,8 @@ export interface ExperienceEntry {
   /** Timeline bucket shown as a heading, e.g. "Hoy" or "2026". */
   era: string
   title: string
+  /** Short name for the horizontal rail; defaults to the title. */
+  railLabel?: string
   role: string | null
   kinds: readonly ExperienceKind[]
   /** Human-readable dates, taken from GitHub activity where possible. */
