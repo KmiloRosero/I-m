@@ -1,13 +1,4 @@
 @layer components {
-  /* On phones the band sits under the photo, which now comes after the name. */
-  .hero-band {
-    position: absolute;
-    inset: auto 0 0;
-    height: 16rem;
-    background-color: var(--color-red);
-    animation: hero-band-wipe 700ms var(--ease-out-strong) both;
-  }
-
   /* The shader canvas fades in over the cobalt fallback once its first frame is drawn. */
   .neuro-noise {
     opacity: 0;
@@ -78,27 +69,8 @@
     animation: liquid-enter 1300ms var(--ease-out-strong) 120ms backwards;
   }
 
-  /* Over the dark shader the default black block shadow disappears, so the
-     hero card gets a red offset block and a faint light edge instead. */
-  .hero-card-enter {
-    --shadow-block: 0 0 0 1px rgb(255 255 255 / 0.16), 0.5rem 0.5rem 0 var(--color-red);
-
-    rotate: 1.5deg;
-    animation: hero-card-enter 800ms var(--ease-out-strong) 150ms both;
-  }
-
-  @media (min-width: 64rem) {
-    .hero-band {
-      inset: 0 0 0 auto;
-      width: 34%;
-      height: auto;
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .hero-band,
     .hero-rise,
-    .hero-card-enter,
     .liquid-enter,
     .hero-status-dot::after {
       animation: none;
@@ -106,16 +78,6 @@
 
     .neuro-noise {
       transition: none;
-    }
-  }
-
-  @keyframes hero-band-wipe {
-    from {
-      clip-path: inset(0 0 100% 0);
-    }
-
-    to {
-      clip-path: inset(0);
     }
   }
 
@@ -158,22 +120,6 @@
 
     to {
       opacity: 1;
-      translate: 0;
-    }
-  }
-
-  @keyframes hero-card-enter {
-    from {
-      opacity: 0;
-      rotate: -3deg;
-      scale: 0.97;
-      translate: 0 1.5rem;
-    }
-
-    to {
-      opacity: 1;
-      rotate: 1.5deg;
-      scale: 1;
       translate: 0;
     }
   }

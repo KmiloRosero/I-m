@@ -1,0 +1,454 @@
+@layer components {
+  /* Stage for the hanging ID badge. On phones it is a block under the name;
+     from 64rem it fills the right side of the hero. */
+  .lanyard {
+    --badge-w: clamp(14.5rem, 64vw, 19rem);
+    /* Clip (2.5rem) plus a 5:7.2 card. */
+    --badge-h: calc(var(--badge-w) * 1.44 + 2.5rem);
+
+    position: relative;
+    height: calc(var(--badge-h) + 7.5rem);
+    margin-inline: calc(var(--spacing-gutter) * -1);
+    overflow: clip;
+    pointer-events: none;
+    mask-image: linear-gradient(to bottom, transparent, #000 3.5rem);
+  }
+
+  .lanyard-strap svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .lanyard-strap path {
+    fill: none;
+    stroke: #0e0f14;
+    stroke-width: 26;
+  }
+
+  .lanyard-strap text {
+    fill: rgb(255 255 255 / 0.92);
+    font-family: var(--font-display);
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    dominant-baseline: central;
+  }
+
+  /* Its CSS position is the resting pose; the physics adds a transform. */
+  .lanyard-badge {
+    position: absolute;
+    top: 5.5rem;
+    left: 50%;
+    width: var(--badge-w);
+    transform: translateX(-50%);
+    transform-origin: 0 0;
+    perspective: 70rem;
+    pointer-events: auto;
+    container-type: inline-size;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: grab;
+  }
+
+  .lanyard[data-dragging] .lanyard-badge {
+    cursor: grabbing;
+  }
+
+  /* Hidden until the script measures the strap, so the badge does not jump. */
+  .lanyard-badge,
+  .lanyard-strap {
+    opacity: 0;
+    transition: opacity 400ms var(--ease-out-strong);
+  }
+
+  .lanyard[data-ready] .lanyard-badge,
+  .lanyard[data-ready] .lanyard-strap {
+    opacity: 1;
+  }
+
+  @media (scripting: none) {
+    .lanyard-badge {
+      opacity: 1;
+    }
+  }
+
+  /* Metal crimp on the strap and the ring that goes through the card's slot. */
+  .lanyard-clip {
+    position: relative;
+    z-index: 1;
+    display: block;
+    height: 2.5rem;
+    margin-bottom: -0.5rem;
+  }
+
+  .lanyard-clip::before,
+  .lanyard-clip::after {
+    position: absolute;
+    left: 50%;
+    content: '';
+    translate: -50% 0;
+  }
+
+  .lanyard-clip::before {
+    top: 0;
+    width: 1.9rem;
+    height: 1.15rem;
+    border-radius: 0.25rem;
+    background: linear-gradient(90deg, #6f737c, #e9ebef 35%, #a5a9b1 60%, #f6f7f9 80%, #7d818a);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.5);
+  }
+
+  .lanyard-clip::after {
+    top: 0.85rem;
+    width: 1.1rem;
+    height: 2.1rem;
+    border: 0.22rem solid #c7cad0;
+    border-radius: 0.55rem;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+  }
+
+  .lanyard-tilt {
+    transform: rotateY(calc(var(--swing, 0) * 1deg));
+    transform-style: preserve-3d;
+  }
+
+  .lanyard-flip {
+    display: grid;
+    transform-style: preserve-3d;
+    transition: transform 800ms cubic-bezier(0.3, 1.35, 0.5, 1);
+  }
+
+  .lanyard-flip[data-flipped='true'] {
+    transform: rotateY(180deg);
+  }
+
+  /* The plastic holder: dark, with a slot at the top and a moving glare. */
+  .lanyard-face {
+    position: relative;
+    grid-area: 1 / 1;
+    aspect-ratio: 5 / 7.2;
+    padding: 9cqi 3.4cqi 3.4cqi;
+    border-radius: 6cqi;
+    background: #0c0d12;
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.14),
+      0 1.5rem 3rem rgb(0 0 0 / 0.45);
+    backface-visibility: hidden;
+  }
+
+  .lanyard-face[data-side='back'] {
+    transform: rotateY(180deg);
+  }
+
+  .lanyard-face::before {
+    position: absolute;
+    top: 3cqi;
+    left: 50%;
+    width: 22cqi;
+    height: 3.6cqi;
+    border-radius: 2cqi;
+    background: #000;
+    box-shadow:
+      inset 0 1px 2px #000,
+      0 1px 0 rgb(255 255 255 / 0.18);
+    content: '';
+    translate: -50% 0;
+  }
+
+  .lanyard-face::after {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      115deg,
+      transparent 38%,
+      rgb(255 255 255 / 0.16) 48%,
+      transparent 58%
+    );
+    content: '';
+    pointer-events: none;
+    translate: calc(var(--swing, 0) * 2.5%) 0;
+  }
+
+  .lanyard-paper {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    gap: 2.6cqi;
+    padding: 4cqi;
+    overflow: hidden;
+    border-radius: 3cqi;
+    background: #f2ecdf;
+    color: var(--color-black);
+    font-family: var(--font-display);
+  }
+
+  .lanyard-face[data-side='back'] .lanyard-paper {
+    background:
+      radial-gradient(circle at 85% 0%, rgb(31 81 255 / 0.85), transparent 60%),
+      #050714;
+    color: var(--color-white);
+  }
+
+  .lanyard-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2cqi;
+    font-size: max(0.6875rem, 3.4cqi);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .lanyard-chip {
+    padding: 0.6cqi 2.2cqi;
+    border-radius: 1cqi;
+    background: var(--color-black);
+    color: #f2ecdf;
+  }
+
+  .lanyard-face[data-side='back'] .lanyard-chip {
+    background: var(--color-cyan);
+    color: var(--color-black);
+  }
+
+  .lanyard-headline {
+    font-size: 21cqi;
+    font-stretch: 62%;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 0.8;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .lanyard-photo {
+    position: relative;
+    min-height: 0;
+    flex: 1;
+    border: 0.8cqi solid var(--color-black);
+    background: var(--color-cobalt);
+  }
+
+  .lanyard-nameplate {
+    position: absolute;
+    bottom: 4cqi;
+    left: -2.5cqi;
+    padding: 1.2cqi 3cqi;
+    background: var(--color-black);
+    box-shadow: 1cqi 1cqi 0 var(--color-red);
+    color: #f2ecdf;
+    font-size: 5.4cqi;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    rotate: -2deg;
+    text-transform: uppercase;
+  }
+
+  /* Physical cqw units: in vertical text, cqi would follow the card's height. */
+  .lanyard-vertical {
+    position: absolute;
+    top: 3cqw;
+    right: 2.5cqw;
+    padding: 2cqw 1.2cqw;
+    background: var(--color-yellow);
+    font-size: max(0.625rem, 3.2cqw);
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    writing-mode: vertical-rl;
+  }
+
+  .lanyard-foot {
+    margin-top: auto;
+  }
+
+  .lanyard-portfolio {
+    font-size: 9cqi;
+    font-stretch: 75%;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+
+  .lanyard-turn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 1.2cqi;
+    padding: 1.2cqi 2.8cqi;
+    border: 0.5cqi solid currentColor;
+    border-radius: 999px;
+    color: inherit;
+    cursor: pointer;
+    font-size: max(0.6875rem, 3.2cqi);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition:
+      background-color var(--duration-press) var(--ease-out-strong),
+      scale var(--duration-press) var(--ease-out-strong);
+  }
+
+  /* A larger hit area than the visible pill. */
+  .lanyard-turn::after {
+    position: absolute;
+    inset: -0.625rem;
+    content: '';
+  }
+
+  .lanyard-turn svg {
+    width: 1.15em;
+    height: 1.15em;
+  }
+
+  .lanyard-turn:active {
+    scale: 0.96;
+  }
+
+  .lanyard-hello {
+    font-size: 11cqi;
+    font-stretch: 80%;
+    font-weight: 900;
+    line-height: 0.95;
+  }
+
+  .lanyard-role {
+    margin-top: 1.6cqi;
+    font-family: var(--font-body);
+    font-size: max(0.75rem, 4.2cqi);
+    line-height: 1.3;
+    opacity: 0.85;
+  }
+
+  .lanyard-barcode {
+    width: 62%;
+    height: 7cqi;
+    background: repeating-linear-gradient(
+      90deg,
+      #fff 0 2px,
+      transparent 2px 4px,
+      #fff 4px 5px,
+      transparent 5px 9px,
+      #fff 9px 12px,
+      transparent 12px 14px
+    );
+    opacity: 0.8;
+  }
+
+  .lanyard-links {
+    display: flex;
+    margin-top: auto;
+    flex-direction: column;
+    gap: 3cqi;
+  }
+
+  .lanyard-links a {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 3cqi;
+    padding: 2.6cqi 3.2cqi;
+    border-radius: 2cqi;
+    background: var(--color-white);
+    box-shadow: 1.2cqi 1.2cqi 0 var(--color-cyan);
+    color: var(--color-black);
+    transition:
+      background-color var(--duration-press) var(--ease-out-strong),
+      scale var(--duration-press) var(--ease-out-strong);
+  }
+
+  .lanyard-links a:active {
+    scale: 0.97;
+  }
+
+  .lanyard-link-icon {
+    width: 7.5cqi;
+    height: 7.5cqi;
+    flex: none;
+    fill: currentColor;
+  }
+
+  .lanyard-link-text {
+    display: grid;
+    min-width: 0;
+  }
+
+  .lanyard-link-label {
+    font-size: max(0.8125rem, 4.6cqi);
+    font-weight: 900;
+    line-height: 1.1;
+  }
+
+  .lanyard-link-handle {
+    overflow: hidden;
+    font-family: var(--font-body);
+    font-size: max(0.6875rem, 3.4cqi);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .lanyard-turn:focus-visible,
+  .lanyard-links a:focus-visible {
+    outline: 3px solid var(--color-cyan);
+    outline-offset: 3px;
+  }
+
+  .lanyard-face[data-side='front'] .lanyard-turn:focus-visible {
+    outline-color: var(--color-electric);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .lanyard-face[data-side='front'] .lanyard-turn:hover {
+      background: var(--color-black);
+      color: #f2ecdf;
+    }
+
+    .lanyard-face[data-side='back'] .lanyard-turn:hover {
+      background: var(--color-white);
+      color: var(--color-black);
+    }
+
+    .lanyard-links a:hover {
+      background: var(--color-cyan);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .lanyard {
+      --badge-w: min(clamp(15rem, 21vw, 20.5rem), calc((100dvh - 10rem) / 1.5));
+
+      position: absolute;
+      inset: 0 0 0 auto;
+      width: 44%;
+      height: auto;
+      margin: 0;
+      overflow: visible;
+      mask-image: none;
+    }
+
+    .lanyard-badge {
+      top: max(6rem, calc(50% - var(--badge-h) / 2 + 1.5rem));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lanyard-flip,
+    .lanyard-turn,
+    .lanyard-links a,
+    .lanyard-badge,
+    .lanyard-strap {
+      transition: none;
+    }
+
+    .lanyard-badge {
+      cursor: auto;
+    }
+  }
+}
