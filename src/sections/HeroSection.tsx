@@ -1,5 +1,5 @@
 import { MessageCircle } from 'lucide-react'
-import { LanyardBadge } from '@/components/hero/LanyardBadge'
+import { HeroLaptop } from '@/components/hero/HeroLaptop'
 import { ButtonLink } from '@/components/ui/ButtonLink'
 import { MorphingText } from '@/components/ui/liquid-text'
 import { NeuroNoiseBackground } from '@/components/ui/NeuroNoiseBackground'
@@ -17,8 +17,8 @@ export function HeroSection() {
       >
         <NeuroNoiseBackground />
 
-        {/* Name first in reading order, so phones open on it; from lg the badge
-            hangs on the right side of the hero. */}
+        {/* Name first in reading order, so phones open on it; from lg the laptop
+            floats on the right side of the hero. */}
         <div className="relative mx-auto flex w-full max-w-content flex-col gap-4 lg:min-h-[calc(100dvh-8.5rem)] lg:justify-center">
           <div className="hero-copy flex min-w-0 flex-col items-center gap-7 text-center sm:gap-9 lg:w-[56%]">
             <p className="hero-status hero-rise [--hero-delay:60ms]">
@@ -70,7 +70,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <LanyardBadge />
+        <HeroLaptop />
       </section>
     </StorySection>
   )

@@ -1,0 +1,462 @@
+@layer components {
+  /* Stage for the floating laptop. On phones it sits under the name, nearly
+     edge to edge; from 64rem it fills the right side of the hero. */
+  .laptop-stage {
+    /* Artwork is 1423 × 963. */
+    --laptop-w: min(calc(100vw - 0.75rem), 34rem);
+    --laptop-h: calc(var(--laptop-w) * 0.6767);
+
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-inline: calc(var(--spacing-gutter) * -1);
+    padding-block: 2.5rem 1rem;
+    pointer-events: none;
+  }
+
+  .laptop-dock {
+    position: relative;
+    width: var(--laptop-w);
+    height: var(--laptop-h);
+    flex: none;
+  }
+
+  /* Hidden until the script has placed it, so nothing jumps. */
+  .laptop-dock {
+    opacity: 0;
+    transition: opacity 500ms var(--ease-out-strong);
+  }
+
+  .laptop-stage[data-ready] .laptop-dock {
+    opacity: 1;
+  }
+
+  @media (scripting: none) {
+    .laptop-dock {
+      opacity: 1;
+    }
+  }
+
+  /* Cyan spill from the keyboard backlight onto the blue behind it. */
+  .laptop-glow {
+    position: absolute;
+    top: 30%;
+    left: 8%;
+    width: 84%;
+    height: 70%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(0 229 255 / 0.32), rgb(0 229 255 / 0.08) 55%, transparent);
+    filter: blur(1.5rem);
+  }
+
+  /* Contact shadow on the "floor"; the script moves and shrinks it as the laptop rises. */
+  .laptop-shadow {
+    position: absolute;
+    top: 86%;
+    left: 50%;
+    width: 78%;
+    height: 14%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(2 4 20 / 0.55), rgb(2 4 20 / 0.2) 60%, transparent);
+    translate: -50% 0;
+  }
+
+  .laptop-body {
+    position: absolute;
+    inset: 0;
+    transform-origin: 50% 65%;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .laptop-float {
+    height: 100%;
+    perspective: 80rem;
+    animation: laptop-float 6s ease-in-out infinite;
+  }
+
+  .laptop-tilt {
+    height: 100%;
+    transform-style: preserve-3d;
+  }
+
+  .laptop-art {
+    position: relative;
+    height: 100%;
+  }
+
+  .laptop-image {
+    object-fit: contain;
+    pointer-events: none;
+  }
+
+  /* Only the laptop's own outline can be grabbed, not the transparent corners. */
+  .laptop-hit {
+    position: absolute;
+    inset: 0;
+    clip-path: polygon(
+      0.6% 82.9%,
+      37% 66.5%,
+      39.5% 60%,
+      45.5% 11%,
+      97.8% 0.9%,
+      99.3% 2.2%,
+      92.6% 69.5%,
+      90% 77.3%,
+      55% 97.8%,
+      4.4% 86%
+    );
+  }
+
+  .laptop-hit,
+  .laptop-screen {
+    pointer-events: auto;
+    cursor: grab;
+  }
+
+  .laptop-stage[data-dragging] :is(.laptop-hit, .laptop-screen, .laptop-screen a) {
+    cursor: grabbing;
+  }
+
+  /* The flat screen, laid onto the photographed display by a matrix3d(). */
+  .laptop-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    background: #02030a;
+    container-type: size;
+    transform-origin: 0 0;
+    visibility: hidden;
+  }
+
+  .laptop-screen[data-fitted] {
+    visibility: visible;
+  }
+
+  .laptop-ui {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    background:
+      radial-gradient(60cqw 60cqh at 100% 0%, rgb(31 81 255 / 0.55), transparent 70%),
+      radial-gradient(50cqw 50cqh at 0% 100%, rgb(0 229 255 / 0.18), transparent 70%),
+      linear-gradient(160deg, #0a1440, #03061a 60%);
+    color: var(--color-white);
+    font-family: var(--font-display);
+    opacity: 0;
+  }
+
+  /* Power on once it is placed: a quick flash, then the page settles in. */
+  .laptop-stage[data-ready] .laptop-screen[data-fitted] .laptop-ui {
+    animation: laptop-boot 900ms var(--ease-out-strong) 450ms forwards;
+  }
+
+  .laptop-ui-bar {
+    display: flex;
+    align-items: center;
+    gap: 2cqw;
+    padding: 1.6cqh 3cqw;
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
+    background: rgb(0 0 0 / 0.35);
+    font-size: 2.1cqw;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .laptop-ui-dots {
+    display: flex;
+    gap: 0.9cqw;
+  }
+
+  .laptop-ui-dots i {
+    width: 1.5cqw;
+    height: 1.5cqw;
+    border-radius: 50%;
+    background: #ff5f57;
+  }
+
+  .laptop-ui-dots i:nth-child(2) {
+    background: #febc2e;
+  }
+
+  .laptop-ui-dots i:nth-child(3) {
+    background: #28c840;
+  }
+
+  .laptop-ui-url {
+    flex: 1;
+    overflow: hidden;
+    padding: 0.5cqh 2cqw;
+    border-radius: 99px;
+    background: rgb(255 255 255 / 0.08);
+    color: rgb(255 255 255 / 0.75);
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .laptop-ui-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8cqw;
+    color: #86efac;
+    text-transform: uppercase;
+  }
+
+  .laptop-ui-live i {
+    width: 1.3cqw;
+    height: 1.3cqw;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 1.2cqw #22c55e;
+  }
+
+  .laptop-ui-main {
+    display: grid;
+    min-height: 0;
+    grid-template-columns: 30cqw 1fr;
+    align-items: center;
+    gap: 4.5cqw;
+    padding: 3cqh 6cqw;
+  }
+
+  .laptop-ui-photo {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    max-height: 100%;
+    overflow: hidden;
+    border-radius: 2.4cqw;
+    background: var(--color-cobalt);
+    box-shadow:
+      0 0 0 0.5cqw var(--color-cyan),
+      1.6cqw 1.6cqw 0 0.5cqw rgb(31 81 255 / 0.9);
+  }
+
+  .laptop-ui-info {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1.4cqh;
+  }
+
+  .laptop-ui-hello {
+    color: var(--color-cyan);
+    font-size: 2.6cqw;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .laptop-ui-name {
+    font-size: 7.4cqw;
+    font-stretch: 80%;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    line-height: 0.9;
+    text-transform: uppercase;
+  }
+
+  .laptop-ui-role {
+    font-size: 3.6cqw;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .laptop-ui-meta {
+    color: rgb(255 255 255 / 0.7);
+    font-family: var(--font-body);
+    font-size: 2.3cqw;
+  }
+
+  .laptop-ui-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1cqw;
+  }
+
+  .laptop-ui-stack li {
+    padding: 0.5cqh 1.4cqw;
+    border: 1px solid rgb(0 229 255 / 0.45);
+    border-radius: 99px;
+    color: rgb(255 255 255 / 0.9);
+    font-size: 1.9cqw;
+    font-weight: 700;
+  }
+
+  .laptop-ui-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.6cqw;
+    margin-top: 0.6cqh;
+  }
+
+  .laptop-ui-links a {
+    display: inline-flex;
+    padding: 1cqh 2.4cqw;
+    border-radius: 1.2cqw;
+    background: var(--color-cyan);
+    box-shadow: 0.6cqw 0.6cqw 0 var(--color-electric);
+    color: var(--color-black);
+    cursor: pointer;
+    font-size: 2.4cqw;
+    font-weight: 900;
+    transition:
+      background-color var(--duration-press) var(--ease-out-strong),
+      scale var(--duration-press) var(--ease-out-strong);
+  }
+
+  .laptop-ui-links a:active {
+    scale: 0.96;
+  }
+
+  .laptop-ui-links a:focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: 2px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .laptop-ui-links a:hover {
+      background: var(--color-white);
+    }
+  }
+
+  .laptop-ui-terminal {
+    padding: 1.4cqh 3cqw 1.8cqh;
+    border-top: 1px solid rgb(255 255 255 / 0.08);
+    background: rgb(0 0 0 / 0.4);
+    color: rgb(255 255 255 / 0.8);
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    font-size: 2cqw;
+    white-space: nowrap;
+  }
+
+  .laptop-ui-terminal span {
+    color: var(--color-cyan);
+  }
+
+  .laptop-ui-terminal b {
+    color: #86efac;
+    font-weight: 700;
+  }
+
+  .laptop-ui-caret {
+    display: inline-block;
+    width: 1cqw;
+    height: 2.2cqw;
+    margin-left: 0.8cqw;
+    background: var(--color-white);
+    vertical-align: -0.3cqw;
+    animation: laptop-caret 1.1s steps(1) infinite;
+  }
+
+  /* A soft reflection that slides as the laptop turns. */
+  .laptop-ui-glare {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 35%, rgb(255 255 255 / 0.09) 48%, transparent 60%);
+    pointer-events: none;
+    translate: calc(var(--lean, 0) * 3%) 0;
+  }
+
+  /* Small displays (phones): keep the photo, name and role legible, drop the rest. */
+  @container (max-width: 17rem) {
+    .laptop-ui-stack,
+    .laptop-ui-meta,
+    .laptop-ui-links,
+    .laptop-ui-terminal,
+    .laptop-ui-live {
+      display: none;
+    }
+
+    .laptop-ui-main {
+      grid-template-columns: 34cqw 1fr;
+    }
+
+    .laptop-ui-name {
+      font-size: 9cqw;
+    }
+
+    .laptop-ui-role {
+      font-size: 4.6cqw;
+    }
+
+    .laptop-ui-hello {
+      font-size: 3.4cqw;
+    }
+
+    .laptop-ui-bar {
+      font-size: 3cqw;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .laptop-stage {
+      --laptop-w: min(40vw, 44rem, calc((100dvh - 12rem) * 1.478));
+
+      position: absolute;
+      inset: 0 0 0 auto;
+      width: 46%;
+      align-items: center;
+      margin: 0;
+      padding: 6rem 0 2rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .laptop-float,
+    .laptop-ui-caret {
+      animation: none;
+    }
+
+    .laptop-dock,
+    .laptop-ui-links a {
+      transition: none;
+    }
+
+    .laptop-stage[data-ready] .laptop-screen[data-fitted] .laptop-ui {
+      animation: none;
+      opacity: 1;
+    }
+
+    .laptop-hit,
+    .laptop-screen {
+      cursor: auto;
+    }
+  }
+
+  @keyframes laptop-float {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+
+    50% {
+      translate: 0 -0.5rem;
+    }
+  }
+
+  @keyframes laptop-boot {
+    0% {
+      opacity: 0;
+      filter: brightness(2.4);
+    }
+
+    30% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 1;
+      filter: brightness(1);
+    }
+  }
+
+  @keyframes laptop-caret {
+    50% {
+      opacity: 0;
+    }
+  }
+}
