@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { cn } from '@/lib/utils'
+import { hasHardwareWebGL } from '@/utils/webglSupport'
 
 import { NEURO_NOISE_FRAGMENT, NEURO_NOISE_VERTEX } from './neuroNoiseShader'
 
@@ -38,35 +39,46 @@ const PRESENCE_RATE = 5
 /** Time used for the single still frame under reduced motion. */
 const STILL_TIME = 12
 
-function compile(gl: WebGLRenderingContext, type: number, source: string) {
-  const shader = gl.createShader(type)
-  if (!shader) return null
-  gl.shaderSource(shader, source)
-  gl.compileShader(shader)
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    console.error('Neuro Noise shader:', gl.getShaderInfoLog(shader))
-    gl.deleteShader(shader)
-    return null
-  }
-  return shader
+interface PendingProgram {
+  program: WebGLProgram
+  vertex: WebGLShader
+  fragment: WebGLShader
 }
 
-function createProgram(gl: WebGLRenderingContext) {
-  const vertex = compile(gl, gl.VERTEX_SHADER, NEURO_NOISE_VERTEX)
-  const fragment = compile(gl, gl.FRAGMENT_SHADER, NEURO_NOISE_FRAGMENT)
-  if (!vertex || !fragment) return null
+/**
+ * Starts compiling and linking without asking for the result: any status query
+ * makes the page wait for the GPU, and this shader takes a while to compile.
+ */
+function buildProgram(gl: WebGLRenderingContext): PendingProgram | null {
+  const vertex = gl.createShader(gl.VERTEX_SHADER)
+  const fragment = gl.createShader(gl.FRAGMENT_SHADER)
   const program = gl.createProgram()
-  if (!program) return null
+  if (!vertex || !fragment || !program) return null
+  gl.shaderSource(vertex, NEURO_NOISE_VERTEX)
+  gl.shaderSource(fragment, NEURO_NOISE_FRAGMENT)
+  gl.compileShader(vertex)
+  gl.compileShader(fragment)
   gl.attachShader(program, vertex)
   gl.attachShader(program, fragment)
   gl.linkProgram(program)
+  return { program, vertex, fragment }
+}
+
+/** Reads the link result once the GPU is done, logging why it failed if it did. */
+function finishProgram(gl: WebGLRenderingContext, { program, vertex, fragment }: PendingProgram) {
+  const linked = Boolean(gl.getProgramParameter(program, gl.LINK_STATUS))
+  if (!linked) {
+    console.error(
+      'Neuro Noise program:',
+      gl.getShaderInfoLog(vertex),
+      gl.getShaderInfoLog(fragment),
+      gl.getProgramInfoLog(program),
+    )
+    gl.deleteProgram(program)
+  }
   gl.deleteShader(vertex)
   gl.deleteShader(fragment)
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    console.error('Neuro Noise program:', gl.getProgramInfoLog(program))
-    return null
-  }
-  return program
+  return linked ? program : null
 }
 
 interface NeuroNoiseBackgroundProps {
@@ -82,6 +94,7 @@ interface NeuroNoiseBackgroundProps {
  */
 export function NeuroNoiseBackground({ className, colors = NEURO_NOISE_BLUE }: NeuroNoiseBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const layerRef = useRef<HTMLDivElement>(null)
   const reducedMotion = usePrefersReducedMotion()
   // A string key keeps the effect stable when callers pass a new array with the same colours.
   const colorKey = colors.join(',')
@@ -89,11 +102,22 @@ export function NeuroNoiseBackground({ className, colors = NEURO_NOISE_BLUE }: N
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
+    // Rendered on the CPU, this full-screen shader would redraw at a frame or two
+    // per second and hold up the page; a still glow in its palette stands in.
+    if (!hasHardwareWebGL()) {
+      layerRef.current?.setAttribute('data-still', '')
+      return
+    }
     const palette = colorKey.split(',')
     const packedColors = packColors(palette)
     const gl = canvas.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' })
     if (!gl) return
 
+    // With KHR_parallel_shader_compile the GPU compiles in the background and
+    // reports when it's done, so the page never waits on it.
+    const parallel = gl.getExtension('KHR_parallel_shader_compile')
+    let pending: PendingProgram | null = null
+    let readyFrame = 0
     let program: WebGLProgram | null = null
     let uniforms: Record<string, WebGLUniformLocation | null> = {}
     let frameId = 0
@@ -105,8 +129,19 @@ export function NeuroNoiseBackground({ className, colors = NEURO_NOISE_BLUE }: N
     const pointer = { x: 0, y: 0 }
 
     const setup = () => {
-      program = createProgram(gl)
-      if (!program) return false
+      pending = buildProgram(gl)
+      awaitProgram()
+    }
+
+    const awaitProgram = () => {
+      if (!pending) return
+      if (parallel && !gl.getProgramParameter(pending.program, parallel.COMPLETION_STATUS_KHR)) {
+        readyFrame = requestAnimationFrame(awaitProgram)
+        return
+      }
+      program = finishProgram(gl, pending)
+      pending = null
+      if (!program) return
       gl.useProgram(program)
 
       // One triangle that covers the whole viewport.
@@ -127,7 +162,8 @@ export function NeuroNoiseBackground({ className, colors = NEURO_NOISE_BLUE }: N
       gl.uniform4f(uniforms.u_surface!, ...SURFACE)
       gl.uniform4f(uniforms.u_finish!, ...FINISH)
       gl.uniform4f(uniforms.u_transform!, ...TRANSFORM)
-      return true
+      if (reducedMotion) draw(STILL_TIME)
+      else start()
     }
 
     const resize = () => {
@@ -197,13 +233,10 @@ export function NeuroNoiseBackground({ className, colors = NEURO_NOISE_BLUE }: N
       program = null
     }
 
-    const onContextRestored = () => {
-      if (!setup()) return
-      if (reducedMotion) draw(STILL_TIME)
-      else start()
-    }
+    // A restored context needs its program rebuilt; drawing resumes once it's ready.
+    const onContextRestored = () => setup()
 
-    if (!setup()) return
+    setup()
 
     const resizeObserver = new ResizeObserver(() => {
       if (reducedMotion) draw(STILL_TIME)
@@ -221,16 +254,15 @@ export function NeuroNoiseBackground({ className, colors = NEURO_NOISE_BLUE }: N
     canvas.addEventListener('webglcontextlost', onContextLost)
     canvas.addEventListener('webglcontextrestored', onContextRestored)
 
-    if (reducedMotion) {
-      draw(STILL_TIME)
-    } else {
+    if (!reducedMotion) {
       window.addEventListener('pointermove', onPointerMove, { passive: true })
       document.documentElement.addEventListener('pointerleave', onPointerLeave)
-      start()
     }
 
     return () => {
       stop()
+      cancelAnimationFrame(readyFrame)
+      if (pending) gl.deleteProgram(pending.program)
       resizeObserver.disconnect()
       intersectionObserver.disconnect()
       document.removeEventListener('visibilitychange', onVisibility)
@@ -243,7 +275,11 @@ export function NeuroNoiseBackground({ className, colors = NEURO_NOISE_BLUE }: N
   }, [reducedMotion, colorKey])
 
   return (
-    <div aria-hidden="true" className={cn('pointer-events-none absolute inset-0', className)}>
+    <div
+      aria-hidden="true"
+      className={cn('neuro-noise-layer pointer-events-none absolute inset-0', className)}
+      ref={layerRef}
+    >
       <canvas className="neuro-noise block size-full" ref={canvasRef} />
     </div>
   )

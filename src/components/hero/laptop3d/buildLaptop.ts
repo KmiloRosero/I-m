@@ -19,7 +19,6 @@ const KEY_GAP = 0.34
 const KEY_HEIGHT = 0.22
 export const KEY_TRAVEL = 0.13
 const KEYBOARD_BACK = -BASE.depth / 2 + 3.05
-const ATLAS_UNIT = 160
 
 export interface LaptopKey {
   code: string
@@ -48,7 +47,16 @@ export interface LaptopModel {
   dispose: () => void
 }
 
-export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: string }): LaptopModel {
+interface BuildOptions {
+  /** Pixels per key unit in the legend atlas: more stays sharp when the laptop is drawn large. */
+  legendUnit: number
+}
+
+export function buildLaptop(
+  screenCanvas: HTMLCanvasElement,
+  fonts: { display: string },
+  { legendUnit }: BuildOptions,
+): LaptopModel {
   const disposables: { dispose: () => void }[] = []
   const track = <T extends { dispose: () => void }>(item: T): T => {
     disposables.push(item)
@@ -136,7 +144,7 @@ export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: s
   backlight.position.set(0, BASE.height + 0.05, KEYBOARD_BACK + keyboardDepth / 2)
   root.add(backlight)
 
-  const atlas = legendAtlas(fonts.display)
+  const atlas = legendAtlas(fonts.display, legendUnit)
   const atlasTexture = track(new THREE.CanvasTexture(atlas.canvas))
   atlasTexture.colorSpace = THREE.SRGBColorSpace
   atlasTexture.anisotropy = 4
@@ -470,20 +478,20 @@ interface AtlasRect {
 }
 
 /** All key legends drawn as the keyboard itself, so each key maps to its own cell. */
-function legendAtlas(font: string) {
+function legendAtlas(font: string, unit: number) {
   const rowsHeight = KEYBOARD_ROWS.reduce((sum, row) => sum + row.height, 0)
   const canvas = document.createElement('canvas')
-  canvas.width = ROW_UNITS * ATLAS_UNIT
-  canvas.height = Math.ceil(rowsHeight * ATLAS_UNIT)
+  canvas.width = ROW_UNITS * unit
+  canvas.height = Math.ceil(rowsHeight * unit)
   const ctx = canvas.getContext('2d')!
   const rects = new Map<string, AtlasRect>()
 
   let top = 0
   for (const row of KEYBOARD_ROWS) {
-    const height = row.height * ATLAS_UNIT
+    const height = row.height * unit
     let left = 0
     for (const spec of row.keys) {
-      const width = spec.width * ATLAS_UNIT
+      const width = spec.width * unit
       drawLegend(ctx, spec, left, top, width, height, font)
       rects.set(spec.code, {
         u0: left / canvas.width,

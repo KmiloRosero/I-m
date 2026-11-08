@@ -394,7 +394,8 @@ export function ExperienceTimeline({ entries, groups }: ExperienceTimelineProps)
         role="region"
       >
         {visible.map((entry, index) => (
-          <article
+          // A carousel slide is a group (ARIA APG); <article> may not take that role.
+          <div
             aria-label={`${index + 1} de ${visible.length}: ${entry.title}`}
             aria-roledescription="diapositiva"
             className="xp-card"
@@ -410,7 +411,7 @@ export function ExperienceTimeline({ entries, groups }: ExperienceTimelineProps)
             <div className="xp-detail-body">
               <EntryDetail entry={entry} />
             </div>
-          </article>
+          </div>
         ))}
       </div>
 

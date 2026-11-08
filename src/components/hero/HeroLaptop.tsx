@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { personalInfo } from '@/data/personalInfo'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { getCvLinks } from '@/utils/professionalLinks'
+import { hasHardwareWebGL } from '@/utils/webglSupport'
 import { LaptopPhoto } from './LaptopPhoto'
 import type { LaptopScene } from './laptop3d/LaptopScene'
 import type { ScreenContent } from './laptop3d/ScreenPainter'
@@ -30,13 +31,18 @@ export function HeroLaptop() {
 
     void (async () => {
       try {
+        // Without a GPU the model would load in seconds and turn at a frame or
+        // two per second, so those devices get the photo instead, right away.
+        if (!hasHardwareWebGL()) throw new Error('No hardware-accelerated WebGL')
         const fonts = readFonts()
         await Promise.all([
           document.fonts.load(`900 64px ${fonts.display}`),
           document.fonts.load(`700 64px ${fonts.display}`),
           document.fonts.load(`400 32px ${fonts.body}`),
         ]).catch(() => undefined)
-        if (!supportsWebGL()) throw new Error('WebGL unavailable')
+        // Wait for a quiet moment so the 3D setup doesn't compete with the first paint.
+        await whenIdle()
+        if (cancelled) return
         const { LaptopScene } = await import('./laptop3d/LaptopScene')
         if (cancelled) return
         scene = new LaptopScene({
@@ -44,8 +50,10 @@ export function HeroLaptop() {
           content: screenContent(fonts),
           reducedMotion,
         })
-        setStatus('ready')
+        if (await scene.start()) setStatus('ready')
       } catch {
+        scene?.dispose()
+        scene = null
         if (!cancelled) setStatus('fallback')
       }
     })()
@@ -91,11 +99,9 @@ function screenContent(fonts: ScreenContent['fonts']): ScreenContent {
   }
 }
 
-function supportsWebGL() {
-  try {
-    const canvas = document.createElement('canvas')
-    return Boolean(canvas.getContext('webgl2') ?? canvas.getContext('webgl'))
-  } catch {
-    return false
-  }
+function whenIdle(): Promise<void> {
+  return new Promise((resolve) => {
+    if ('requestIdleCallback' in window) window.requestIdleCallback(() => resolve(), { timeout: 1500 })
+    else setTimeout(resolve, 300)
+  })
 }

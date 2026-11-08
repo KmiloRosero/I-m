@@ -53,17 +53,48 @@ const characters = new Map(
   ),
 )
 
+/** Lets the browser paint and handle input between the heavy setup steps. */
+function yieldToMain(): Promise<void> {
+  const scheduler = (globalThis as { scheduler?: { yield?: () => Promise<void> } }).scheduler
+  return scheduler?.yield ? scheduler.yield() : new Promise((resolve) => setTimeout(resolve, 0))
+}
+
+/** Soft studio reflections for the metal and plastic, prefiltered once. */
+function createEnvironment(renderer: THREE.WebGLRenderer, size: number) {
+  const pmrem = new THREE.PMREMGenerator(renderer)
+  const room = new RoomEnvironment()
+  const environment = pmrem.fromScene(room, 0.04, 0.1, 100, { size }).texture
+  room.dispose()
+  pmrem.dispose()
+  return environment
+}
+
+/** Every texture the materials under `root` sample, once each. */
+function texturesOf(root: THREE.Object3D) {
+  const textures = new Set<THREE.Texture>()
+  root.traverse((object) => {
+    const material = (object as THREE.Mesh).material
+    for (const entry of Array.isArray(material) ? material : material ? [material] : []) {
+      for (const value of Object.values(entry)) if (value instanceof THREE.Texture) textures.add(value)
+    }
+  })
+  return textures
+}
+
 export class LaptopScene {
   private readonly container: HTMLElement
-  private readonly renderer: THREE.WebGLRenderer
+  private readonly content: ScreenContent
+  // Created by start(), which runs before anything reads them.
+  private renderer!: THREE.WebGLRenderer
+  private model!: LaptopModel
+  private painter!: ScreenPainter
   private readonly scene = new THREE.Scene()
   private readonly camera = new THREE.PerspectiveCamera(FOV, 1, 1, 1000)
-  private readonly model: LaptopModel
-  private readonly painter: ScreenPainter
-  private readonly environment: THREE.Texture
   private readonly raycaster = new THREE.Raycaster()
   private readonly pointer = new THREE.Vector2()
   private readonly reducedMotion: boolean
+  /** Phones draw the laptop small: lighter textures, reflections and shadows look the same there. */
+  private readonly compact: boolean
 
   private readonly azimuth: Spring
   private readonly polar: Spring
@@ -95,40 +126,123 @@ export class LaptopScene {
   private screenDirty = true
   private caretTimer = 0
   private entranceTimer = 0
+  private started = false
+  private disposed = false
   private readonly heldKeys = new Set<string>()
   private readonly cleanups: (() => void)[] = []
 
   constructor(options: LaptopSceneOptions) {
     this.container = options.container
+    this.content = options.content
     this.reducedMotion = options.reducedMotion
+    this.compact = window.matchMedia('(max-width: 40rem)').matches
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' })
+    const animateIn = !this.reducedMotion
+    this.azimuth = createSpring(animateIn ? HOME.azimuth - 1.25 : HOME.azimuth, HOME.azimuth)
+    this.polar = createSpring(animateIn ? deg(48) : HOME.polar, HOME.polar)
+    this.lid = createSpring(animateIn ? 0 : OPEN_ANGLE, animateIn ? 0 : OPEN_ANGLE)
+  }
+
+  // ── Public ──────────────────────────────────────────────────────────────
+
+  /**
+   * Builds the scene in short steps, yielding between them so the page stays
+   * responsive while the laptop loads. Resolves `false` if disposed meanwhile.
+   */
+  async start(): Promise<boolean> {
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance',
+      failIfMajorPerformanceCaveat: true,
+    })
+    this.renderer = renderer
+    this.cleanups.push(() => {
+      renderer.dispose()
+      renderer.domElement.remove()
+    })
     // Supersample standard-density screens a little for cleaner edges.
-    this.renderer.setPixelRatio(THREE.MathUtils.clamp(window.devicePixelRatio, 1.5, 2))
-    this.renderer.shadowMap.enabled = true
-    this.renderer.shadowMap.type = THREE.PCFShadowMap
-    this.renderer.outputColorSpace = THREE.SRGBColorSpace
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping
-    this.renderer.toneMappingExposure = 1.05
-    this.renderer.setClearColor(0x000000, 0)
-    const canvas = this.renderer.domElement
+    renderer.setPixelRatio(THREE.MathUtils.clamp(window.devicePixelRatio, 1.5, 2))
+    renderer.shadowMap.enabled = true
+    renderer.shadowMap.type = THREE.PCFShadowMap
+    renderer.outputColorSpace = THREE.SRGBColorSpace
+    renderer.toneMapping = THREE.ACESFilmicToneMapping
+    renderer.toneMappingExposure = 1.05
+    renderer.setClearColor(0x000000, 0)
+    // Reading shader logs makes the page wait for every compile to finish; in
+    // production the GPU compiles in the background instead.
+    renderer.debug.checkShaderErrors = process.env.NODE_ENV !== 'production'
+    const canvas = renderer.domElement
     canvas.setAttribute('aria-hidden', 'true')
     canvas.className = 'laptop3d-gl'
     this.container.appendChild(canvas)
 
-    const pmrem = new THREE.PMREMGenerator(this.renderer)
-    const room = new RoomEnvironment()
-    this.environment = pmrem.fromScene(room, 0.04).texture
-    room.dispose()
-    pmrem.dispose()
-    this.scene.environment = this.environment
+    if (!(await this.pause())) return false
+    const environment = createEnvironment(renderer, this.compact ? 128 : 256)
+    this.cleanups.push(() => environment.dispose())
+    this.scene.environment = environment
     this.scene.environmentIntensity = 0.6
+    this.addLights()
 
+    if (!(await this.pause())) return false
+    this.painter = new ScreenPainter(this.content, () => this.markScreenDirty(), this.compact ? 1 : 1.5)
+    this.painter.power = this.reducedMotion ? 1 : 0
+    const model = buildLaptop(this.painter.canvas, this.content.fonts, { legendUnit: this.compact ? 112 : 160 })
+    this.model = model
+    this.cleanups.push(() => model.dispose())
+    this.scene.add(model.root)
+    const textures = texturesOf(model.root)
+    const anisotropy = renderer.capabilities.getMaxAnisotropy()
+    for (const texture of textures) texture.anisotropy = anisotropy
+
+    if (!(await this.pause())) return false
+    this.painter.draw()
+    model.screenTexture.needsUpdate = true
+    this.screenDirty = false
+    this.applyLid()
+    // Sized but not drawn yet: a frame now would compile every shader on the spot.
+    this.fitToContainer()
+
+    if (!(await this.pause())) return false
+    // Compiles the shaders off the main thread where the browser can, instead of
+    // stalling the first frame.
+    await renderer.compileAsync(this.scene, this.camera)
+    if (this.disposed) return false
+    // One texture upload per task, rather than all of them inside the first frame.
+    for (const texture of textures) {
+      renderer.initTexture(texture)
+      if (!(await this.pause())) return false
+    }
+
+    if (!this.reducedMotion) this.entranceTimer = window.setTimeout(() => this.setLidTarget(OPEN_ANGLE), 420)
+    this.started = true
+    this.listen()
+    this.requestRender()
+    return true
+  }
+
+  dispose() {
+    this.disposed = true
+    cancelAnimationFrame(this.frame)
+    window.clearInterval(this.caretTimer)
+    window.clearTimeout(this.entranceTimer)
+    // Last in, first out: listeners go before the model, the model before the renderer.
+    for (const cleanup of this.cleanups.reverse()) cleanup()
+    this.cleanups.length = 0
+  }
+
+  private async pause() {
+    await yieldToMain()
+    return !this.disposed
+  }
+
+  private addLights() {
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.25))
     const key = new THREE.DirectionalLight(0xffffff, 1.5)
     key.position.set(18, 32, 22)
     key.castShadow = true
-    key.shadow.mapSize.set(2048, 2048)
+    const shadowSize = this.compact ? 1024 : 2048
+    key.shadow.mapSize.set(shadowSize, shadowSize)
     key.shadow.camera.left = -30
     key.shadow.camera.right = 30
     key.shadow.camera.top = 30
@@ -143,44 +257,6 @@ export class LaptopScene {
     const fill = new THREE.DirectionalLight(0x1f51ff, 0.45)
     fill.position.set(24, -6, -16)
     this.scene.add(key, rim, fill)
-
-    this.painter = new ScreenPainter(options.content, () => this.markScreenDirty())
-    this.model = buildLaptop(this.painter.canvas, options.content.fonts)
-    this.scene.add(this.model.root)
-    const anisotropy = this.renderer.capabilities.getMaxAnisotropy()
-    this.model.root.traverse((object) => {
-      const material = (object as THREE.Mesh).material
-      for (const entry of Array.isArray(material) ? material : material ? [material] : []) {
-        const map = (entry as THREE.MeshBasicMaterial).map
-        if (map) map.anisotropy = anisotropy
-      }
-    })
-
-    const home = HOME
-    const animateIn = !this.reducedMotion
-    this.azimuth = createSpring(animateIn ? home.azimuth - 1.25 : home.azimuth, home.azimuth)
-    this.polar = createSpring(animateIn ? deg(48) : home.polar, home.polar)
-    this.lid = createSpring(animateIn ? 0 : OPEN_ANGLE, animateIn ? 0 : OPEN_ANGLE)
-    this.painter.power = animateIn ? 0 : 1
-    if (animateIn) this.entranceTimer = window.setTimeout(() => this.setLidTarget(OPEN_ANGLE), 420)
-
-    this.applyLid()
-    this.resize()
-    this.listen()
-    this.requestRender()
-  }
-
-  // ── Public ──────────────────────────────────────────────────────────────
-
-  dispose() {
-    cancelAnimationFrame(this.frame)
-    window.clearInterval(this.caretTimer)
-    window.clearTimeout(this.entranceTimer)
-    this.cleanups.forEach((cleanup) => cleanup())
-    this.model.dispose()
-    this.environment.dispose()
-    this.renderer.dispose()
-    this.renderer.domElement.remove()
   }
 
   // ── State ───────────────────────────────────────────────────────────────
@@ -204,7 +280,8 @@ export class LaptopScene {
   // ── Loop ────────────────────────────────────────────────────────────────
 
   private requestRender = () => {
-    if (this.frame || !this.visible) return
+    // Before start() finishes, a render would compile every shader on the spot.
+    if (!this.started || this.frame || !this.visible) return
     this.lastTime = 0
     this.frame = requestAnimationFrame(this.tick)
   }
@@ -382,14 +459,19 @@ export class LaptopScene {
   }
 
   private resize = () => {
+    if (this.fitToContainer()) this.render()
+  }
+
+  /** Matches the drawing buffer and camera to the container; false while it has no size. */
+  private fitToContainer() {
     const width = this.container.clientWidth
     const height = this.container.clientHeight
-    if (!width || !height) return
+    if (!width || !height) return false
     this.renderer.setSize(width, height, false)
     this.camera.aspect = width / height
     this.camera.updateProjectionMatrix()
     this.framed = false
-    this.render()
+    return true
   }
 
   // ── Input ───────────────────────────────────────────────────────────────

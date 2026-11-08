@@ -9,6 +9,16 @@
     opacity: 1;
   }
 
+  /* Without a GPU the shader stays off and a still glow in its palette takes its place. */
+  .neuro-noise-layer[data-still] {
+    background:
+      radial-gradient(38% 32% at 76% 24%, rgb(0 229 255 / 0.2), transparent 70%),
+      radial-gradient(52% 46% at 16% 80%, rgb(31 81 255 / 0.55), transparent 72%),
+      radial-gradient(46% 40% at 88% 86%, rgb(31 81 255 / 0.32), transparent 70%),
+      radial-gradient(130% 95% at 50% 35%, #08123d, #000 72%);
+    animation: neuro-still-in 900ms var(--ease-out-strong) both;
+  }
+
   /* Over the blue shader, primary actions use its own cyan instead of yellow. */
   .hero {
     --shadow-press: 0.25rem 0.25rem 0 var(--color-electric);
@@ -78,6 +88,16 @@
 
     .neuro-noise {
       transition: none;
+    }
+
+    .neuro-noise-layer[data-still] {
+      animation: none;
+    }
+  }
+
+  @keyframes neuro-still-in {
+    from {
+      opacity: 0;
     }
   }
 

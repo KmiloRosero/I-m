@@ -29,8 +29,6 @@ interface HitArea {
 
 export const SCREEN_WIDTH = 1600
 export const SCREEN_HEIGHT = 900
-/** The canvas is drawn above its layout size, so text stays crisp up close. */
-const RESOLUTION = 1.5
 const TERMINAL_LIMIT = 34
 const IDLE_COMMAND = 'npm run dev'
 
@@ -54,12 +52,15 @@ export class ScreenPainter {
   power = 0
   caretVisible = true
   hoveredUrl: string | null = null
+  /** Canvas pixels per layout pixel: above 1, text stays crisp when the laptop is drawn large. */
+  private readonly resolution: number
 
-  constructor(content: ScreenContent, onImageLoad: () => void) {
+  constructor(content: ScreenContent, onImageLoad: () => void, resolution = 1) {
+    this.resolution = resolution
     this.content = content
     this.canvas = document.createElement('canvas')
-    this.canvas.width = SCREEN_WIDTH * RESOLUTION
-    this.canvas.height = SCREEN_HEIGHT * RESOLUTION
+    this.canvas.width = SCREEN_WIDTH * resolution
+    this.canvas.height = SCREEN_HEIGHT * resolution
     const context = this.canvas.getContext('2d')
     if (!context) throw new Error('2D canvas unavailable')
     this.context = context
@@ -107,7 +108,7 @@ export class ScreenPainter {
     const ctx = this.context
     const { fonts } = this.content
     ctx.save()
-    ctx.setTransform(RESOLUTION, 0, 0, RESOLUTION, 0, 0)
+    ctx.setTransform(this.resolution, 0, 0, this.resolution, 0, 0)
     ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
 
     // Backdrop: deep blue with the site's electric and cyan glows.

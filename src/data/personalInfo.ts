@@ -14,7 +14,7 @@ export const personalInfo: PersonalInfo = {
   firstName: FIRST_NAME,
   lastName: LAST_NAME,
   seoTitle: `${FULL_NAME} · Desarrollador de software en Pasto, Colombia`,
-  photoSrc: '/images/profile/camilo-rosero.png',
+  photoSrc: '/images/profile/camilo-rosero.webp',
   address: { locality: 'Pasto', region: 'Nariño', country: 'CO' },
   degree: DEGREE,
   technicalDegree: 'Técnico Industrial Especializado en Informática',
