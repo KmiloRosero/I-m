@@ -14,7 +14,7 @@
   .laptop3d-viewport {
     position: relative;
     width: 100%;
-    height: clamp(19rem, 92vw, 34rem);
+    height: clamp(21rem, 100vw, 38rem);
     /* Horizontal drags turn the laptop; vertical swipes still scroll the page. */
     touch-action: pan-y;
     user-select: none;
@@ -74,14 +74,14 @@
     .laptop3d {
       position: absolute;
       inset: 0 0 0 auto;
-      width: 52%;
+      width: 54%;
       justify-content: center;
       margin: 0;
-      padding: 4.5rem 0 1.5rem;
+      padding: 4rem 0 1rem;
     }
 
     .laptop3d-viewport {
-      height: min(44rem, calc(100dvh - 8rem));
+      height: min(54rem, calc(100dvh - 5.5rem));
     }
   }
 

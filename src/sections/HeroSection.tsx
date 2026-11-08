@@ -36,7 +36,7 @@ export function HeroSection() {
                 texts={heroTexts}
               />
             </h1>
-            <ul className="hero-rise flex flex-wrap justify-center gap-3 [--hero-delay:700ms]">
+            <ul className="hero-rise relative z-10 flex flex-wrap justify-center gap-3 [--hero-delay:700ms]">
               <li>
                 <ButtonLink href="#proyectos" variant="primary">
                   Ver proyectos

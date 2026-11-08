@@ -24,7 +24,7 @@ const LID_LATCH = deg(16)
 const SCREEN_ON_ANGLE = deg(38)
 const FOV = 30
 /** Share of the view (in NDC) the laptop's outline may fill. */
-const FRAME_FILL = 0.94
+const FRAME_FILL = 0.97
 const STEP = 1 / 120
 const DRAG_THRESHOLD = 6
 const ORBIT_SPEED = 0.0085
@@ -77,6 +77,13 @@ export class LaptopScene {
   private framed = false
   private readonly bounds = new THREE.Box3()
   private readonly corner = new THREE.Vector3()
+  private readonly center = new THREE.Vector3()
+  private readonly cameraRight = new THREE.Vector3()
+  private readonly cameraUp = new THREE.Vector3()
+  /** Sideways and vertical shift of the aim point that centres the silhouette (cm, camera plane). */
+  private aimX = 0
+  private aimY = 0
+  private aimMoving = false
   private readonly target = new THREE.Vector3()
 
   private mode: Mode = { kind: 'idle' }
@@ -248,7 +255,7 @@ export class LaptopScene {
   private isAnimating() {
     if (this.mode.kind === 'orbit' || this.lidDragging) return true
     if (!isSpringSettled(this.azimuth) || !isSpringSettled(this.polar) || !isSpringSettled(this.lid, 1e-4)) return true
-    if (!isSpringSettled(this.distance, 0.02)) return true
+    if (!isSpringSettled(this.distance, 0.02) || this.aimMoving) return true
     const powerTarget = this.screenOn && this.lid.value > SCREEN_ON_ANGLE ? 1 : 0
     if (this.painter.power !== powerTarget) return true
     for (const key of this.model.keys.values()) if (key.offset !== key.target || key.velocity !== 0) return true
@@ -287,23 +294,39 @@ export class LaptopScene {
   private frame3d() {
     this.model.root.updateMatrixWorld(true)
     this.bounds.makeEmpty()
-    for (const part of this.model.frameParts) this.bounds.expandByObject(part, true)
-    this.bounds.getCenter(this.target)
+    for (const part of this.model.frameParts) this.bounds.expandByObject(part)
+    this.bounds.getCenter(this.center)
 
     this.polar.value = THREE.MathUtils.clamp(this.polar.value, POLAR_MIN, POLAR_MAX)
     // On the first frame (or without motion) iterate to the fit instead of easing.
-    const passes = !this.framed || this.reducedMotion ? 6 : 1
+    const settle = !this.framed || this.reducedMotion
+    const passes = settle ? 8 : 1
+    const gain = settle ? 1 : 0.35
+    this.aimMoving = false
     for (let pass = 0; pass < passes; pass += 1) {
       this.placeCamera()
-      const fit = this.outlineExtent() / FRAME_FILL
+      const outline = this.silhouette()
+      if (!outline) break
+      // Re-centre the silhouette, then size it to fill the view.
+      const halfHeight = this.distance.value * Math.tan(deg(FOV) / 2)
+      const halfWidth = halfHeight * this.camera.aspect
+      const shiftX = outline.centerX * halfWidth * gain
+      const shiftY = outline.centerY * halfHeight * gain
+      this.aimX += shiftX
+      this.aimY += shiftY
+      this.aimMoving = Math.abs(shiftX) + Math.abs(shiftY) > 0.005
+      const fit = outline.extent / FRAME_FILL
       if (Number.isFinite(fit) && fit > 0) this.distance.target = this.distance.value * fit
-      if (passes > 1) settleSpring(this.distance)
+      if (settle) settleSpring(this.distance)
     }
     this.framed = true
     this.placeCamera()
   }
 
   private placeCamera() {
+    // Aim point: the laptop's centre, shifted in the camera plane to centre its outline.
+    this.camera.matrixWorld.extractBasis(this.cameraRight, this.cameraUp, this.corner)
+    this.target.copy(this.center).addScaledVector(this.cameraRight, this.aimX).addScaledVector(this.cameraUp, this.aimY)
     const distance = this.distance.value
     const sinPolar = Math.sin(this.polar.value)
     this.camera.position.set(
@@ -315,17 +338,31 @@ export class LaptopScene {
     this.camera.updateMatrixWorld()
   }
 
-  /** Largest |x| or |y| of the laptop's bounding box corners, in NDC. */
-  private outlineExtent() {
-    const { min, max } = this.bounds
-    let extent = 0
-    for (let index = 0; index < 8; index += 1) {
-      this.corner
-        .set(index & 1 ? max.x : min.x, index & 2 ? max.y : min.y, index & 4 ? max.z : min.z)
-        .project(this.camera)
-      extent = Math.max(extent, Math.abs(this.corner.x), Math.abs(this.corner.y))
+  /**
+   * The laptop's outline on screen, from the vertices of its outer shells:
+   * the centre of its NDC bounds and its half-size on the tighter axis.
+   */
+  private silhouette() {
+    let minX = Infinity
+    let maxX = -Infinity
+    let minY = Infinity
+    let maxY = -Infinity
+    for (const part of this.model.frameParts) {
+      const positions = part.geometry.attributes.position as THREE.BufferAttribute
+      for (let index = 0; index < positions.count; index += 2) {
+        this.corner.fromBufferAttribute(positions, index).applyMatrix4(part.matrixWorld).project(this.camera)
+        minX = Math.min(minX, this.corner.x)
+        maxX = Math.max(maxX, this.corner.x)
+        minY = Math.min(minY, this.corner.y)
+        maxY = Math.max(maxY, this.corner.y)
+      }
     }
-    return extent
+    if (!Number.isFinite(minX)) return null
+    return {
+      centerX: (minX + maxX) / 2,
+      centerY: (minY + maxY) / 2,
+      extent: Math.max((maxX - minX) / 2, (maxY - minY) / 2),
+    }
   }
 
   private applyLid() {
