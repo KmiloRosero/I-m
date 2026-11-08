@@ -42,6 +42,8 @@ export interface LaptopModel {
   /** Everything the pointer can act on. */
   pickables: THREE.Object3D[]
   shadow: THREE.Mesh
+  /** The outer shells, whose vertices bound the laptop in any pose (for framing). */
+  frameParts: THREE.Mesh[]
   screenLight: THREE.PointLight
   dispose: () => void
 }
@@ -414,6 +416,7 @@ export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: s
     lidParts,
     pickables,
     shadow,
+    frameParts: [base, lidShell],
     screenLight,
     dispose: () => disposables.forEach((item) => item.dispose()),
   }

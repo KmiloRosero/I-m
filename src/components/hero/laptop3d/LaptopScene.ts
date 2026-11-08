@@ -1,35 +1,20 @@
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { KEYBOARD_ROWS } from '@/utils/laptopKeyboard'
-import { createSpring, isSpringSettled, nearestAngle, settleSpring, stepSpring, type Spring } from '@/utils/spring'
+import { createSpring, isSpringSettled, settleSpring, stepSpring, type Spring } from '@/utils/spring'
 import { buildLaptop, HINGE, KEY_TRAVEL, OPEN_ANGLE, type LaptopKey, type LaptopModel } from './buildLaptop'
 import { ScreenPainter, type ScreenContent } from './ScreenPainter'
-
-export type LaptopView = 'threeQuarter' | 'front' | 'side' | 'back' | 'top' | 'bottom'
-
-export interface LaptopSceneState {
-  lidOpen: boolean
-  screenOn: boolean
-  autoRotate: boolean
-}
 
 export interface LaptopSceneOptions {
   container: HTMLElement
   content: ScreenContent
   reducedMotion: boolean
-  onState: (state: LaptopSceneState) => void
   onFirstInteraction: () => void
 }
 
 const deg = THREE.MathUtils.degToRad
-const VIEWS: Record<LaptopView, { azimuth: number; polar: number }> = {
-  threeQuarter: { azimuth: deg(34), polar: deg(63) },
-  front: { azimuth: 0, polar: deg(76) },
-  side: { azimuth: deg(90), polar: deg(84) },
-  back: { azimuth: deg(180), polar: deg(68) },
-  top: { azimuth: 0, polar: deg(6) },
-  bottom: { azimuth: deg(20), polar: deg(150) },
-}
+/** The resting view: three-quarters from the front right. */
+const HOME = { azimuth: deg(34), polar: deg(63) }
 const POLAR_MIN = deg(5)
 const POLAR_MAX = deg(165)
 const LID_MAX = deg(128)
@@ -38,16 +23,16 @@ const LID_LATCH = deg(16)
 /** The display turns off below this lid angle. */
 const SCREEN_ON_ANGLE = deg(38)
 const FOV = 30
-/** Radius of a sphere that holds the laptop in any pose (cm). */
-const FRAME_RADIUS = 21.5
+/** Share of the view (in NDC) the laptop's outline may fill. */
+const FRAME_FILL = 0.94
 const STEP = 1 / 120
 const DRAG_THRESHOLD = 6
 const ORBIT_SPEED = 0.0085
-const AUTO_ROTATE_SPEED = 0.4
 const CARET_INTERVAL = 530
 
 const SPRINGS = {
   view: { stiffness: 38, damping: 12 },
+  framing: { stiffness: 30, damping: 11 },
   lid: { stiffness: 55, damping: 10 },
   lidDrag: { stiffness: 420, damping: 42 },
   key: { stiffness: 1500, damping: 48 },
@@ -73,7 +58,7 @@ export class LaptopScene {
   private readonly container: HTMLElement
   private readonly renderer: THREE.WebGLRenderer
   private readonly scene = new THREE.Scene()
-  private readonly camera = new THREE.PerspectiveCamera(FOV, 1, 1, 400)
+  private readonly camera = new THREE.PerspectiveCamera(FOV, 1, 1, 1000)
   private readonly model: LaptopModel
   private readonly painter: ScreenPainter
   private readonly environment: THREE.Texture
@@ -87,8 +72,11 @@ export class LaptopScene {
   private readonly lid: Spring
   private lidDragging = false
   private screenOn = true
-  private autoRotate = false
-  private distance = 90
+  /** Camera distance, eased toward whatever fits the laptop's current outline. */
+  private readonly distance = createSpring(70)
+  private framed = false
+  private readonly bounds = new THREE.Box3()
+  private readonly corner = new THREE.Vector3()
   private readonly target = new THREE.Vector3()
 
   private mode: Mode = { kind: 'idle' }
@@ -103,7 +91,6 @@ export class LaptopScene {
   private screenDirty = true
   private caretTimer = 0
   private entranceTimer = 0
-  private lastState = ''
   private readonly heldKeys = new Set<string>()
   private readonly cleanups: (() => void)[] = []
 
@@ -144,7 +131,7 @@ export class LaptopScene {
     this.model = buildLaptop(this.painter.canvas, options.content.fonts)
     this.scene.add(this.model.root)
 
-    const home = VIEWS.threeQuarter
+    const home = HOME
     const animateIn = !this.reducedMotion
     this.azimuth = createSpring(animateIn ? home.azimuth - 1.25 : home.azimuth, home.azimuth)
     this.polar = createSpring(animateIn ? deg(48) : home.polar, home.polar)
@@ -155,44 +142,10 @@ export class LaptopScene {
     this.applyLid()
     this.resize()
     this.listen()
-    this.emitState()
     this.requestRender()
   }
 
-  // ── Public controls ─────────────────────────────────────────────────────
-
-  setView(view: LaptopView) {
-    this.markInteracted()
-    this.autoRotate = false
-    const { azimuth, polar } = VIEWS[view]
-    this.azimuth.target = nearestAngle(this.azimuth.value, azimuth)
-    this.polar.target = polar
-    if (this.reducedMotion) {
-      settleSpring(this.azimuth)
-      settleSpring(this.polar)
-    }
-    this.emitState()
-    this.requestRender()
-  }
-
-  toggleLid() {
-    this.markInteracted()
-    this.setLidTarget(this.lid.target > LID_LATCH ? 0 : OPEN_ANGLE)
-  }
-
-  toggleScreen() {
-    this.markInteracted()
-    this.screenOn = !this.screenOn
-    this.emitState()
-    this.requestRender()
-  }
-
-  setAutoRotate(on: boolean) {
-    this.markInteracted()
-    this.autoRotate = on && !this.reducedMotion
-    this.emitState()
-    this.requestRender()
-  }
+  // ── Public ──────────────────────────────────────────────────────────────
 
   dispose() {
     cancelAnimationFrame(this.frame)
@@ -210,20 +163,12 @@ export class LaptopScene {
   private setLidTarget(angle: number) {
     this.lid.target = THREE.MathUtils.clamp(angle, 0, LID_MAX)
     if (this.reducedMotion) settleSpring(this.lid)
-    this.emitState()
     this.requestRender()
   }
 
-  private emitState() {
-    const state: LaptopSceneState = {
-      lidOpen: this.lid.target > LID_LATCH,
-      screenOn: this.screenOn,
-      autoRotate: this.autoRotate,
-    }
-    const key = `${state.lidOpen}${state.screenOn}${state.autoRotate}`
-    if (key === this.lastState) return
-    this.lastState = key
-    this.options.onState(state)
+  private toggleScreen() {
+    this.screenOn = !this.screenOn
+    this.requestRender()
   }
 
   private markInteracted() {
@@ -259,10 +204,6 @@ export class LaptopScene {
   }
 
   private step(dt: number) {
-    if (this.autoRotate && this.mode.kind !== 'orbit') {
-      this.azimuth.target += AUTO_ROTATE_SPEED * dt
-      this.azimuth.value += AUTO_ROTATE_SPEED * dt
-    }
     if (this.mode.kind !== 'orbit') {
       stepSpring(this.azimuth, SPRINGS.view.stiffness, SPRINGS.view.damping, dt)
       stepSpring(this.polar, SPRINGS.view.stiffness, SPRINGS.view.damping, dt)
@@ -291,6 +232,8 @@ export class LaptopScene {
       }
     }
 
+    stepSpring(this.distance, SPRINGS.framing.stiffness, SPRINGS.framing.damping, dt)
+
     // Display power follows the switch and the lid angle.
     const powerTarget = this.screenOn && this.lid.value > SCREEN_ON_ANGLE ? 1 : 0
     if (this.painter.power !== powerTarget) {
@@ -303,8 +246,9 @@ export class LaptopScene {
   }
 
   private isAnimating() {
-    if (this.autoRotate || this.mode.kind === 'orbit' || this.lidDragging) return true
+    if (this.mode.kind === 'orbit' || this.lidDragging) return true
     if (!isSpringSettled(this.azimuth) || !isSpringSettled(this.polar) || !isSpringSettled(this.lid, 1e-4)) return true
+    if (!isSpringSettled(this.distance, 0.02)) return true
     const powerTarget = this.screenOn && this.lid.value > SCREEN_ON_ANGLE ? 1 : 0
     if (this.painter.power !== powerTarget) return true
     for (const key of this.model.keys.values()) if (key.offset !== key.target || key.velocity !== 0) return true
@@ -322,18 +266,7 @@ export class LaptopScene {
       }
     }
 
-    // Aim at the middle of the laptop in its current pose.
-    const openness = THREE.MathUtils.clamp(this.lid.value / OPEN_ANGLE, 0, 1.2)
-    this.target.set(0, THREE.MathUtils.lerp(1.2, 9.5, openness), THREE.MathUtils.lerp(0, -2.4, openness))
-
-    this.polar.value = THREE.MathUtils.clamp(this.polar.value, POLAR_MIN, POLAR_MAX)
-    const sinPolar = Math.sin(this.polar.value)
-    this.camera.position.set(
-      this.target.x + this.distance * sinPolar * Math.sin(this.azimuth.value),
-      this.target.y + this.distance * Math.cos(this.polar.value),
-      this.target.z + this.distance * sinPolar * Math.cos(this.azimuth.value),
-    )
-    this.camera.lookAt(this.target)
+    this.frame3d()
     // The floor shadow only makes sense from above the floor.
     this.model.shadow.visible = this.camera.position.y > 0
 
@@ -346,6 +279,55 @@ export class LaptopScene {
     this.renderer.render(this.scene, this.camera)
   }
 
+  /**
+   * Aims at the middle of the laptop in its current pose and eases the camera
+   * distance so its outline fills the view without being cut off, whether
+   * it is open, closed or seen from any side.
+   */
+  private frame3d() {
+    this.model.root.updateMatrixWorld(true)
+    this.bounds.makeEmpty()
+    for (const part of this.model.frameParts) this.bounds.expandByObject(part, true)
+    this.bounds.getCenter(this.target)
+
+    this.polar.value = THREE.MathUtils.clamp(this.polar.value, POLAR_MIN, POLAR_MAX)
+    // On the first frame (or without motion) iterate to the fit instead of easing.
+    const passes = !this.framed || this.reducedMotion ? 6 : 1
+    for (let pass = 0; pass < passes; pass += 1) {
+      this.placeCamera()
+      const fit = this.outlineExtent() / FRAME_FILL
+      if (Number.isFinite(fit) && fit > 0) this.distance.target = this.distance.value * fit
+      if (passes > 1) settleSpring(this.distance)
+    }
+    this.framed = true
+    this.placeCamera()
+  }
+
+  private placeCamera() {
+    const distance = this.distance.value
+    const sinPolar = Math.sin(this.polar.value)
+    this.camera.position.set(
+      this.target.x + distance * sinPolar * Math.sin(this.azimuth.value),
+      this.target.y + distance * Math.cos(this.polar.value),
+      this.target.z + distance * sinPolar * Math.cos(this.azimuth.value),
+    )
+    this.camera.lookAt(this.target)
+    this.camera.updateMatrixWorld()
+  }
+
+  /** Largest |x| or |y| of the laptop's bounding box corners, in NDC. */
+  private outlineExtent() {
+    const { min, max } = this.bounds
+    let extent = 0
+    for (let index = 0; index < 8; index += 1) {
+      this.corner
+        .set(index & 1 ? max.x : min.x, index & 2 ? max.y : min.y, index & 4 ? max.z : min.z)
+        .project(this.camera)
+      extent = Math.max(extent, Math.abs(this.corner.x), Math.abs(this.corner.y))
+    }
+    return extent
+  }
+
   private applyLid() {
     this.model.lid.rotation.x = Math.PI / 2 - this.lid.value
   }
@@ -356,13 +338,8 @@ export class LaptopScene {
     if (!width || !height) return
     this.renderer.setSize(width, height, false)
     this.camera.aspect = width / height
-    // Fit the bounding sphere in the narrower of the two fields of view.
-    const vertical = deg(FOV)
-    const horizontal = 2 * Math.atan(Math.tan(vertical / 2) * this.camera.aspect)
-    this.distance = FRAME_RADIUS / Math.sin(Math.min(vertical, horizontal) / 2)
-    this.camera.near = Math.max(1, this.distance - 60)
-    this.camera.far = this.distance + 60
     this.camera.updateProjectionMatrix()
+    this.framed = false
     this.render()
   }
 
@@ -446,8 +423,6 @@ export class LaptopScene {
       return
     }
 
-    this.autoRotate = false
-    this.emitState()
     this.mode = {
       kind: 'orbit',
       lastX: event.clientX,
@@ -520,6 +495,9 @@ export class LaptopScene {
         this.setLidTarget(this.lid.target < LID_LATCH ? 0 : this.lid.target)
       } else if (mode.link && event.type === 'pointerup') {
         window.open(mode.link, '_blank', 'noopener,noreferrer')
+      } else if (event.type === 'pointerup' && this.lid.target < LID_LATCH) {
+        // A tap on the closed lid opens it.
+        this.setLidTarget(OPEN_ANGLE)
       }
     }
     this.requestRender()

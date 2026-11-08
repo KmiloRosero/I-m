@@ -175,10 +175,10 @@ export class ScreenPainter {
 
   private drawPhoto() {
     const ctx = this.context
-    const x = 110
-    const y = 150
-    const width = 470
-    const height = 588
+    const x = 70
+    const y = 112
+    const width = 536
+    const height = 670
 
     // Offset block shadow, then the cyan ring.
     roundRect(ctx, x + 26, y + 26, width, height, 40)
@@ -207,8 +207,8 @@ export class ScreenPainter {
   private drawInfo() {
     const ctx = this.context
     const { fonts, name, title, meta, stack, links } = this.content
-    const left = 680
-    const maxWidth = SCREEN_WIDTH - left - 90
+    const left = 676
+    const maxWidth = SCREEN_WIDTH - left - 60
     ctx.textAlign = 'left'
     ctx.textBaseline = 'alphabetic'
 

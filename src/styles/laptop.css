@@ -14,7 +14,7 @@
   .laptop3d-viewport {
     position: relative;
     width: 100%;
-    height: clamp(17rem, 82vw, 30rem);
+    height: clamp(19rem, 92vw, 34rem);
     /* Horizontal drags turn the laptop; vertical swipes still scroll the page. */
     touch-action: pan-y;
     user-select: none;
@@ -56,74 +56,8 @@
     display: none;
   }
 
-  .laptop3d-controls {
-    display: flex;
-    max-width: calc(100% - 2 * var(--spacing-gutter));
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem 0.75rem;
-    animation: laptop3d-in 600ms var(--ease-out-strong) 300ms both;
-  }
-
-  .laptop3d-group {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.25rem;
-    padding: 0.25rem;
-    border: 1px solid rgb(255 255 255 / 0.22);
-    border-radius: 999px;
-    background: rgb(0 0 0 / 0.5);
-    backdrop-filter: blur(8px);
-  }
-
-  .laptop3d-button {
-    position: relative;
-    display: inline-flex;
-    min-height: 2.25rem;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.375rem 0.8rem;
-    border-radius: 999px;
-    color: var(--color-white);
-    cursor: pointer;
-    font-family: var(--font-display);
-    font-size: 0.8125rem;
-    font-weight: 700;
-    transition:
-      background-color var(--duration-press) var(--ease-out-strong),
-      color var(--duration-press) var(--ease-out-strong),
-      scale var(--duration-press) var(--ease-out-strong);
-  }
-
-  .laptop3d-button svg {
-    width: 1rem;
-    height: 1rem;
-  }
-
-  .laptop3d-button[aria-pressed='true'] {
-    background: var(--color-cyan);
-    color: var(--color-black);
-  }
-
-  .laptop3d-button:active {
-    scale: 0.95;
-  }
-
-  .laptop3d-button:focus-visible {
-    outline: 2px solid var(--color-cyan);
-    outline-offset: 2px;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .laptop3d-button:not([aria-pressed='true']):hover {
-      background: rgb(255 255 255 / 0.14);
-    }
-  }
-
   .laptop3d-hint {
-    flex-basis: 100%;
+    max-width: calc(100% - 2 * var(--spacing-gutter));
     color: rgb(255 255 255 / 0.75);
     font-family: var(--font-display);
     font-size: 0.75rem;
@@ -136,30 +70,18 @@
     opacity: 0;
   }
 
-  @media (max-width: 30rem) {
-    .laptop3d-group {
-      flex-wrap: nowrap;
-      gap: 0;
-    }
-
-    .laptop3d-button {
-      padding-inline: 0.55rem;
-      font-size: 0.75rem;
-    }
-  }
-
   @media (min-width: 64rem) {
     .laptop3d {
       position: absolute;
       inset: 0 0 0 auto;
-      width: 50%;
+      width: 52%;
       justify-content: center;
       margin: 0;
-      padding: 5rem 0 2rem;
+      padding: 4.5rem 0 1.5rem;
     }
 
     .laptop3d-viewport {
-      height: min(36rem, calc(100dvh - 13rem));
+      height: min(44rem, calc(100dvh - 8rem));
     }
   }
 
@@ -336,12 +258,10 @@
 
   @media (prefers-reduced-motion: reduce) {
     .laptop3d-gl,
-    .laptop3d-controls,
     .laptop3d-loader {
       animation: none;
     }
 
-    .laptop3d-button,
     .laptop3d-hint {
       transition: none;
     }
