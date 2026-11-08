@@ -107,7 +107,10 @@ export class LaptopScene {
     this.reducedMotion = options.reducedMotion
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' })
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    // Supersample standard-density screens a little for cleaner edges.
+    this.renderer.setPixelRatio(THREE.MathUtils.clamp(window.devicePixelRatio, 1.5, 2))
+    this.renderer.shadowMap.enabled = true
+    this.renderer.shadowMap.type = THREE.PCFShadowMap
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping
     this.renderer.toneMappingExposure = 1.05
@@ -128,7 +131,18 @@ export class LaptopScene {
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.25))
     const key = new THREE.DirectionalLight(0xffffff, 1.5)
     key.position.set(18, 32, 22)
-    const rim = new THREE.DirectionalLight(0x00e5ff, 0.55)
+    key.castShadow = true
+    key.shadow.mapSize.set(2048, 2048)
+    key.shadow.camera.left = -30
+    key.shadow.camera.right = 30
+    key.shadow.camera.top = 30
+    key.shadow.camera.bottom = -30
+    key.shadow.camera.near = 1
+    key.shadow.camera.far = 110
+    key.shadow.bias = -0.0004
+    key.shadow.normalBias = 0.03
+    key.shadow.radius = 4
+    const rim = new THREE.DirectionalLight(0x00e5ff, 0.3)
     rim.position.set(-26, 12, -22)
     const fill = new THREE.DirectionalLight(0x1f51ff, 0.45)
     fill.position.set(24, -6, -16)
@@ -137,6 +151,14 @@ export class LaptopScene {
     this.painter = new ScreenPainter(options.content, () => this.markScreenDirty())
     this.model = buildLaptop(this.painter.canvas, options.content.fonts)
     this.scene.add(this.model.root)
+    const anisotropy = this.renderer.capabilities.getMaxAnisotropy()
+    this.model.root.traverse((object) => {
+      const material = (object as THREE.Mesh).material
+      for (const entry of Array.isArray(material) ? material : material ? [material] : []) {
+        const map = (entry as THREE.MeshBasicMaterial).map
+        if (map) map.anisotropy = anisotropy
+      }
+    })
 
     const home = HOME
     const animateIn = !this.reducedMotion

@@ -19,7 +19,7 @@ const KEY_GAP = 0.34
 const KEY_HEIGHT = 0.22
 export const KEY_TRAVEL = 0.13
 const KEYBOARD_BACK = -BASE.depth / 2 + 3.05
-const ATLAS_UNIT = 112
+const ATLAS_UNIT = 160
 
 export interface LaptopKey {
   code: string
@@ -58,21 +58,21 @@ export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: s
   const root = new THREE.Group()
   root.name = 'cyborg-15'
 
-  // Materials: dark gunmetal shell, glossy black bezel, rubber, port shadows.
+  // Materials: dark gunmetal shell, matte black bezel, rubber, port shadows.
   const shell = track(
     new THREE.MeshPhysicalMaterial({
       color: 0x1a1c22,
-      metalness: 0.35,
-      roughness: 0.48,
-      clearcoat: 0.25,
-      clearcoatRoughness: 0.5,
+      metalness: 0.4,
+      roughness: 0.62,
+      roughnessMap: track(grainTexture()),
+      clearcoat: 0.12,
+      clearcoatRoughness: 0.6,
     }),
   )
   const deckMaterial = track(new THREE.MeshStandardMaterial({ color: 0x17191e, metalness: 0.08, roughness: 0.72 }))
   const well = track(new THREE.MeshStandardMaterial({ color: 0x08090c, roughness: 0.85 }))
-  const bezelMaterial = track(
-    new THREE.MeshStandardMaterial({ color: 0x050608, roughness: 0.62, metalness: 0, envMapIntensity: 0.25 }),
-  )
+  // Unlit, so the display's own glow doesn't wash the black bezel out to grey.
+  const bezelMaterial = track(new THREE.MeshBasicMaterial({ color: 0x0b0c10 }))
   const rubber = track(new THREE.MeshStandardMaterial({ color: 0x0b0b0d, roughness: 0.95 }))
   const portMaterial = track(new THREE.MeshStandardMaterial({ color: 0x020203, roughness: 1 }))
   const portInner = track(new THREE.MeshStandardMaterial({ color: 0x26292f, roughness: 0.7, metalness: 0.4 }))
@@ -88,16 +88,19 @@ export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: s
   )
 
   // ── Base ──────────────────────────────────────────────────────────────
-  const base = new THREE.Mesh(track(new RoundedBoxGeometry(BASE.width, BASE.height, BASE.depth, 4, 0.55)), shell)
+  const base = new THREE.Mesh(track(new RoundedBoxGeometry(BASE.width, BASE.height, BASE.depth, 10, 0.55)), shell)
   base.position.y = BASE.height / 2
+  base.receiveShadow = true
+  base.castShadow = true
   root.add(base)
 
   // Deck top plate, slightly inset so the shell's rounded edge frames it.
   const deck = new THREE.Mesh(
-    track(new RoundedBoxGeometry(BASE.width - 0.5, 0.04, BASE.depth - 0.5, 2, 0.02)),
+    track(new RoundedBoxGeometry(BASE.width - 0.5, 0.04, BASE.depth - 0.5, 3, 0.02)),
     deckMaterial,
   )
   deck.position.y = BASE.height + 0.005
+  deck.receiveShadow = true
   root.add(deck)
 
   // Smoked translucent strip behind the keyboard, as on the Cyborg's chassis.
@@ -121,6 +124,7 @@ export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: s
     well,
   )
   keyWell.position.set(0, BASE.height + 0.03, KEYBOARD_BACK + keyboardDepth / 2)
+  keyWell.receiveShadow = true
   root.add(keyWell)
 
   // Backlight: a cyan plane under the keys that shows through the gaps.
@@ -164,7 +168,7 @@ export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: s
     const id = `${width.toFixed(3)}x${depth.toFixed(3)}`
     let geometry = keyGeometries.get(id)
     if (!geometry) {
-      geometry = track(new RoundedBoxGeometry(width, KEY_HEIGHT, depth, 2, 0.08))
+      geometry = track(new RoundedBoxGeometry(width, KEY_HEIGHT, depth, 4, 0.08))
       keyGeometries.set(id, geometry)
     }
     return geometry
@@ -188,6 +192,8 @@ export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: s
       const mesh = new THREE.Mesh(keyGeometry(capWidth, capDepth), material)
       mesh.position.set(x + width / 2, restY, rowZ + rowDepth / 2)
       mesh.userData.code = spec.code
+      mesh.castShadow = true
+      mesh.receiveShadow = true
 
       const legend = new THREE.Mesh(
         track(legendGeometry(capWidth, capDepth, atlas.rects.get(spec.code))),
@@ -208,13 +214,14 @@ export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: s
 
   // Power button, right of the function row.
   const power = new THREE.Mesh(
-    track(new THREE.CylinderGeometry(0.42, 0.42, KEY_HEIGHT, 32)),
+    track(new THREE.CylinderGeometry(0.42, 0.42, KEY_HEIGHT, 48)),
     track(
       new THREE.MeshPhysicalMaterial({ color: 0x0c2f36, emissive: 0x00e5ff, emissiveIntensity: 0.6, roughness: 0.25 }),
     ),
   )
   power.position.set(keyboardWidth / 2 + 1.55, restY, KEYBOARD_BACK + KEYBOARD_ROWS[0]!.height * KEY_PITCH * 0.5)
   power.userData.code = 'Power'
+  power.castShadow = true
   root.add(power)
   pickables.push(power)
   keys.set('Power', { code: 'Power', mesh: power, restY, offset: 0, velocity: 0, target: 0 })
@@ -230,12 +237,21 @@ export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: s
   const keyboardFront = KEYBOARD_BACK + keyboardDepth
   const padDepth = 7.3
   const touchpad = new THREE.Mesh(
-    track(new RoundedBoxGeometry(12.2, 0.06, padDepth, 3, 0.03)),
-    track(new THREE.MeshPhysicalMaterial({ color: 0x1d2027, roughness: 0.32, clearcoat: 0.6, metalness: 0.2 })),
+    track(new RoundedBoxGeometry(12.2, 0.06, padDepth, 4, 0.03)),
+    track(
+      new THREE.MeshPhysicalMaterial({
+        color: 0x15171c,
+        roughness: 0.55,
+        clearcoat: 0.2,
+        clearcoatRoughness: 0.45,
+        metalness: 0.1,
+      }),
+    ),
   )
   const padRestY = BASE.height + 0.02
   touchpad.position.set(-1.3, padRestY, keyboardFront + 1.15 + padDepth / 2)
   touchpad.userData.code = 'Touchpad'
+  touchpad.receiveShadow = true
   root.add(touchpad)
   pickables.push(touchpad)
   keys.set('Touchpad', { code: 'Touchpad', mesh: touchpad, restY: padRestY, offset: 0, velocity: 0, target: 0 })
@@ -264,7 +280,7 @@ export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: s
     }
   }
   const roundPort = (x: number, z: number, radius: number) => {
-    const hole = new THREE.Mesh(track(new THREE.CylinderGeometry(radius, radius, 0.06, 24)), portMaterial)
+    const hole = new THREE.Mesh(track(new THREE.CylinderGeometry(radius, radius, 0.06, 40)), portMaterial)
     hole.rotation.z = Math.PI / 2
     hole.position.set(x, BASE.height * 0.5, z)
     root.add(hole)
@@ -306,9 +322,10 @@ export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: s
   }
 
   // ── Hinge ─────────────────────────────────────────────────────────────
-  const barrel = new THREE.Mesh(track(new THREE.CylinderGeometry(0.42, 0.42, BASE.width - 7, 24)), shell)
+  const barrel = new THREE.Mesh(track(new THREE.CylinderGeometry(0.42, 0.42, BASE.width - 7, 48)), shell)
   barrel.rotation.z = Math.PI / 2
   barrel.position.set(0, HINGE.y - 0.12, HINGE.z - 0.28)
+  barrel.castShadow = true
   root.add(barrel)
 
   // ── Lid ───────────────────────────────────────────────────────────────
@@ -326,9 +343,11 @@ export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: s
 
   const lidBottom = -0.25
   const lidShell = lidMesh(
-    new THREE.Mesh(track(new RoundedBoxGeometry(BASE.width, LID.height, LID.thickness, 4, 0.28)), shell),
+    new THREE.Mesh(track(new RoundedBoxGeometry(BASE.width, LID.height, LID.thickness, 10, 0.28)), shell),
   )
   lidShell.position.set(0, lidBottom + LID.height / 2, -LID.thickness / 2)
+  lidShell.castShadow = true
+  lidShell.receiveShadow = true
 
   const bezel = lidMesh(
     new THREE.Mesh(track(new RoundedBoxGeometry(BASE.width - 0.3, LID.height - 0.3, 0.03, 2, 0.012)), bezelMaterial),
@@ -357,7 +376,7 @@ export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: s
 
   const webcamY = SCREEN.bottom + SCREEN.height + (LID.height + lidBottom - SCREEN.bottom - SCREEN.height) / 2
   const webcam = new THREE.Mesh(
-    track(new THREE.CircleGeometry(0.2, 24)),
+    track(new THREE.CircleGeometry(0.2, 40)),
     track(new THREE.MeshPhysicalMaterial({ color: 0x0a0d18, roughness: 0.05, clearcoat: 1 })),
   )
   webcam.position.set(0, webcamY, 0.025)
@@ -406,6 +425,16 @@ export function buildLaptop(screenCanvas: HTMLCanvasElement, fonts: { display: s
   shadow.position.y = -0.27
   shadow.raycast = () => {}
   root.add(shadow)
+  // The key light's real shadow, so the outline under the laptop follows its pose.
+  const contact = new THREE.Mesh(
+    track(new THREE.PlaneGeometry(BASE.width * 2.2, BASE.depth * 2.6)),
+    track(new THREE.ShadowMaterial({ opacity: 0.38, depthWrite: false })),
+  )
+  // A child of the blob (already lying flat), so they show and hide together.
+  contact.position.z = 0.01
+  contact.receiveShadow = true
+  contact.raycast = () => {}
+  shadow.add(contact)
 
   return {
     root,
@@ -605,6 +634,26 @@ function bottomTexture(font: string) {
     ctx.font = `700 22px ${font}`
     ctx.fillText('Cyborg 15', 512, 556)
   })
+}
+
+/** Fine noise for the shell's roughness, so its sheen breaks up like bead-blasted metal. */
+function grainTexture() {
+  const texture = canvasTexture(512, 512, (ctx) => {
+    const image = ctx.createImageData(512, 512)
+    for (let index = 0; index < image.data.length; index += 4) {
+      const value = 150 + Math.random() * 70
+      image.data[index] = value
+      image.data[index + 1] = value
+      image.data[index + 2] = value
+      image.data[index + 3] = 255
+    }
+    ctx.putImageData(image, 0, 0)
+  })
+  texture.colorSpace = THREE.NoColorSpace
+  texture.wrapS = THREE.RepeatWrapping
+  texture.wrapT = THREE.RepeatWrapping
+  texture.repeat.set(6, 6)
+  return texture
 }
 
 function shadowTexture() {
