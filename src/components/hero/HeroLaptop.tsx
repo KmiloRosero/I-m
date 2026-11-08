@@ -21,7 +21,6 @@ export function HeroLaptop() {
   const reducedMotion = usePrefersReducedMotion()
   const viewportRef = useRef<HTMLDivElement>(null)
   const [status, setStatus] = useState<Status>('loading')
-  const [showHint, setShowHint] = useState(true)
 
   useEffect(() => {
     const viewport = viewportRef.current
@@ -44,7 +43,6 @@ export function HeroLaptop() {
           container: viewport,
           content: screenContent(fonts),
           reducedMotion,
-          onFirstInteraction: () => setShowHint(false),
         })
         setStatus('ready')
       } catch {
@@ -70,12 +68,6 @@ export function HeroLaptop() {
       </div>
 
       <LaptopPhoto hidden={status !== 'fallback'} />
-
-      {status === 'ready' ? (
-        <p aria-hidden={!showHint} className="laptop3d-hint" data-visible={showHint}>
-          Arrastra para girarlo · arrastra la pantalla para cerrarlo · pulsa las teclas o escribe
-        </p>
-      ) : null}
     </div>
   )
 }

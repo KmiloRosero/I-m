@@ -9,7 +9,6 @@ export interface LaptopSceneOptions {
   container: HTMLElement
   content: ScreenContent
   reducedMotion: boolean
-  onFirstInteraction: () => void
 }
 
 const deg = THREE.MathUtils.degToRad
@@ -64,7 +63,6 @@ export class LaptopScene {
   private readonly environment: THREE.Texture
   private readonly raycaster = new THREE.Raycaster()
   private readonly pointer = new THREE.Vector2()
-  private readonly options: LaptopSceneOptions
   private readonly reducedMotion: boolean
 
   private readonly azimuth: Spring
@@ -90,7 +88,6 @@ export class LaptopScene {
   private pointerId: number | null = null
   private downX = 0
   private downY = 0
-  private interacted = false
   private frame = 0
   private lastTime = 0
   private accumulator = 0
@@ -102,7 +99,6 @@ export class LaptopScene {
   private readonly cleanups: (() => void)[] = []
 
   constructor(options: LaptopSceneOptions) {
-    this.options = options
     this.container = options.container
     this.reducedMotion = options.reducedMotion
 
@@ -198,12 +194,6 @@ export class LaptopScene {
   private toggleScreen() {
     this.screenOn = !this.screenOn
     this.requestRender()
-  }
-
-  private markInteracted() {
-    if (this.interacted) return
-    this.interacted = true
-    this.options.onFirstInteraction()
   }
 
   private markScreenDirty() {
@@ -459,7 +449,6 @@ export class LaptopScene {
     this.pointerId = event.pointerId
     this.downX = event.clientX
     this.downY = event.clientY
-    this.markInteracted()
 
     const hit = this.pick(event)
     const code = hit?.object.userData.code as string | undefined

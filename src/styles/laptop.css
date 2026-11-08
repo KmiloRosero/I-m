@@ -56,20 +56,6 @@
     display: none;
   }
 
-  .laptop3d-hint {
-    max-width: calc(100% - 2 * var(--spacing-gutter));
-    color: rgb(255 255 255 / 0.75);
-    font-family: var(--font-display);
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-align: center;
-    transition: opacity 500ms var(--ease-out-strong);
-  }
-
-  .laptop3d-hint[data-visible='false'] {
-    opacity: 0;
-  }
-
   @media (min-width: 64rem) {
     .laptop3d {
       position: absolute;
@@ -260,10 +246,6 @@
     .laptop3d-gl,
     .laptop3d-loader {
       animation: none;
-    }
-
-    .laptop3d-hint {
-      transition: none;
     }
   }
 
