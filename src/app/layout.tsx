@@ -1,3 +1,5 @@
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata, Viewport } from 'next'
 import { Anybody, Newsreader } from 'next/font/google'
 import type { ReactNode } from 'react'
@@ -22,17 +24,25 @@ const bodyFont = Newsreader({
   variable: '--font-newsreader',
 })
 
-const SITE_TITLE = `${personalInfo.name} | Portafolio`
-
 export const metadata: Metadata = {
   metadataBase: siteUrl,
-  title: { default: SITE_TITLE, template: `%s | ${personalInfo.name}` },
+  title: { default: personalInfo.seoTitle, template: `%s | ${personalInfo.name}` },
   description: personalInfo.metaDescription,
+  applicationName: personalInfo.name,
+  authors: [{ name: personalInfo.name, url: siteUrl }],
+  creator: personalInfo.name,
   openGraph: {
-    title: SITE_TITLE,
+    title: personalInfo.seoTitle,
     description: personalInfo.metaDescription,
     locale: 'es_CO',
+    siteName: personalInfo.name,
     type: 'website',
+    url: '/',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: personalInfo.seoTitle,
+    description: personalInfo.metaDescription,
   },
 }
 
@@ -53,6 +63,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           {children}
           <SiteFooter />
         </div>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

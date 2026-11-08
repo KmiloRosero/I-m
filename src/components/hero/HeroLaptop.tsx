@@ -86,7 +86,7 @@ function screenContent(fonts: ScreenContent['fonts']): ScreenContent {
     meta: `${personalInfo.position} · ${personalInfo.location.split(',')[0]}, CO`,
     stack: personalInfo.featuredStack.slice(0, 4),
     links: [...personalInfo.socialLinks, ...getCvLinks()],
-    photoSrc: '/images/profile/camilo-rosero.png',
+    photoSrc: personalInfo.photoSrc,
     fonts,
   }
 }

@@ -79,7 +79,7 @@ export function LaptopPhoto({ hidden }: { hidden: boolean }) {
                   draggable={false}
                   fill
                   sizes="(min-width: 64rem) 12vw, 30vw"
-                  src="/images/profile/camilo-rosero.png"
+                  src={personalInfo.photoSrc}
                 />
               </div>
               <div className="laptop-ui-info">

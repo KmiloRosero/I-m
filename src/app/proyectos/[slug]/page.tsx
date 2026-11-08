@@ -4,9 +4,13 @@ import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { ProjectLinks } from '@/components/projects/ProjectLinks'
 import { ProjectMedia } from '@/components/projects/ProjectMedia'
+import { JsonLdScript } from '@/components/seo/JsonLdScript'
 import { getSectionHref } from '@/data/navigation'
+import { personalInfo } from '@/data/personalInfo'
 import { caseStudies, getCaseStudy } from '@/data/projects'
 import { getProjectMeta } from '@/utils/projectMeta'
+import { siteUrl } from '@/utils/siteUrl'
+import { projectJsonLd } from '@/utils/structuredData'
 
 interface CaseStudyPageProps {
   params: Promise<{ slug: string }>
@@ -21,19 +25,30 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: CaseStudyPageProps): Promise<Metadata> {
   const { slug } = await params
   const project = getCaseStudy(slug)
+  if (!project) return {}
 
-  return project
-    ? {
-        title: project.name,
-        description: project.description,
-        alternates: { canonical: `/proyectos/${project.slug}` },
-        openGraph: {
-          title: project.name,
-          description: project.description,
-          images: ['/opengraph-image'],
-        },
-      }
-    : {}
+  const path = `/proyectos/${project.slug}`
+  // Shared links show the project itself; PNG and JPEG are the formats every link preview reads.
+  const cover = project.screenshots.find(({ src }) => /\.(?:png|jpe?g)$/i.test(src))
+  const images = cover
+    ? [{ url: cover.src, width: cover.width, height: cover.height, alt: cover.alt }]
+    : ['/opengraph-image']
+
+  return {
+    title: project.name,
+    description: project.description,
+    alternates: { canonical: path },
+    openGraph: {
+      title: project.name,
+      description: project.description,
+      images,
+      locale: 'es_CO',
+      siteName: personalInfo.name,
+      type: 'article',
+      url: path,
+    },
+    twitter: { card: 'summary_large_image', title: project.name, description: project.description, images },
+  }
 }
 
 function CaseBlock({ children, title }: { children: ReactNode; title: string }) {
@@ -62,9 +77,16 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
   if (!project) notFound()
 
   const nextProject = caseStudies[(caseStudies.indexOf(project) + 1) % caseStudies.length] ?? project
+  const path = `/proyectos/${project.slug}`
+  const structuredData = projectJsonLd(project, siteUrl, path, [
+    { name: 'Inicio', path: '/' },
+    { name: 'Proyectos', path: getSectionHref('proyectos') },
+    { name: project.name, path },
+  ])
 
   return (
     <main id="contenido">
+      <JsonLdScript data={structuredData} />
       <header className="case-hero" data-layout={project.layout}>
         <div className="mx-auto max-w-content">
           <Link className="text-link" href={getSectionHref('proyectos')}>

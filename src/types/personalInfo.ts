@@ -3,10 +3,24 @@ export interface SocialLink {
   url: string
 }
 
+export interface PostalAddress {
+  locality: string
+  region: string
+  /** ISO 3166-1 alpha-2 code. */
+  country: string
+}
+
 export interface PersonalInfo {
   name: string
+  /** The name on GitHub and LinkedIn, so searches for it find this site. */
+  alternateName: string
   firstName: string
   lastName: string
+  /** Browser-tab and search-result title of the home page. */
+  seoTitle: string
+  /** Portrait used on the hero laptop and in structured data. */
+  photoSrc: string
+  address: PostalAddress
   degree: string
   /** Technical high-school degree already completed. */
   technicalDegree: string

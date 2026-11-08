@@ -10,8 +10,12 @@ export const GITHUB_PROFILE_URL = 'https://github.com/KmiloRosero'
 
 export const personalInfo: PersonalInfo = {
   name: FULL_NAME,
+  alternateName: 'Camilo Rosero',
   firstName: FIRST_NAME,
   lastName: LAST_NAME,
+  seoTitle: `${FULL_NAME} · Desarrollador de software en Pasto, Colombia`,
+  photoSrc: '/images/profile/camilo-rosero.png',
+  address: { locality: 'Pasto', region: 'Nariño', country: 'CO' },
   degree: DEGREE,
   technicalDegree: 'Técnico Industrial Especializado en Informática',
   title: 'Ingeniero en Software',
@@ -25,7 +29,7 @@ export const personalInfo: PersonalInfo = {
   university: UNIVERSITY,
   location: 'Pasto, Nariño, Colombia',
   email: 'juancamilorose@gmail.com',
-  metaDescription: `Portafolio de ${FULL_NAME}, estudiante de ${DEGREE} en la ${UNIVERSITY}, Pasto.`,
+  metaDescription: `Portafolio de Camilo «${FIRST_NAME}» ${LAST_NAME}, desarrollador freelance y estudiante de ${DEGREE} en Pasto, Colombia. Sitios web y apps móviles, de escritorio y para reloj.`,
   introduction: `Estudio en la ${UNIVERSITY}, en Pasto. Mis repositorios incluyen aplicaciones web, móviles, de escritorio y para reloj.`,
   about: `Estudio ${DEGREE} y, mientras avanzo en la carrera, he publicado proyectos web, móviles, de escritorio y para reloj, además de juegos. También he trabajado para diferentes negocios locales en mi ciudad y en municipios de Nariño.`,
   personality: 'Soy extrovertido y, a la vez, tranquilo.',
