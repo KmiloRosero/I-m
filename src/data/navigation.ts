@@ -3,6 +3,12 @@ import { perLocale } from '@/i18n/config'
 import { getMessages } from '@/i18n/messages'
 import { sectionId, type SectionKey } from '@/i18n/paths'
 
+/** A link to a separate page, like the blog, shown after the sections. */
+export interface PageLink {
+  href: string
+  label: string
+}
+
 export interface NavigationItem {
   /** The same in every language; styles and the active-section logic use it. */
   key: SectionKey

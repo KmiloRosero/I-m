@@ -74,23 +74,45 @@ async function screenshotData(image: ProjectImage): Promise<string | null> {
   }
 }
 
+interface CardContent {
+  eyebrow: string
+  title: string
+  subtitle: string
+  author: string
+  /** A PNG or JPEG data URL framed on the right; without it, the brand's blocks. */
+  cover: string | null
+}
+
 /**
- * A case study's share card: the project's name over the brand's cobalt, and its
- * first landscape screenshot framed on the right (the brand's blocks if it has none).
+ * The largest title size whose lines fit the column: Anybody at its expanded width
+ * runs about 1em a capital and a little under that for lowercase.
  */
-export async function renderProjectOgImage(project: Project, locale: Locale) {
-  const t = translator(locale)
-  const { name: author } = getPersonalInfo(locale)
-  const eyebrow = t('Caso de estudio', 'Case study').toUpperCase()
-  const cover = project.screenshots.find((image) => image.width > image.height && /\.(?:png|jpe?g)$/i.test(image.src))
-  const coverSrc = cover ? await screenshotData(cover) : null
+export function fitTitleSize(title: string, width: number, maxHeight: number): number {
+  const words = title.split(/\s+/)
+  for (let size = 104; size > 36; size -= 4) {
+    if (Math.max(...words.map((word) => word.length)) * size * 1.04 > width) continue
+    const perLine = Math.floor(width / (size * 0.96))
+    let lines = 1
+    let used = 0
+    for (const word of words) {
+      const next = used === 0 ? word.length : used + 1 + word.length
+      if (next > perLine) {
+        lines += 1
+        used = word.length
+      } else used = next
+    }
+    if (lines * size * 1.02 <= maxHeight) return size
+  }
+  return 36
+}
+
+/** A share card over the brand's cobalt: eyebrow, title, subtitle and author, plus a framed screenshot. */
+async function renderCard({ author, cover, eyebrow, subtitle, title }: CardContent) {
   // The font is subset to exactly the characters drawn.
-  const fontData = await loadDisplayFont(`${eyebrow}${project.name}${project.platform}${author}`)
+  const fontData = await loadDisplayFont(`${eyebrow}${title}${subtitle}${author}`)
   const fontFamily = fontData ? DISPLAY_FONT_NAME : 'sans-serif'
-  const textWidth = (coverSrc ? 600 : 860) - 64 - 32
-  // Anybody at its expanded width takes about 1em a letter: size the name so its longest word fits one line.
-  const longestWord = Math.max(...project.name.split(' ').map((word) => word.length))
-  const nameSize = Math.min(104, Math.floor(textWidth / (longestWord * 1.04)))
+  const columnWidth = cover ? 600 : 860
+  const titleSize = fitTitleSize(title, columnWidth - 64 - 32, 290)
 
   return new ImageResponse(
     <div style={{ background: brandColors.cobalt, display: 'flex', height: '100%', width: '100%' }}>
@@ -103,22 +125,20 @@ export async function renderProjectOgImage(project: Project, locale: Locale) {
           justifyContent: 'space-between',
           padding: 64,
           paddingRight: 32,
-          width: coverSrc ? 600 : 860,
+          width: columnWidth,
         }}
       >
         <div style={{ color: brandColors.yellow, display: 'flex', fontSize: 24, fontWeight: 800, letterSpacing: 4 }}>
           {eyebrow}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', fontSize: nameSize, fontWeight: 800, lineHeight: 0.95 }}>{project.name}</div>
-          <div style={{ display: 'flex', fontSize: 28, fontWeight: 800, marginTop: 28, opacity: 0.85 }}>
-            {project.platform}
-          </div>
+          <div style={{ display: 'flex', fontSize: titleSize, fontWeight: 800, lineHeight: 1 }}>{title}</div>
+          <div style={{ display: 'flex', fontSize: 28, fontWeight: 800, marginTop: 28, opacity: 0.85 }}>{subtitle}</div>
         </div>
         <div style={{ display: 'flex', fontSize: 24, fontWeight: 800 }}>{author}</div>
       </div>
-      {coverSrc && cover ? (
-        <div style={{ alignItems: 'center', display: 'flex', flexGrow: 1, paddingRight: 0 }}>
+      {cover ? (
+        <div style={{ alignItems: 'center', display: 'flex', flexGrow: 1 }}>
           {/* The frame bleeds off the right edge, with the brand's hard block shadow. */}
           <div
             style={{
@@ -134,7 +154,7 @@ export async function renderProjectOgImage(project: Project, locale: Locale) {
             <img
               alt=""
               height={400}
-              src={coverSrc}
+              src={cover}
               style={{ height: '100%', objectFit: 'cover', objectPosition: 'left top', width: '100%' }}
               width={680}
             />
@@ -151,4 +171,28 @@ export async function renderProjectOgImage(project: Project, locale: Locale) {
       fonts: fontData ? [{ data: fontData, name: DISPLAY_FONT_NAME, weight: 800 }] : [],
     },
   )
+}
+
+/** A case study's card, with its first landscape screenshot. */
+export async function renderProjectOgImage(project: Project, locale: Locale) {
+  const cover = project.screenshots.find((image) => image.width > image.height && /\.(?:png|jpe?g)$/i.test(image.src))
+  return renderCard({
+    eyebrow: translator(locale)('Caso de estudio', 'Case study').toUpperCase(),
+    title: project.name,
+    subtitle: project.platform,
+    author: getPersonalInfo(locale).name,
+    cover: cover ? await screenshotData(cover) : null,
+  })
+}
+
+/** A blog card: an article, or the blog itself when `article` is omitted. */
+export async function renderBlogOgImage(locale: Locale, article?: { title: string; subtitle: string }) {
+  const t = translator(locale)
+  return renderCard({
+    eyebrow: 'BLOG',
+    title: article?.title ?? t('Notas de lo que construyo', 'Notes on what I build'),
+    subtitle: article?.subtitle ?? t('Código, decisiones y lo que aprendí', 'Code, decisions and what I learned'),
+    author: getPersonalInfo(locale).name,
+    cover: null,
+  })
 }

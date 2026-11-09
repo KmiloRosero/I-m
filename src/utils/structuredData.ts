@@ -1,3 +1,4 @@
+import type { Article } from '@/types/blog'
 import type { PersonalInfo } from '@/types/personalInfo'
 import type { Project } from '@/types/project'
 
@@ -62,6 +63,18 @@ interface Crumb {
   path: string
 }
 
+function breadcrumbNode(crumbs: readonly Crumb[], site: URL): JsonLd {
+  return {
+    '@type': 'BreadcrumbList',
+    itemListElement: crumbs.map((crumb, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: crumb.name,
+      item: new URL(crumb.path, site).href,
+    })),
+  }
+}
+
 /** A project's source code, credited to the site's author, with its breadcrumb trail. */
 export function projectJsonLd(project: Project, site: URL, path: string, crumbs: readonly Crumb[]): JsonLd {
   const [cover] = project.screenshots
@@ -79,15 +92,60 @@ export function projectJsonLd(project: Project, site: URL, path: string, crumbs:
         ...(cover ? { image: new URL(cover.src, site).href } : {}),
         author: { '@id': personId(site) },
       },
+      breadcrumbNode(crumbs, site),
+    ],
+  }
+}
+
+interface PostSummary {
+  title: string
+  description: string
+  published: string
+  path: string
+}
+
+/** The blog index: the blog and the posts it lists. */
+export function blogJsonLd(name: string, site: URL, path: string, language: string, posts: readonly PostSummary[]): JsonLd {
+  return {
+    '@context': CONTEXT,
+    '@type': 'Blog',
+    name,
+    url: new URL(path, site).href,
+    inLanguage: language,
+    author: { '@id': personId(site) },
+    blogPost: posts.map((post) => ({
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.description,
+      datePublished: post.published,
+      url: new URL(post.path, site).href,
+    })),
+  }
+}
+
+/** One article, credited to the site's author, with its breadcrumb trail. */
+export function articleJsonLd(
+  article: Article,
+  site: URL,
+  path: string,
+  language: string,
+  crumbs: readonly Crumb[],
+): JsonLd {
+  return {
+    '@context': CONTEXT,
+    '@graph': [
       {
-        '@type': 'BreadcrumbList',
-        itemListElement: crumbs.map((crumb, index) => ({
-          '@type': 'ListItem',
-          position: index + 1,
-          name: crumb.name,
-          item: new URL(crumb.path, site).href,
-        })),
+        '@type': 'BlogPosting',
+        headline: article.title,
+        description: article.description,
+        datePublished: article.published,
+        inLanguage: language,
+        keywords: article.tags.join(', '),
+        url: new URL(path, site).href,
+        mainEntityOfPage: new URL(path, site).href,
+        author: { '@id': personId(site) },
       },
+      breadcrumbNode(crumbs, site),
     ],
   }
 }

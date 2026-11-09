@@ -1,6 +1,7 @@
 'use client'
 
 import { Menu, X } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DesktopNavigation } from '@/components/navigation/DesktopNavigation'
 import { LanguageSwitch } from '@/components/navigation/LanguageSwitch'
@@ -8,6 +9,7 @@ import { MobileMenu } from '@/components/navigation/MobileMenu'
 import { getNavigationItems } from '@/data/navigation'
 import { useActiveSection } from '@/hooks/useActiveSection'
 import { useLocale, useMessages } from '@/i18n/LocaleProvider'
+import { blogPath } from '@/i18n/paths'
 
 const MOBILE_MENU_ID = 'mobile-menu'
 const PAGE_CONTENT_ID = 'page-content'
@@ -20,6 +22,12 @@ export function SiteNavigation() {
   const ids = useMemo(() => items.map(({ id }) => id), [items])
   const activeId = useActiveSection(ids)
   const activeKey = items.find(({ id }) => id === activeId)?.key ?? ''
+  const pathname = usePathname()
+  const blog = {
+    href: blogPath(locale),
+    label: copy.blog,
+    current: pathname === blogPath(locale) || pathname.startsWith(`${blogPath(locale)}/`),
+  }
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const firstLinkRef = useRef<HTMLAnchorElement>(null)
@@ -58,7 +66,7 @@ export function SiteNavigation() {
   return (
     <>
       <div className="flex items-center gap-5 lg:gap-8">
-        <DesktopNavigation activeKey={activeKey} items={items} label={copy.mainNav} locale={locale} />
+        <DesktopNavigation activeKey={activeKey} blog={blog} items={items} label={copy.mainNav} locale={locale} />
         <LanguageSwitch />
         <button
           aria-controls={MOBILE_MENU_ID}
@@ -74,6 +82,7 @@ export function SiteNavigation() {
       </div>
       <MobileMenu
         activeKey={activeKey}
+        blog={blog}
         firstLinkRef={firstLinkRef}
         id={MOBILE_MENU_ID}
         isOpen={isMenuOpen}

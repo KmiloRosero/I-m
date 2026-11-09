@@ -1,11 +1,12 @@
 import Link from 'next/link'
 import type { RefObject } from 'react'
-import type { NavigationItem } from '@/data/navigation'
+import type { NavigationItem, PageLink } from '@/data/navigation'
 import type { Locale } from '@/i18n/config'
 import { homePath } from '@/i18n/paths'
 
 interface MobileMenuProps {
   activeKey: string
+  blog: PageLink & { current: boolean }
   firstLinkRef: RefObject<HTMLAnchorElement | null>
   id: string
   isOpen: boolean
@@ -15,7 +16,17 @@ interface MobileMenuProps {
   onNavigate: () => void
 }
 
-export function MobileMenu({ activeKey, firstLinkRef, id, isOpen, items, label, locale, onNavigate }: MobileMenuProps) {
+export function MobileMenu({
+  activeKey,
+  blog,
+  firstLinkRef,
+  id,
+  isOpen,
+  items,
+  label,
+  locale,
+  onNavigate,
+}: MobileMenuProps) {
   return (
     <nav aria-label={label} className="mobile-menu" data-open={isOpen} id={id} inert={!isOpen}>
       <ul className="flex flex-col gap-2">
@@ -32,6 +43,16 @@ export function MobileMenu({ activeKey, firstLinkRef, id, isOpen, items, label, 
             </Link>
           </li>
         ))}
+        <li>
+          <Link
+            aria-current={blog.current ? 'page' : undefined}
+            className="mobile-menu-link"
+            href={blog.href}
+            onClick={onNavigate}
+          >
+            {blog.label}
+          </Link>
+        </li>
       </ul>
     </nav>
   )

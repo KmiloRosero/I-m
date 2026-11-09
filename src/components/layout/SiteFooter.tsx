@@ -5,7 +5,7 @@ import { getNavigationItems } from '@/data/navigation'
 import { getPersonalInfo } from '@/data/personalInfo'
 import { translator, type Locale } from '@/i18n/config'
 import { getMessages } from '@/i18n/messages'
-import { homePath } from '@/i18n/paths'
+import { blogPath, homePath } from '@/i18n/paths'
 import { getProfessionalLinks } from '@/utils/professionalLinks'
 
 export function SiteFooter({ locale }: { locale: Locale }) {
@@ -40,6 +40,11 @@ export function SiteFooter({ locale }: { locale: Locale }) {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link className="text-link" href={blogPath(locale)}>
+                  {getMessages(locale).header.blog}
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>
