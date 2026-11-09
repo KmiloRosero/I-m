@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "test": "node --test src/utils/*.test.ts src/i18n/*.test.ts",
+    "test:smoke": "node --test tests/e2e/smoke.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
