@@ -209,6 +209,194 @@
     }
   }
 
+  /* ── Contact form ────────────────────────────────────────── */
+
+  .contact-form-block {
+    display: grid;
+    gap: 2rem;
+    margin-top: clamp(3.5rem, 8vw, 6rem);
+  }
+
+  .contact-form-heading {
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    font-stretch: 125%;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .contact-form-lead {
+    max-width: 34ch;
+    margin-top: 0.75rem;
+    color: rgb(255 255 255 / 0.85);
+    font-size: clamp(1.125rem, 1.5vw, 1.25rem);
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .contact-form-card {
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border: 3px solid var(--color-black);
+    background-color: var(--color-white);
+    box-shadow: 0.5rem 0.5rem 0 var(--color-black);
+    color: var(--color-black);
+  }
+
+  .contact-form,
+  .contact-form-row {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .contact-form-field {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .contact-form-field label {
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+
+  .contact-form-field input,
+  .contact-form-field textarea {
+    width: 100%;
+    padding: 0.75rem 0.875rem;
+    border: 2px solid var(--color-black);
+    border-radius: 0;
+    background-color: var(--color-white);
+    color: var(--color-black);
+    font: inherit;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    transition:
+      box-shadow var(--duration-press) var(--ease-out-strong),
+      border-color var(--duration-press) var(--ease-out-strong);
+  }
+
+  .contact-form-field textarea {
+    min-height: 9rem;
+    resize: vertical;
+  }
+
+  /* Focus is a hard cobalt shadow, the site's block-shadow language; the transparent
+     outline still shows in forced-colors mode. */
+  .contact-form-field input:focus-visible,
+  .contact-form-field textarea:focus-visible {
+    outline: 2px solid transparent;
+    box-shadow: 0.25rem 0.25rem 0 var(--color-cobalt);
+  }
+
+  .contact-form-field [aria-invalid='true'] {
+    border-color: var(--color-red);
+  }
+
+  .contact-form-error,
+  .contact-form-status {
+    color: var(--color-red);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+  }
+
+  /* The bot trap: off screen for people, still in the form for bots. */
+  .contact-form-trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .contact-form-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.25rem;
+    margin-top: 0.25rem;
+  }
+
+  .contact-form-submit {
+    min-height: 2.75rem;
+    box-shadow: 0.375rem 0.375rem 0 var(--color-black);
+  }
+
+  .contact-form-submit:disabled {
+    cursor: progress;
+    opacity: 0.7;
+  }
+
+  .contact-form-sent {
+    display: grid;
+    justify-items: start;
+    gap: 0.75rem;
+    animation: contact-sent-in 300ms var(--ease-out-strong) both;
+  }
+
+  .contact-form-sent:focus {
+    outline: none;
+  }
+
+  .contact-form-check {
+    display: grid;
+    width: 3rem;
+    height: 3rem;
+    place-items: center;
+    border-radius: 50%;
+    background-color: #22c55e;
+    color: var(--color-black);
+  }
+
+  .contact-form-sent-title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-stretch: 115%;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .contact-form-again {
+    margin-top: 0.5rem;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+
+  @media (min-width: 40rem) {
+    .contact-form-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .contact-form-block {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      align-items: start;
+      gap: 3rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-form-sent {
+      animation: none;
+    }
+
+    .contact-form-field input,
+    .contact-form-field textarea {
+      transition: none;
+    }
+  }
+
+  @keyframes contact-sent-in {
+    from {
+      opacity: 0;
+      translate: 0 0.5rem;
+    }
+  }
+
   .site-footer {
     padding: 3.5rem var(--spacing-gutter) 1.5rem;
     background-color: var(--color-black);

@@ -1,3 +1,4 @@
+import { ContactForm } from '@/components/contact/ContactForm'
 import { CopyEmailButton } from '@/components/contact/CopyEmailButton'
 import { Section } from '@/components/ui/Section'
 import { getPersonalInfo } from '@/data/personalInfo'
@@ -63,6 +64,8 @@ export function ContactSection({ locale }: { locale: Locale }) {
           <p className="contact-place">{info.location}</p>
         </div>
       </div>
+      {/* The form needs a mail service; without its key the email card above is the way in. */}
+      {process.env['RESEND_API_KEY'] ? <ContactForm email={info.email} /> : null}
     </Section>
   )
 }
