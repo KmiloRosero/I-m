@@ -25,11 +25,6 @@ export const getExperienceGroups = perLocale((locale): readonly { id: Experience
   ]
 })
 
-/** Public repositories on GitHub; update when the profile grows. */
-export const PUBLIC_REPO_COUNT = 36
-/** The year of the first public repository on GitHub. */
-export const FIRST_REPO_YEAR = 2024
-
 export const getExperience = perLocale((locale): readonly ExperienceEntry[] => {
   const t = translator(locale)
   const info = getPersonalInfo(locale)

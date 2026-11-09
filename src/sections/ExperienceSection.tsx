@@ -1,18 +1,20 @@
 import { ExperienceTimeline } from '@/components/experience/ExperienceTimeline'
 import { Section } from '@/components/ui/Section'
-import { FIRST_REPO_YEAR, getExperience, getExperienceGroups, PUBLIC_REPO_COUNT } from '@/data/experience'
+import { getExperience, getExperienceGroups } from '@/data/experience'
+import { getGithubStats } from '@/data/github'
 import type { Locale } from '@/i18n/config'
 import { getMessages } from '@/i18n/messages'
 
-export function ExperienceSection({ locale }: { locale: Locale }) {
+export async function ExperienceSection({ locale }: { locale: Locale }) {
   const entries = getExperience(locale)
+  const github = await getGithubStats()
   const copy = getMessages(locale).experience
   const liveSites = new Set(
     entries.flatMap((entry) => entry.links.filter((link) => link.kind === 'demo').map((link) => link.href)),
   ).size
   const stats = [
-    { value: String(FIRST_REPO_YEAR), label: copy.firstRepo },
-    { value: String(PUBLIC_REPO_COUNT), label: copy.publicRepos },
+    { value: String(github.firstRepoYear), label: copy.firstRepo },
+    { value: String(github.publicRepos), label: copy.publicRepos },
     { value: String(liveSites), label: copy.liveProjects },
   ]
 
