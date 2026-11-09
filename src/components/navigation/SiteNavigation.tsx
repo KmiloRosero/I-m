@@ -1,18 +1,25 @@
 'use client'
 
 import { Menu, X } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DesktopNavigation } from '@/components/navigation/DesktopNavigation'
+import { LanguageSwitch } from '@/components/navigation/LanguageSwitch'
 import { MobileMenu } from '@/components/navigation/MobileMenu'
-import { sectionIds } from '@/data/navigation'
+import { getNavigationItems } from '@/data/navigation'
 import { useActiveSection } from '@/hooks/useActiveSection'
+import { useLocale, useMessages } from '@/i18n/LocaleProvider'
 
 const MOBILE_MENU_ID = 'mobile-menu'
 const PAGE_CONTENT_ID = 'page-content'
 const DESKTOP_MEDIA_QUERY = '(min-width: 64rem)'
 
 export function SiteNavigation() {
-  const activeId = useActiveSection(sectionIds)
+  const locale = useLocale()
+  const copy = useMessages().header
+  const items = getNavigationItems(locale)
+  const ids = useMemo(() => items.map(({ id }) => id), [items])
+  const activeId = useActiveSection(ids)
+  const activeKey = items.find(({ id }) => id === activeId)?.key ?? ''
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const firstLinkRef = useRef<HTMLAnchorElement>(null)
@@ -50,23 +57,29 @@ export function SiteNavigation() {
 
   return (
     <>
-      <DesktopNavigation activeId={activeId} />
-      <button
-        aria-controls={MOBILE_MENU_ID}
-        aria-expanded={isMenuOpen}
-        aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
-        className="-mr-2 grid size-11 place-items-center lg:hidden"
-        onClick={() => setIsMenuOpen((isOpen) => !isOpen)}
-        ref={menuButtonRef}
-        type="button"
-      >
-        {isMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
-      </button>
+      <div className="flex items-center gap-5 lg:gap-8">
+        <DesktopNavigation activeKey={activeKey} items={items} label={copy.mainNav} locale={locale} />
+        <LanguageSwitch />
+        <button
+          aria-controls={MOBILE_MENU_ID}
+          aria-expanded={isMenuOpen}
+          aria-label={isMenuOpen ? copy.closeMenu : copy.openMenu}
+          className="-mr-2 grid size-11 place-items-center lg:hidden"
+          onClick={() => setIsMenuOpen((isOpen) => !isOpen)}
+          ref={menuButtonRef}
+          type="button"
+        >
+          {isMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+        </button>
+      </div>
       <MobileMenu
-        activeId={activeId}
+        activeKey={activeKey}
         firstLinkRef={firstLinkRef}
         id={MOBILE_MENU_ID}
         isOpen={isMenuOpen}
+        items={items}
+        label={copy.mobileNav}
+        locale={locale}
         onNavigate={() => setIsMenuOpen(false)}
       />
     </>

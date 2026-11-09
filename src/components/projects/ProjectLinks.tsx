@@ -1,11 +1,13 @@
 import { ExternalAwareLink } from '@/components/common/ExternalAwareLink'
+import type { Locale } from '@/i18n/config'
+import { getMessages } from '@/i18n/messages'
 import type { Project } from '@/types/project'
 
-export function ProjectLinks({ project }: { project: Project }) {
+export function ProjectLinks({ locale, project }: { locale: Locale; project: Project }) {
   const links = [
     { label: project.demoLabel, url: project.demoUrl },
     { label: project.repoLabel, url: project.repoUrl },
-    { label: 'Código del backend', url: project.extraRepoUrl },
+    { label: getMessages(locale).projects.backendCode, url: project.extraRepoUrl },
   ]
 
   return (
@@ -13,7 +15,7 @@ export function ProjectLinks({ project }: { project: Project }) {
       {links.map(({ label, url }) =>
         url ? (
           <li key={url}>
-            <ExternalAwareLink context={project.name} label={label} url={url} />
+            <ExternalAwareLink context={project.name} label={label} locale={locale} url={url} />
           </li>
         ) : null,
       )}

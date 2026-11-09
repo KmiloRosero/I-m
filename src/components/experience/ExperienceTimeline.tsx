@@ -15,6 +15,7 @@ import {
 import { useDragScroll } from '@/hooks/useDragScroll'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import type { ExperienceEntry, ExperienceGroup, ExperienceLink } from '@/types/experience'
+import { useLocale, useMessages } from '@/i18n/LocaleProvider'
 import { formatKinds } from '@/utils/categoryLabels'
 
 type Filter = ExperienceGroup | 'all'
@@ -38,11 +39,12 @@ const linkIcons: Record<ExperienceLink['kind'], ReactNode> = {
 }
 
 function EntryLink({ link, context }: { link: ExperienceLink; context: string }) {
+  const messages = useMessages()
   const content = (
     <>
       {linkIcons[link.kind]}
       {link.label}
-      <span className="sr-only"> de {context}</span>
+      <span className="sr-only">{messages.common.linkContext(context)}</span>
     </>
   )
 
@@ -50,7 +52,7 @@ function EntryLink({ link, context }: { link: ExperienceLink; context: string })
     return (
       <a className="xp-link" data-kind={link.kind} href={link.href} rel="noreferrer" target="_blank">
         {content}
-        <span className="sr-only"> (se abre en una pestaña nueva)</span>
+        <span className="sr-only">{messages.common.opensInNewTab}</span>
       </a>
     )
   }
@@ -62,6 +64,8 @@ function EntryLink({ link, context }: { link: ExperienceLink; context: string })
 }
 
 function EntryDetail({ entry }: { entry: ExperienceEntry }) {
+  const locale = useLocale()
+  const copy = useMessages().experience
   const { description, highlights, kinds, links, period, role, status, technologies, title } = entry
   const isLive = links.some((link) => link.kind === 'demo')
 
@@ -70,7 +74,7 @@ function EntryDetail({ entry }: { entry: ExperienceEntry }) {
       <div className="xp-detail-main">
         <p className="xp-detail-meta">
           <span className="xp-kind" data-kind={kinds[0]}>
-            {formatKinds(kinds)}
+            {formatKinds(kinds, locale)}
           </span>
           {period ? <span className="xp-period">{period}</span> : null}
         </p>
@@ -97,7 +101,7 @@ function EntryDetail({ entry }: { entry: ExperienceEntry }) {
         <div className="xp-detail-aside">
           {highlights.length > 0 ? (
             <div>
-              <p className="xp-label">Lo más importante</p>
+              <p className="xp-label">{copy.highlights}</p>
               <ul className="xp-highlights">
                 {highlights.map((highlight) => (
                   <li key={highlight}>{highlight}</li>
@@ -107,7 +111,7 @@ function EntryDetail({ entry }: { entry: ExperienceEntry }) {
           ) : null}
           {technologies.length > 0 ? (
             <div>
-              <p className="xp-label">Tecnologías</p>
+              <p className="xp-label">{copy.technologies}</p>
               <ul className="xp-tags">
                 {technologies.map((technology) => (
                   <li key={technology}>{technology}</li>
@@ -122,6 +126,7 @@ function EntryDetail({ entry }: { entry: ExperienceEntry }) {
 }
 
 export function ExperienceTimeline({ entries, groups }: ExperienceTimelineProps) {
+  const copy = useMessages().experience
   // The rail and the cards read left to right, oldest to newest.
   const chronological = [...entries].reverse()
   const [filter, setFilter] = useState<Filter>('all')
@@ -298,7 +303,7 @@ export function ExperienceTimeline({ entries, groups }: ExperienceTimelineProps)
   }
 
   const filters: readonly { id: Filter; label: string; count: number }[] = [
-    { id: 'all', label: 'Todo', count: chronological.length },
+    { id: 'all', label: copy.all, count: chronological.length },
     ...groups.map(({ id, label }) => ({
       id,
       label,
@@ -323,7 +328,7 @@ export function ExperienceTimeline({ entries, groups }: ExperienceTimelineProps)
 
   return (
     <div className="xp">
-      <div aria-label="Filtrar experiencia" className="xp-filters" role="group">
+      <div aria-label={copy.filter} className="xp-filters" role="group">
         {filters.map(({ id, label, count }) => (
           <button
             aria-pressed={filter === id}
@@ -348,7 +353,7 @@ export function ExperienceTimeline({ entries, groups }: ExperienceTimelineProps)
             ))}
           </ol>
 
-          <div aria-label="Línea de tiempo" className="xp-stops" role="group">
+          <div aria-label={copy.timeline} className="xp-stops" role="group">
             <span aria-hidden="true" className="xp-track">
               <span className="xp-track-fill" />
             </span>
@@ -382,13 +387,11 @@ export function ExperienceTimeline({ entries, groups }: ExperienceTimelineProps)
         </div>
       </div>
 
-      <p className="xp-hint">
-        Desliza las tarjetas, arrástralas con el mouse o gira la rueda sobre la línea de tiempo.
-      </p>
+      <p className="xp-hint">{copy.hint}</p>
 
       <div
-        aria-label="Experiencia"
-        aria-roledescription="carrusel"
+        aria-label={copy.carousel}
+        aria-roledescription={copy.carouselRole}
         className="xp-cards"
         ref={trackRef}
         role="region"
@@ -396,8 +399,8 @@ export function ExperienceTimeline({ entries, groups }: ExperienceTimelineProps)
         {visible.map((entry, index) => (
           // A carousel slide is a group (ARIA APG); <article> may not take that role.
           <div
-            aria-label={`${index + 1} de ${visible.length}: ${entry.title}`}
-            aria-roledescription="diapositiva"
+            aria-label={copy.slide(index + 1, visible.length, entry.title)}
+            aria-roledescription={copy.slideRole}
             className="xp-card"
             data-active={entry.id === active.id}
             id={`xp-card-${entry.id}`}
@@ -415,11 +418,11 @@ export function ExperienceTimeline({ entries, groups }: ExperienceTimelineProps)
         ))}
       </div>
 
-      <nav aria-label="Recorrer la experiencia" className="xp-stepper">
+      <nav aria-label={copy.browse} className="xp-stepper">
         <button className="xp-step" disabled={!previous} onClick={() => select(activeIndex - 1)} type="button">
           <ArrowLeft aria-hidden="true" className="size-5" />
           <span>
-            <span className="xp-step-hint">Anterior</span>
+            <span className="xp-step-hint">{copy.previous}</span>
             {previous ? <span className="xp-step-name">{previous.railLabel ?? previous.title}</span> : null}
           </span>
         </button>
@@ -434,7 +437,7 @@ export function ExperienceTimeline({ entries, groups }: ExperienceTimelineProps)
           type="button"
         >
           <span>
-            <span className="xp-step-hint">Siguiente</span>
+            <span className="xp-step-hint">{copy.next}</span>
             {next ? <span className="xp-step-name">{next.railLabel ?? next.title}</span> : null}
           </span>
           <ArrowRight aria-hidden="true" className="size-5" />

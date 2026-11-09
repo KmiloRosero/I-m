@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
+import { useMessages } from '@/i18n/LocaleProvider'
 import type { ProjectImage } from '@/types/project'
 
 interface ScreenshotSwitcherProps {
@@ -11,6 +12,7 @@ interface ScreenshotSwitcherProps {
 
 export function ScreenshotSwitcher({ images, sizes }: ScreenshotSwitcherProps) {
   const [activeIndex, setActiveIndex] = useState(0)
+  const copy = useMessages().projects
 
   return (
     <div>
@@ -30,7 +32,7 @@ export function ScreenshotSwitcher({ images, sizes }: ScreenshotSwitcherProps) {
           )
         })}
       </div>
-      <ul aria-label="Pantallas del proyecto" className="mt-3 flex flex-wrap gap-2">
+      <ul aria-label={copy.screens} className="mt-3 flex flex-wrap gap-2">
         {images.map((image, index) => (
           <li key={image.src}>
             <button

@@ -1,26 +1,29 @@
 import { visibleTestimonials } from '@/data/testimonials'
+import { perLocale } from '@/i18n/config'
+import { getMessages } from '@/i18n/messages'
+import { sectionId, type SectionKey } from '@/i18n/paths'
 
-interface NavigationItem {
+export interface NavigationItem {
+  /** The same in every language; styles and the active-section logic use it. */
+  key: SectionKey
+  /** The anchor id in this language. */
   id: string
   label: string
 }
 
-const testimonialItems: readonly NavigationItem[] =
-  visibleTestimonials.length > 0 ? [{ id: 'testimonios', label: 'Testimonios' }] : []
-
-export const navigationItems: readonly NavigationItem[] = [
-  { id: 'inicio', label: 'Inicio' },
-  { id: 'sobre-mi', label: 'Sobre mí' },
-  { id: 'stack', label: 'Stack' },
-  { id: 'servicios', label: 'Servicios' },
-  { id: 'proyectos', label: 'Proyectos' },
-  ...testimonialItems,
-  { id: 'experiencia', label: 'Experiencia' },
-  { id: 'contacto', label: 'Contacto' },
+const SECTION_KEYS: readonly SectionKey[] = [
+  'home',
+  'about',
+  'stack',
+  'services',
+  'projects',
+  ...(visibleTestimonials.length > 0 ? (['testimonials'] as const) : []),
+  'experience',
+  'contact',
 ]
 
-export function getSectionHref(id: string): string {
-  return `/#${id}`
-}
-
-export const sectionIds: readonly string[] = navigationItems.map(({ id }) => id)
+/** One stable list per language, so hooks that depend on it don't re-run every render. */
+export const getNavigationItems = perLocale((locale): readonly NavigationItem[] => {
+  const { sections } = getMessages(locale)
+  return SECTION_KEYS.map((key) => ({ key, id: sectionId(key, locale), label: sections[key] }))
+})

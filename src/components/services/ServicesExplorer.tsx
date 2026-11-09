@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react'
 import { ServiceVisual } from '@/components/services/ServiceVisual'
+import { useMessages } from '@/i18n/LocaleProvider'
 import type { Service, ServiceType } from '@/types/service'
 
 type Filter = ServiceType | 'all'
@@ -82,12 +83,13 @@ function ServicePreview({ service }: { service: Service }) {
 }
 
 function EvidenceLink({ name, href }: { name: string; href: string }) {
+  const messages = useMessages()
   if (href.startsWith('https://')) {
     return (
       <a className="service-chip" href={href} rel="noreferrer" target="_blank">
         {name}
         <ArrowUpRight aria-hidden="true" className="size-4" />
-        <span className="sr-only"> (repositorio en GitHub, se abre en una pestaña nueva)</span>
+        <span className="sr-only">{messages.common.repoInNewTab}</span>
       </a>
     )
   }
@@ -99,6 +101,8 @@ function EvidenceLink({ name, href }: { name: string; href: string }) {
 }
 
 export function ServicesExplorer({ services, types }: ServicesExplorerProps) {
+  const messages = useMessages()
+  const copy = messages.services
   const [filter, setFilter] = useState<Filter>('all')
   const [openId, setOpenId] = useState<string | null>(null)
   const dialogRef = useRef<HTMLDialogElement>(null)
@@ -125,7 +129,7 @@ export function ServicesExplorer({ services, types }: ServicesExplorerProps) {
   }
 
   const filters: readonly { id: Filter; label: string; count: number }[] = [
-    { id: 'all', label: 'Todos', count: services.length },
+    { id: 'all', label: copy.all, count: services.length },
     ...types.map(({ id, label }) => ({
       id,
       label,
@@ -135,7 +139,7 @@ export function ServicesExplorer({ services, types }: ServicesExplorerProps) {
 
   return (
     <>
-      <div aria-label="Filtrar servicios por tipo" className="service-filters" role="group">
+      <div aria-label={copy.filter} className="service-filters" role="group">
         {filters.map(({ id, label, count }) => (
           <button
             aria-pressed={filter === id}
@@ -174,7 +178,7 @@ export function ServicesExplorer({ services, types }: ServicesExplorerProps) {
                 <span className="service-card-title">{service.title}</span>
                 <span className="service-card-summary">{service.summary}</span>
                 <span className="service-card-cta">
-                  Ver servicio
+                  {copy.open}
                   <ArrowRight aria-hidden="true" className="service-card-arrow" />
                 </span>
               </span>
@@ -196,21 +200,21 @@ export function ServicesExplorer({ services, types }: ServicesExplorerProps) {
               <p className="service-dialog-eyebrow">
                 {typeLabel(openService.type)}
                 <span aria-hidden="true"> · </span>
-                {openIndex + 1} de {visible.length}
+                {messages.common.ofTotal(openIndex + 1, visible.length)}
               </p>
               <div className="flex gap-2">
                 {visible.length > 1 ? (
                   <>
-                    <button aria-label="Servicio anterior" className="service-dialog-button" onClick={() => step(-1)} type="button">
+                    <button aria-label={copy.previous} className="service-dialog-button" onClick={() => step(-1)} type="button">
                       <ArrowLeft aria-hidden="true" />
                     </button>
-                    <button aria-label="Servicio siguiente" className="service-dialog-button" onClick={() => step(1)} type="button">
+                    <button aria-label={copy.next} className="service-dialog-button" onClick={() => step(1)} type="button">
                       <ArrowRight aria-hidden="true" />
                     </button>
                   </>
                 ) : null}
                 <button
-                  aria-label="Cerrar"
+                  aria-label={messages.common.close}
                   className="service-dialog-button"
                   onClick={() => dialogRef.current?.close()}
                   type="button"
@@ -228,7 +232,7 @@ export function ServicesExplorer({ services, types }: ServicesExplorerProps) {
                 <p className="service-dialog-description">{openService.description}</p>
 
                 <div>
-                  <p className="service-dialog-label">Qué incluye</p>
+                  <p className="service-dialog-label">{copy.includes}</p>
                   <ul className="service-includes">
                     {openService.includes.map((item) => (
                       <li key={item}>{item}</li>
@@ -237,7 +241,7 @@ export function ServicesExplorer({ services, types }: ServicesExplorerProps) {
                 </div>
 
                 <div>
-                  <p className="service-dialog-label">Herramientas</p>
+                  <p className="service-dialog-label">{copy.tools}</p>
                   <ul className="service-tools">
                     {openService.tools.map((tool) => (
                       <li key={tool}>{tool}</li>
@@ -246,7 +250,7 @@ export function ServicesExplorer({ services, types }: ServicesExplorerProps) {
                 </div>
 
                 <div>
-                  <p className="service-dialog-label">Lo he hecho en</p>
+                  <p className="service-dialog-label">{copy.evidence}</p>
                   <ul className="service-evidence">
                     {openService.evidence.map((project) => (
                       <li key={project.href}>

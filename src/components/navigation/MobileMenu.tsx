@@ -1,31 +1,30 @@
 import Link from 'next/link'
 import type { RefObject } from 'react'
-import { getSectionHref, navigationItems } from '@/data/navigation'
+import type { NavigationItem } from '@/data/navigation'
+import type { Locale } from '@/i18n/config'
+import { homePath } from '@/i18n/paths'
 
 interface MobileMenuProps {
-  activeId: string
+  activeKey: string
   firstLinkRef: RefObject<HTMLAnchorElement | null>
   id: string
   isOpen: boolean
+  items: readonly NavigationItem[]
+  label: string
+  locale: Locale
   onNavigate: () => void
 }
 
-export function MobileMenu({ activeId, firstLinkRef, id, isOpen, onNavigate }: MobileMenuProps) {
+export function MobileMenu({ activeKey, firstLinkRef, id, isOpen, items, label, locale, onNavigate }: MobileMenuProps) {
   return (
-    <nav
-      aria-label="Menú móvil"
-      className="mobile-menu"
-      data-open={isOpen}
-      id={id}
-      inert={!isOpen}
-    >
+    <nav aria-label={label} className="mobile-menu" data-open={isOpen} id={id} inert={!isOpen}>
       <ul className="flex flex-col gap-2">
-        {navigationItems.map((item, index) => (
-          <li key={item.id}>
+        {items.map((item, index) => (
+          <li key={item.key}>
             <Link
-              aria-current={activeId === item.id ? 'true' : undefined}
+              aria-current={activeKey === item.key ? 'true' : undefined}
               className="mobile-menu-link"
-              href={getSectionHref(item.id)}
+              href={`${homePath(locale)}#${item.id}`}
               onClick={onNavigate}
               ref={index === 0 ? firstLinkRef : undefined}
             >

@@ -5,6 +5,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, type MouseEvent } from 'react'
 import { ProjectLinks } from '@/components/projects/ProjectLinks'
+import { useLocale, useMessages } from '@/i18n/LocaleProvider'
+import { projectPath } from '@/i18n/paths'
 import type { Project } from '@/types/project'
 import { formatKinds } from '@/utils/categoryLabels'
 import { getProjectMeta } from '@/utils/projectMeta'
@@ -17,6 +19,9 @@ interface ProjectDialogProps {
 }
 
 export function ProjectDialog({ onClose, project }: ProjectDialogProps) {
+  const locale = useLocale()
+  const messages = useMessages()
+  const copy = messages.projects
   const dialogRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
@@ -45,7 +50,7 @@ export function ProjectDialog({ onClose, project }: ProjectDialogProps) {
           <div className="flex items-start justify-between gap-4">
             <p>{getProjectMeta(project)}</p>
             <button
-              aria-label="Cerrar"
+              aria-label={messages.common.close}
               className="project-dialog-close"
               onClick={() => dialogRef.current?.close()}
               type="button"
@@ -73,18 +78,18 @@ export function ProjectDialog({ onClose, project }: ProjectDialogProps) {
           <dl className="project-dialog-facts">
             {project.categories.length > 0 ? (
               <div>
-                <dt>Tipo</dt>
-                <dd>{formatKinds(project.categories)}</dd>
+                <dt>{copy.type}</dt>
+                <dd>{formatKinds(project.categories, locale)}</dd>
               </div>
             ) : null}
             {project.contribution ? (
               <div>
-                <dt>Mi aporte</dt>
+                <dt>{copy.contribution}</dt>
                 <dd>{project.contribution}</dd>
               </div>
             ) : null}
             <div className="sm:col-span-2">
-              <dt>Stack</dt>
+              <dt>{copy.stack}</dt>
               <dd>{[...project.frameworks, ...project.technologies].join(', ')}</dd>
             </div>
           </dl>
@@ -97,11 +102,11 @@ export function ProjectDialog({ onClose, project }: ProjectDialogProps) {
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             {project.hasCaseStudy ? (
-              <Link className="button-link" data-variant="primary" href={`/proyectos/${project.slug}`}>
-                Ver caso de estudio
+              <Link className="button-link" data-variant="primary" href={projectPath(project.slug, locale)}>
+                {copy.caseStudy}
               </Link>
             ) : null}
-            <ProjectLinks project={project} />
+            <ProjectLinks locale={locale} project={project} />
           </div>
         </div>
       ) : null}

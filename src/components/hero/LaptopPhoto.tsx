@@ -2,9 +2,8 @@
 
 import Image from 'next/image'
 import { useEffect, useRef } from 'react'
-import { personalInfo } from '@/data/personalInfo'
-import { getCvLinks } from '@/utils/professionalLinks'
 import { expandQuad, quadTransform, type Quad } from '@/utils/quadTransform'
+import type { LaptopProfile } from './HeroLaptop'
 
 /** Width of the laptop photo (1423 × 963), and its display measured on it (TL, TR, BR, BL). */
 const ART_WIDTH = 1423
@@ -16,13 +15,11 @@ const SCREEN_QUAD: Quad = [
 ]
 const SCREEN_ASPECT = 9 / 16
 
-const profileLinks = [...personalInfo.socialLinks, ...getCvLinks()]
-
 /**
  * The laptop as a still photo with the profile laid onto its display.
  * Shown where WebGL is unavailable, or without JavaScript.
  */
-export function LaptopPhoto({ hidden }: { hidden: boolean }) {
+export function LaptopPhoto({ hidden, profile }: { hidden: boolean; profile: LaptopProfile }) {
   const artRef = useRef<HTMLDivElement>(null)
   const screenRef = useRef<HTMLDivElement>(null)
 
@@ -54,7 +51,7 @@ export function LaptopPhoto({ hidden }: { hidden: boolean }) {
     <div className="laptop-photo" data-hidden={hidden} hidden={hidden}>
       <div className="laptop-art" ref={artRef}>
         <Image
-          alt={`Portátil MSI Cyborg 15 con el perfil de ${personalInfo.name}`}
+          alt={profile.photoAlt}
           className="laptop-image"
           draggable={false}
           fill
@@ -69,7 +66,7 @@ export function LaptopPhoto({ hidden }: { hidden: boolean }) {
                 <i />
                 <i />
               </span>
-              <span className="laptop-ui-url">portafolio / {personalInfo.firstName.toLowerCase()}</span>
+              <span className="laptop-ui-url">{profile.screen.address}</span>
             </div>
             <div className="laptop-ui-main">
               <div className="laptop-ui-photo">
@@ -79,22 +76,22 @@ export function LaptopPhoto({ hidden }: { hidden: boolean }) {
                   draggable={false}
                   fill
                   sizes="(min-width: 64rem) 12vw, 30vw"
-                  src={personalInfo.photoSrc}
+                  src={profile.photoSrc}
                 />
               </div>
               <div className="laptop-ui-info">
                 <p aria-hidden="true" className="laptop-ui-hello">
-                  Hola, soy
+                  {profile.screen.hello}
                 </p>
-                <p className="laptop-ui-name">{personalInfo.name}</p>
-                <p className="laptop-ui-role">{personalInfo.title}</p>
+                <p className="laptop-ui-name">{profile.name}</p>
+                <p className="laptop-ui-role">{profile.title}</p>
                 <ul className="laptop-ui-links">
-                  {profileLinks.map((link) => (
+                  {profile.links.map((link) => (
                     <li key={link.url}>
                       <a href={link.url} rel="noreferrer" target="_blank">
                         {link.label}
                         <span aria-hidden="true"> ↗</span>
-                        <span className="sr-only"> (se abre en una pestaña nueva)</span>
+                        <span className="sr-only">{profile.opensInNewTab}</span>
                       </a>
                     </li>
                   ))}

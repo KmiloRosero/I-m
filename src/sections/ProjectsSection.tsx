@@ -1,13 +1,14 @@
 import { ProjectChest } from '@/components/projects/ProjectChest'
 import { Section } from '@/components/ui/Section'
+import { getProjects } from '@/data/projects'
+import type { Locale } from '@/i18n/config'
+import { getMessages } from '@/i18n/messages'
 
-export function ProjectsSection() {
+export function ProjectsSection({ locale }: { locale: Locale }) {
   return (
-    <Section id="proyectos" title="Proyectos" tone="black">
-      <p className="lead-text mt-6 max-w-text">
-        Cada cubo del cofre es un proyecto que hice. Ábrelo y elige uno para ver de qué se trata.
-      </p>
-      <ProjectChest />
+    <Section locale={locale} section="projects" tone="black">
+      <p className="lead-text mt-6 max-w-text">{getMessages(locale).projects.intro}</p>
+      <ProjectChest projects={getProjects(locale)} />
     </Section>
   )
 }

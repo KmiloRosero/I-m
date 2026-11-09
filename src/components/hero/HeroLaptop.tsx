@@ -1,27 +1,42 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { personalInfo } from '@/data/personalInfo'
+import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
-import { getCvLinks } from '@/utils/professionalLinks'
 import { hasHardwareWebGL } from '@/utils/webglSupport'
 import { LaptopPhoto } from './LaptopPhoto'
 import type { LaptopScene } from './laptop3d/LaptopScene'
-import type { ScreenContent } from './laptop3d/ScreenPainter'
+import type { ScreenContent, ScreenLabels, ScreenLink } from './laptop3d/ScreenPainter'
 
 type Status = 'loading' | 'ready' | 'fallback'
 
 const MONO_FONT = "ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace"
+
+/** Everything the laptop shows, already in the page's language. */
+export interface LaptopProfile {
+  name: string
+  title: string
+  meta: string
+  stack: string[]
+  links: ScreenLink[]
+  photoSrc: string
+  /** Accessible name of the 3D model. */
+  modelLabel: string
+  /** Alt text of the photo shown when there is no GPU. */
+  photoAlt: string
+  opensInNewTab: string
+  screen: ScreenLabels
+}
 
 /**
  * The hero's MSI Cyborg 15, as a real-time 3D model: drag to orbit it, drag
  * the lid to close it (tap to open), press its keys or type on your own keyboard.
  * Falls back to a photo where WebGL is unavailable.
  */
-export function HeroLaptop() {
+export function HeroLaptop({ profile }: { profile: LaptopProfile }) {
   const reducedMotion = usePrefersReducedMotion()
   const viewportRef = useRef<HTMLDivElement>(null)
   const [status, setStatus] = useState<Status>('loading')
+  const contentFor = useEffectEvent((fonts: ScreenContent['fonts']) => screenContent(profile, fonts))
 
   useEffect(() => {
     const viewport = viewportRef.current
@@ -45,11 +60,7 @@ export function HeroLaptop() {
         if (cancelled) return
         const { LaptopScene } = await import('./laptop3d/LaptopScene')
         if (cancelled) return
-        scene = new LaptopScene({
-          container: viewport,
-          content: screenContent(fonts),
-          reducedMotion,
-        })
+        scene = new LaptopScene({ container: viewport, content: contentFor(fonts), reducedMotion })
         if (await scene.start()) setStatus('ready')
       } catch {
         scene?.dispose()
@@ -66,16 +77,11 @@ export function HeroLaptop() {
 
   return (
     <div className="laptop3d" data-status={status}>
-      <div
-        aria-label={`Modelo 3D interactivo del portátil MSI Cyborg 15 con el perfil de ${personalInfo.name}`}
-        className="laptop3d-viewport"
-        ref={viewportRef}
-        role="img"
-      >
+      <div aria-label={profile.modelLabel} className="laptop3d-viewport" ref={viewportRef} role="img">
         {status === 'loading' ? <span aria-hidden="true" className="laptop3d-loader" /> : null}
       </div>
 
-      <LaptopPhoto hidden={status !== 'fallback'} />
+      <LaptopPhoto hidden={status !== 'fallback'} profile={profile} />
     </div>
   )
 }
@@ -87,16 +93,9 @@ function readFonts(): ScreenContent['fonts'] {
   return { display, body, mono: MONO_FONT }
 }
 
-function screenContent(fonts: ScreenContent['fonts']): ScreenContent {
-  return {
-    name: personalInfo.name,
-    title: personalInfo.title,
-    meta: `${personalInfo.position} · ${personalInfo.location.split(',')[0]}, CO`,
-    stack: personalInfo.featuredStack.slice(0, 4),
-    links: [...personalInfo.socialLinks, ...getCvLinks()],
-    photoSrc: personalInfo.photoSrc,
-    fonts,
-  }
+function screenContent(profile: LaptopProfile, fonts: ScreenContent['fonts']): ScreenContent {
+  const { links, meta, name, photoSrc, screen, stack, title } = profile
+  return { name, title, meta, stack, links, photoSrc, labels: screen, fonts }
 }
 
 function whenIdle(): Promise<void> {

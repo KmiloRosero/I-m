@@ -1,19 +1,18 @@
 'use client'
 
-import { useState, type CSSProperties } from 'react'
+import { useMemo, useState, type CSSProperties } from 'react'
 import { ProjectDialog } from '@/components/projects/ProjectDialog'
-import { projects } from '@/data/projects'
-import { createBlockTexture } from '@/utils/blockTextures'
+import { useMessages } from '@/i18n/LocaleProvider'
+import type { Project } from '@/types/project'
+import { createBlockTexture, type BlockTexture } from '@/utils/blockTextures'
 
 type CubeStyle = CSSProperties & Record<`--cube-${string}`, number | string>
 
 const CUBES_ID = 'project-cubes'
-const centerIndex = (projects.length - 1) / 2
-const blockTextures = projects.map(({ block }, index) => createBlockTexture(block, index + 1))
 
-function getCubeStyle(index: number): CubeStyle {
+function getCubeStyle(index: number, count: number, texture: BlockTexture | undefined): CubeStyle {
+  const centerIndex = (count - 1) / 2
   const offset = index - centerIndex
-  const texture = blockTextures[index]
   return {
     '--cube-arc': centerIndex - Math.abs(offset),
     '--cube-index': index,
@@ -23,7 +22,12 @@ function getCubeStyle(index: number): CubeStyle {
   }
 }
 
-export function ProjectChest() {
+export function ProjectChest({ projects }: { projects: readonly Project[] }) {
+  const copy = useMessages().projects
+  const blockTextures = useMemo(
+    () => projects.map(({ block }, index) => createBlockTexture(block, index + 1)),
+    [projects],
+  )
   const [isOpen, setIsOpen] = useState(false)
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
   const selectedProject = projects.find(({ slug }) => slug === selectedSlug) ?? null
@@ -38,7 +42,7 @@ export function ProjectChest() {
           onClick={() => setIsOpen((current) => !current)}
           type="button"
         >
-          <span className="sr-only">{isOpen ? 'Cerrar el cofre' : 'Abrir el cofre de proyectos'}</span>
+          <span className="sr-only">{isOpen ? copy.closeChest : copy.openChest}</span>
           <span aria-hidden="true" className="chest-object">
             <span className="chest-body">
               <span className="chest-face" data-side="front" />
@@ -58,9 +62,9 @@ export function ProjectChest() {
           </span>
         </button>
 
-        <ul aria-label="Proyectos del cofre" className="chest-cubes" id={CUBES_ID} inert={!isOpen}>
+        <ul aria-label={copy.cubes} className="chest-cubes" id={CUBES_ID} inert={!isOpen}>
           {projects.map(({ name, slug }, index) => (
-            <li key={slug} style={getCubeStyle(index)}>
+            <li key={slug} style={getCubeStyle(index, projects.length, blockTextures[index])}>
               <button
                 aria-haspopup="dialog"
                 className="project-cube-button"
@@ -80,10 +84,10 @@ export function ProjectChest() {
       </div>
 
       <p aria-live="polite" className="mt-4 text-center">
-        {isOpen ? 'Elige un cubo para ver el proyecto.' : 'Haz clic en el cofre para abrirlo.'}
+        {isOpen ? copy.pickCube : copy.clickChest}
       </p>
 
-      <nav aria-label="Lista de proyectos" className="mt-8">
+      <nav aria-label={copy.list} className="mt-8">
         <ul className="flex flex-wrap justify-center gap-2">
           {projects.map(({ name, slug }) => (
             <li key={slug}>

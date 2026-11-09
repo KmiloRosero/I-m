@@ -1,11 +1,12 @@
 import { ServicesExplorer } from '@/components/services/ServicesExplorer'
 import { Section } from '@/components/ui/Section'
-import { services, serviceTypes } from '@/data/services'
+import { getServices, getServiceTypes } from '@/data/services'
+import type { Locale } from '@/i18n/config'
 
-export function ServicesSection() {
+export function ServicesSection({ locale }: { locale: Locale }) {
   return (
-    <Section id="servicios" title="Servicios" titleAlign="end" tone="red">
-      <ServicesExplorer services={services} types={serviceTypes} />
+    <Section locale={locale} section="services" titleAlign="end" tone="red">
+      <ServicesExplorer services={getServices(locale)} types={getServiceTypes(locale)} />
     </Section>
   )
 }

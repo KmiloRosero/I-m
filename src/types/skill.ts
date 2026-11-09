@@ -1,7 +1,7 @@
 /** A project or repository where a technology shows up. */
 export interface ProjectRef {
   name: string
-  /** A case study path (`/proyectos/...`) or a GitHub repository URL. */
+  /** A case study path in the page's language, or a GitHub repository URL. */
   href: string
 }
 
@@ -13,6 +13,8 @@ export interface Technology {
 }
 
 export interface SkillGroup {
+  /** Stable key, the same in every language. */
+  id: string
   category: string
   technologies: readonly Technology[]
 }

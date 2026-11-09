@@ -1,10 +1,44 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { personalInfo } from '../data/personalInfo.ts'
+import type { PersonalInfo } from '../types/personalInfo.ts'
 import type { Project } from '../types/project.ts'
 import { homeJsonLd, projectJsonLd, serializeJsonLd, type JsonLd } from './structuredData.ts'
 
 const site = new URL('https://example.dev')
+
+const personalInfo: PersonalInfo = {
+  name: 'Kmilo Rosero',
+  alternateName: 'Camilo Rosero',
+  firstName: 'Kmilo',
+  lastName: 'Rosero',
+  seoTitle: 'Kmilo Rosero · Software developer',
+  photoSrc: '/images/profile/photo.webp',
+  address: { locality: 'Pasto', region: 'Nariño', country: 'CO' },
+  degree: 'Software Engineering',
+  technicalDegree: 'Technical diploma',
+  title: 'Software Engineer',
+  heroRoles: [],
+  studies: 'Software Engineering student',
+  position: 'Freelance developer',
+  availability: 'Available',
+  whatsappUrl: null,
+  semester: 'Fifth semester',
+  university: 'Universidad Cooperativa de Colombia',
+  location: 'Pasto, Nariño, Colombia',
+  email: 'hello@example.dev',
+  metaDescription: 'Portfolio.',
+  about: '',
+  personality: '',
+  workStyle: '',
+  interests: [],
+  ambition: '',
+  featuredStack: ['TypeScript'],
+  socialLinks: [
+    { label: 'GitHub', url: 'https://github.com/example' },
+    { label: 'LinkedIn', url: 'https://www.linkedin.com/in/example' },
+  ],
+  cvUrl: null,
+}
 
 const project: Project = {
   slug: 'demo',

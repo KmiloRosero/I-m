@@ -35,12 +35,63 @@
   }
 
   /* Over the hero the indicator takes the shader's cyan, like its buttons. */
-  [data-section='inicio'] .nav-link::after {
+  [data-section='home'] .nav-link::after {
     background-color: var(--color-cyan);
   }
 
   .nav-link[aria-current='true']::after {
     scale: 1 1;
+  }
+
+  /* ES · EN: the current language carries the same bar as the active nav link. */
+  .language-switch {
+    display: flex;
+    align-items: center;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .language-option {
+    position: relative;
+    display: grid;
+    min-width: 2.5rem;
+    min-height: 2.75rem;
+    place-items: center;
+    color: rgb(255 255 255 / 0.55);
+    transition:
+      color var(--duration-press) var(--ease-out-strong),
+      scale var(--duration-press) var(--ease-out-strong);
+  }
+
+  .language-option[aria-current='true'] {
+    color: var(--color-white);
+  }
+
+  .language-option[aria-current='true']::after {
+    position: absolute;
+    inset-inline: 0.625rem;
+    bottom: 0.625rem;
+    height: 0.1875rem;
+    background-color: var(--color-yellow);
+    content: '';
+  }
+
+  a.language-option:active {
+    scale: 0.94;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    a.language-option:hover {
+      color: var(--color-white);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .language-option {
+      transition: none;
+    }
   }
 
   .mobile-menu {

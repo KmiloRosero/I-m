@@ -1,6 +1,6 @@
 export type BlockType = 'gold' | 'grass' | 'log' | 'ore' | 'stone'
 
-interface BlockTexture {
+export interface BlockTexture {
   side: string
   top: string
 }

@@ -1,26 +1,26 @@
 import { ExperienceTimeline } from '@/components/experience/ExperienceTimeline'
 import { Section } from '@/components/ui/Section'
-import { experience, experienceGroups, FIRST_REPO_YEAR, PUBLIC_REPO_COUNT } from '@/data/experience'
+import { FIRST_REPO_YEAR, getExperience, getExperienceGroups, PUBLIC_REPO_COUNT } from '@/data/experience'
+import type { Locale } from '@/i18n/config'
+import { getMessages } from '@/i18n/messages'
 
-function countStats() {
+export function ExperienceSection({ locale }: { locale: Locale }) {
+  const entries = getExperience(locale)
+  const copy = getMessages(locale).experience
   const liveSites = new Set(
-    experience.flatMap((entry) => entry.links.filter((link) => link.kind === 'demo').map((link) => link.href)),
+    entries.flatMap((entry) => entry.links.filter((link) => link.kind === 'demo').map((link) => link.href)),
   ).size
-  return [
-    { value: String(FIRST_REPO_YEAR), label: 'primer repositorio en GitHub' },
-    { value: String(PUBLIC_REPO_COUNT), label: 'repositorios públicos' },
-    { value: String(liveSites), label: 'proyectos en línea' },
+  const stats = [
+    { value: String(FIRST_REPO_YEAR), label: copy.firstRepo },
+    { value: String(PUBLIC_REPO_COUNT), label: copy.publicRepos },
+    { value: String(liveSites), label: copy.liveProjects },
   ]
-}
 
-export function ExperienceSection() {
   return (
-    <Section id="experiencia" title="Experiencia" titleAlign="center" tone="white">
-      <p className="lead-text mx-auto mt-6 max-w-text text-center">
-        Lo que he estudiado, construido y entregado, con las fechas de cada proyecto en GitHub.
-      </p>
+    <Section locale={locale} section="experience" titleAlign="center" tone="white">
+      <p className="lead-text mx-auto mt-6 max-w-text text-center">{copy.intro}</p>
       <dl className="xp-stats">
-        {countStats().map(({ value, label }) => (
+        {stats.map(({ value, label }) => (
           <div key={label}>
             <dt className="sr-only">{label}</dt>
             <dd className="xp-stat-value">{value}</dd>
@@ -30,7 +30,7 @@ export function ExperienceSection() {
           </div>
         ))}
       </dl>
-      <ExperienceTimeline entries={experience} groups={experienceGroups} />
+      <ExperienceTimeline entries={entries} groups={getExperienceGroups(locale)} />
     </Section>
   )
 }

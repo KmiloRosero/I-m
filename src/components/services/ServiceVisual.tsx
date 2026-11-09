@@ -1,6 +1,7 @@
 import { ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'
 import type { CSSProperties } from 'react'
+import { useMessages } from '@/i18n/LocaleProvider'
 import type { GalleryImage, ServiceGroup, ServiceVisual as ServiceVisualData } from '@/types/service'
 
 type StaggerStyle = CSSProperties & Record<'--stagger-index', number>
@@ -27,6 +28,7 @@ function GroupList({ groups, variant }: { groups: readonly ServiceGroup[]; varia
 }
 
 function Gallery({ images }: { images: readonly GalleryImage[] }) {
+  const messages = useMessages()
   return (
     <ul className="service-gallery">
       {images.map((image, index) => (
@@ -43,9 +45,12 @@ function Gallery({ images }: { images: readonly GalleryImage[] }) {
               <span>{image.caption}</span>
               {image.href ? (
                 <a href={image.href} rel="noreferrer" target="_blank">
-                  Ver sitio
+                  {messages.services.visitSite}
                   <ArrowUpRight aria-hidden="true" className="size-4" />
-                  <span className="sr-only"> de {image.caption} (se abre en una pestaña nueva)</span>
+                  <span className="sr-only">
+                    {messages.common.linkContext(image.caption)}
+                    {messages.common.opensInNewTab}
+                  </span>
                 </a>
               ) : null}
             </figcaption>

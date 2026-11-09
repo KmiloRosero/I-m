@@ -1,8 +1,13 @@
-export const projectNames = {
-  biomedical: 'Biomedical Waste Platform',
-  cineTracker: 'CineTracker',
-  mercaJusto: 'MercaJusto',
-  moniWatch: 'MoniWatch',
-  portfolio: 'Este portafolio',
-  reticula: 'Retícula',
-} as const
+import { perLocale, translator } from '@/i18n/config'
+
+export const getProjectNames = perLocale((locale) => {
+  const t = translator(locale)
+  return {
+    biomedical: 'Biomedical Waste Platform',
+    cineTracker: 'CineTracker',
+    mercaJusto: 'MercaJusto',
+    moniWatch: 'MoniWatch',
+    portfolio: t('Este portafolio', 'This portfolio'),
+    reticula: 'Retícula',
+  } as const
+})

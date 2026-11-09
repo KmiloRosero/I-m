@@ -1,18 +1,27 @@
 import Link from 'next/link'
-import { getSectionHref, navigationItems } from '@/data/navigation'
+import type { NavigationItem } from '@/data/navigation'
+import type { Locale } from '@/i18n/config'
+import { homePath } from '@/i18n/paths'
 
-export function DesktopNavigation({ activeId }: { activeId: string }) {
+interface DesktopNavigationProps {
+  activeKey: string
+  items: readonly NavigationItem[]
+  label: string
+  locale: Locale
+}
+
+export function DesktopNavigation({ activeKey, items, label, locale }: DesktopNavigationProps) {
   return (
-    <nav aria-label="Principal" className="hidden lg:block" data-section={activeId}>
+    <nav aria-label={label} className="hidden lg:block" data-section={activeKey}>
       <ul className="flex gap-7">
-        {navigationItems.map(({ id, label }) => (
-          <li key={id}>
+        {items.map((item) => (
+          <li key={item.key}>
             <Link
-              aria-current={activeId === id ? 'true' : undefined}
+              aria-current={activeKey === item.key ? 'true' : undefined}
               className="nav-link"
-              href={getSectionHref(id)}
+              href={`${homePath(locale)}#${item.id}`}
             >
-              {label}
+              {item.label}
             </Link>
           </li>
         ))}

@@ -9,6 +9,18 @@ export interface ScreenLink {
   url: string
 }
 
+/** The words on the screen's chrome, in the page's language. */
+export interface ScreenLabels {
+  hello: string
+  online: string
+  /** The address bar, e.g. "portafolio / kmilo". */
+  address: string
+  /** The terminal prompt, e.g. "~/portafolio $". */
+  prompt: string
+  done: string
+  received: string
+}
+
 export interface ScreenContent {
   name: string
   title: string
@@ -16,6 +28,7 @@ export interface ScreenContent {
   stack: string[]
   links: ScreenLink[]
   photoSrc: string
+  labels: ScreenLabels
   fonts: { display: string; body: string; mono: string }
 }
 
@@ -161,13 +174,13 @@ export class ScreenPainter {
     ctx.fillStyle = 'rgba(255, 255, 255, 0.75)'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText('portafolio / kmilo', 735, 39)
+    ctx.fillText(this.content.labels.address, 735, 39)
 
     ctx.textAlign = 'right'
     ctx.fillStyle = '#86efac'
     ctx.font = `800 26px ${fonts.display}`
-    ctx.fillText('EN LÍNEA', SCREEN_WIDTH - 48, 39)
-    const labelWidth = ctx.measureText('EN LÍNEA').width
+    ctx.fillText(this.content.labels.online, SCREEN_WIDTH - 48, 39)
+    const labelWidth = ctx.measureText(this.content.labels.online).width
     ctx.beginPath()
     ctx.arc(SCREEN_WIDTH - 48 - labelWidth - 20, 39, 9, 0, Math.PI * 2)
     ctx.fillStyle = COLORS.green
@@ -219,7 +232,7 @@ export class ScreenPainter {
     ctx.fillStyle = COLORS.cyan
     ctx.font = `800 38px ${fonts.display}`
     ctx.letterSpacing = '7px'
-    ctx.fillText('HOLA, SOY', left, 228)
+    ctx.fillText(this.content.labels.hello.toUpperCase(), left, 228)
     ctx.letterSpacing = '0px'
 
     ctx.fillStyle = COLORS.white
@@ -292,8 +305,8 @@ export class ScreenPainter {
     const mid = top + 44
     let x = 48
     ctx.fillStyle = COLORS.cyan
-    ctx.fillText('~/portafolio $', x, mid)
-    x += ctx.measureText('~/portafolio $ ').width
+    ctx.fillText(this.content.labels.prompt, x, mid)
+    x += ctx.measureText(`${this.content.labels.prompt} `).width
 
     const command = this.typed || IDLE_COMMAND
     ctx.fillStyle = this.typed ? COLORS.white : 'rgba(255, 255, 255, 0.82)'
@@ -301,7 +314,7 @@ export class ScreenPainter {
     x += ctx.measureText(command).width
 
     if (!this.typed || this.submitted) {
-      const done = this.submitted ? '  ✓ recibido' : '  ✓ listo'
+      const done = `  ${this.submitted ? this.content.labels.received : this.content.labels.done}`
       ctx.fillStyle = '#86efac'
       ctx.fillText(done, x, mid)
       x += ctx.measureText(done).width

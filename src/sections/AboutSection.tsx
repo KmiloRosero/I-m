@@ -1,42 +1,43 @@
 import { ExternalAwareLink } from '@/components/common/ExternalAwareLink'
 import { Section } from '@/components/ui/Section'
-import { personalInfo } from '@/data/personalInfo'
+import { getPersonalInfo } from '@/data/personalInfo'
+import type { Locale } from '@/i18n/config'
+import { getMessages } from '@/i18n/messages'
 import { getProfessionalLinks } from '@/utils/professionalLinks'
 
-export function AboutSection() {
+export function AboutSection({ locale }: { locale: Locale }) {
+  const info = getPersonalInfo(locale)
+  const copy = getMessages(locale).about
   const facts = [
-    {
-      label: 'Estudio',
-      values: [personalInfo.degree, `Egresado del ${personalInfo.technicalDegree}`],
-    },
-    { label: 'Universidad', values: [personalInfo.university] },
-    { label: 'Semestre', values: [personalInfo.semester] },
-    { label: 'Vivo en', values: [personalInfo.location] },
+    { label: copy.studies, values: [info.degree, copy.graduate(info.technicalDegree)] },
+    { label: copy.university, values: [info.university] },
+    { label: copy.semester, values: [info.semester] },
+    { label: copy.livesIn, values: [info.location] },
   ]
 
   return (
-    <Section id="sobre-mi" title="Sobre mí" tone="yellow">
+    <Section locale={locale} section="about" tone="yellow">
       <div className="mt-10 grid gap-10 lg:grid-cols-12">
         <div className="lg:col-span-7">
-          <p className="about-statement">{personalInfo.about}</p>
+          <p className="about-statement">{info.about}</p>
           <div className="about-details">
             <div>
-              <h3 className="about-label">Cómo soy</h3>
+              <h3 className="about-label">{copy.personality}</h3>
               <p className="lead-text">
-                {personalInfo.personality} {personalInfo.workStyle}
+                {info.personality} {info.workStyle}
               </p>
             </div>
             <div>
-              <h3 className="about-label">Fuera del código</h3>
+              <h3 className="about-label">{copy.outsideCode}</h3>
               <ul className="about-interests">
-                {personalInfo.interests.map((interest) => (
+                {info.interests.map((interest) => (
                   <li key={interest}>{interest}</li>
                 ))}
               </ul>
             </div>
             <div className="about-ambition">
-              <h3 className="about-label">Lo que viene</h3>
-              <p className="about-ambition-text">{personalInfo.ambition}</p>
+              <h3 className="about-label">{copy.next}</h3>
+              <p className="about-ambition-text">{info.ambition}</p>
             </div>
           </div>
         </div>
@@ -53,9 +54,9 @@ export function AboutSection() {
             ))}
           </dl>
           <ul className="flex flex-wrap gap-x-5 gap-y-1">
-            {getProfessionalLinks().map((link) => (
+            {getProfessionalLinks(locale).map((link) => (
               <li key={link.url}>
-                <ExternalAwareLink {...link} />
+                <ExternalAwareLink {...link} locale={locale} />
               </li>
             ))}
           </ul>

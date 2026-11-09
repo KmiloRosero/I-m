@@ -1,16 +1,13 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useMessages } from '@/i18n/LocaleProvider'
 
 type CopyState = 'idle' | 'copied' | 'failed'
 
-const LABELS: Record<CopyState, string> = {
-  idle: 'Copiar correo',
-  copied: '¡Copiado!',
-  failed: 'Cópialo a mano',
-}
-
 export function CopyEmailButton({ email }: { email: string }) {
+  const text = useMessages().contact
+  const labels: Record<CopyState, string> = { idle: text.copy, copied: text.copied, failed: text.copyFailed }
   const [state, setState] = useState<CopyState>('idle')
   const timer = useRef(0)
 
@@ -29,7 +26,7 @@ export function CopyEmailButton({ email }: { email: string }) {
 
   return (
     <button className="contact-copy" data-state={state} onClick={copy} type="button">
-      <span aria-live="polite">{LABELS[state]}</span>
+      <span aria-live="polite">{labels[state]}</span>
     </button>
   )
 }

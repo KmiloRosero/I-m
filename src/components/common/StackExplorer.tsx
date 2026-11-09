@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { useRef, useState, type KeyboardEvent } from 'react'
+import { useMessages } from '@/i18n/LocaleProvider'
 import type { SkillArea, Technology } from '@/types/skill'
 
 interface Selection {
@@ -21,6 +22,8 @@ interface StackExplorerProps {
 }
 
 export function StackExplorer({ areas }: StackExplorerProps) {
+  const messages = useMessages()
+  const copy = messages.stack
   const [areaId, setAreaId] = useState(areas[0]?.id ?? '')
   const [selection, setSelection] = useState(() => (areas[0] ? firstSelection(areas[0]) : null))
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
@@ -69,7 +72,7 @@ export function StackExplorer({ areas }: StackExplorerProps) {
 
   return (
     <div className="mt-10">
-      <div aria-label="Áreas del stack" className="stack-tabs" role="tablist">
+      <div aria-label={copy.areas} className="stack-tabs" role="tablist">
         {areas.map((area, index) => (
           <button
             aria-controls={`stack-panel-${area.id}`}
@@ -119,7 +122,7 @@ export function StackExplorer({ areas }: StackExplorerProps) {
                         {technology.usedIn.length > 0 ? (
                           <span className="stack-chip-count">
                             {technology.usedIn.length}
-                            <span className="sr-only"> proyectos</span>
+                            <span className="sr-only">{copy.projectCount}</span>
                           </span>
                         ) : null}
                       </button>
@@ -141,7 +144,7 @@ export function StackExplorer({ areas }: StackExplorerProps) {
               ) : null}
               {selection.technology.usedIn.length > 0 ? (
                 <>
-                  <p className="stack-panel-label">Aparece en</p>
+                  <p className="stack-panel-label">{copy.usedIn}</p>
                   <ul className="stack-panel-list">
                     {selection.technology.usedIn.map((project) => {
                       const isExternal = project.href.startsWith('https://')
@@ -151,7 +154,7 @@ export function StackExplorer({ areas }: StackExplorerProps) {
                             <a className="stack-panel-link" href={project.href} rel="noreferrer" target="_blank">
                               {project.name}
                               <ArrowUpRight aria-hidden="true" className="size-4 shrink-0" />
-                              <span className="sr-only"> (repositorio en GitHub, se abre en una pestaña nueva)</span>
+                              <span className="sr-only">{messages.common.repoInNewTab}</span>
                             </a>
                           ) : (
                             <Link className="stack-panel-link" href={project.href}>

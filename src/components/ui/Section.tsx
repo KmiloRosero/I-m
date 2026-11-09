@@ -1,12 +1,16 @@
 import type { ReactNode } from 'react'
 import { StorySection } from '@/components/ui/StorySection'
+import type { Locale } from '@/i18n/config'
+import { getMessages } from '@/i18n/messages'
+import { sectionId, type SectionKey } from '@/i18n/paths'
 
 type SectionTone = 'black' | 'cobalt' | 'red' | 'white' | 'yellow'
 
 interface SectionProps {
   children?: ReactNode
-  id: string
-  title: string
+  /** Which home-page section this is; its anchor id and title come from the language. */
+  section: SectionKey
+  locale: Locale
   titleAlign?: 'center' | 'end' | 'start'
   tone: SectionTone
 }
@@ -19,7 +23,8 @@ const toneClasses: Record<SectionTone, string> = {
   yellow: 'bg-yellow text-black',
 }
 
-export function Section({ children, id, title, titleAlign = 'start', tone }: SectionProps) {
+export function Section({ children, locale, section, titleAlign = 'start', tone }: SectionProps) {
+  const id = sectionId(section, locale)
   const titleId = `${id}-title`
 
   return (
@@ -27,7 +32,7 @@ export function Section({ children, id, title, titleAlign = 'start', tone }: Sec
       <section aria-labelledby={titleId} className={`px-gutter py-section ${toneClasses[tone]}`}>
         <div className="mx-auto max-w-content">
           <h2 className="section-title" data-align={titleAlign} id={titleId}>
-            {title}
+            {getMessages(locale).sections[section]}
           </h2>
           {children}
         </div>

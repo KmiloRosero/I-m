@@ -38,7 +38,6 @@ export interface PersonalInfo {
   location: string
   email: string
   metaDescription: string
-  introduction: string
   about: string
   personality: string
   workStyle: string
