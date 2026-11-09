@@ -15,5 +15,10 @@ export function getCvLinks(locale: Locale): SocialLink[] {
 
 export function getProfessionalLinks(locale: Locale): SocialLink[] {
   const info = getPersonalInfo(locale)
-  return [{ label: info.email, url: `mailto:${info.email}` }, ...info.socialLinks, ...getCvLinks(locale)]
+  return [
+    { label: info.email, url: `mailto:${info.email}` },
+    ...(info.whatsappUrl ? [{ label: 'WhatsApp', url: info.whatsappUrl }] : []),
+    ...info.socialLinks,
+    ...getCvLinks(locale),
+  ]
 }

@@ -4,6 +4,9 @@ import type { PersonalInfo } from '@/types/personalInfo'
 const FIRST_NAME = 'Kmilo'
 const LAST_NAME = 'Rosero'
 const FULL_NAME = `${FIRST_NAME} ${LAST_NAME}`
+const LEGAL_NAME = 'Juan Camilo Rosero'
+/** Colombian mobile number, with the country code and no spaces, as wa.me expects. */
+const WHATSAPP_NUMBER = '573226456315'
 const UNIVERSITY = 'Universidad Cooperativa de Colombia'
 
 export const GITHUB_PROFILE_URL = 'https://github.com/KmiloRosero'
@@ -14,6 +17,7 @@ export const getPersonalInfo = perLocale((locale): PersonalInfo => {
 
   return {
     name: FULL_NAME,
+    legalName: LEGAL_NAME,
     alternateName: 'Camilo Rosero',
     firstName: FIRST_NAME,
     lastName: LAST_NAME,
@@ -36,15 +40,19 @@ export const getPersonalInfo = perLocale((locale): PersonalInfo => {
     studies: t(`Estudiante de ${degree}`, `${degree} student`),
     position: t('Desarrollador freelance', 'Freelance developer'),
     availability: t('Disponible para proyectos freelance', 'Available for freelance projects'),
-    // Format: https://wa.me/57XXXXXXXXXX (country code, no spaces or +).
-    whatsappUrl: null,
+    whatsappUrl: `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+      t(
+        `Hola ${FIRST_NAME}, vi tu portafolio y quiero hablar de un proyecto.`,
+        `Hi ${FIRST_NAME}, I saw your portfolio and I'd like to talk about a project.`,
+      ),
+    )}`,
     semester: t('Quinto semestre', 'Fifth semester'),
     university: UNIVERSITY,
     location: 'Pasto, Nariño, Colombia',
     email: 'juancamilorose@gmail.com',
     metaDescription: t(
-      `Portafolio de Camilo «${FIRST_NAME}» ${LAST_NAME}, desarrollador freelance y estudiante de ${degree} en Pasto, Colombia. Sitios web y apps móviles, de escritorio y para reloj.`,
-      `Portfolio of Camilo “${FIRST_NAME}” ${LAST_NAME}, a freelance developer and ${degree} student in Pasto, Colombia. Websites and apps for mobile, desktop and smartwatches.`,
+      `Portafolio de Juan Camilo «${FIRST_NAME}» ${LAST_NAME}, desarrollador freelance y estudiante de ${degree} en Pasto, Colombia. Sitios web y apps móviles, de escritorio y para reloj.`,
+      `Portfolio of Juan Camilo “${FIRST_NAME}” ${LAST_NAME}, a freelance developer and ${degree} student in Pasto, Colombia. Websites and apps for mobile, desktop and smartwatches.`,
     ),
     about: t(
       `Estudio ${degree} y, mientras avanzo en la carrera, he publicado proyectos web, móviles, de escritorio y para reloj, además de juegos. También he trabajado para diferentes negocios locales en mi ciudad y en municipios de Nariño.`,

@@ -8,6 +8,7 @@ const site = new URL('https://example.dev')
 
 const personalInfo: PersonalInfo = {
   name: 'Kmilo Rosero',
+  legalName: 'Juan Camilo Rosero',
   alternateName: 'Camilo Rosero',
   firstName: 'Kmilo',
   lastName: 'Rosero',
@@ -78,10 +79,10 @@ test('escapes < so a value can never close the script tag', () => {
   assert.deepEqual(JSON.parse(json), { name: project.name })
 })
 
-test('describes the person with both names, an absolute photo and the profiles', () => {
+test('describes the person by their legal name, with the names people search for', () => {
   const [person, website] = graph(homeJsonLd(personalInfo, site, 'es'))
-  assert.equal(person?.['name'], personalInfo.name)
-  assert.equal(person?.['alternateName'], personalInfo.alternateName)
+  assert.equal(person?.['name'], 'Juan Camilo Rosero')
+  assert.deepEqual(person?.['alternateName'], ['Kmilo Rosero', 'Camilo Rosero'])
   assert.equal(person?.['image'], new URL(personalInfo.photoSrc, site).href)
   assert.deepEqual(
     person?.['sameAs'],

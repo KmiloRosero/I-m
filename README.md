@@ -1,6 +1,6 @@
 # Portafolio de Kmilo Rosero
 
-Portafolio personal de Camilo «Kmilo» Rosero, desarrollador freelance y estudiante de Ingeniería de Software en Pasto, Colombia. En español y en inglés.
+Portafolio personal de Juan Camilo «Kmilo» Rosero, desarrollador freelance y estudiante de Ingeniería de Software en Pasto, Colombia. En español y en inglés.
 
 **En vivo:** [i-m-nu.vercel.app](https://i-m-nu.vercel.app) · [English version](https://i-m-nu.vercel.app/en)
 
@@ -84,7 +84,7 @@ Cada push a `main` pasa por integración continua (GitHub Actions):
 
 ## In English
 
-Personal portfolio of Camilo “Kmilo” Rosero, a freelance developer and Software Engineering student in Pasto, Colombia. Live at [i-m-nu.vercel.app/en](https://i-m-nu.vercel.app/en).
+Personal portfolio of Juan Camilo “Kmilo” Rosero, a freelance developer and Software Engineering student in Pasto, Colombia. Live at [i-m-nu.vercel.app/en](https://i-m-nu.vercel.app/en).
 
 Built with Next.js 16, React 19, TypeScript, Tailwind CSS 4 and Three.js, deployed on Vercel. It includes:
 

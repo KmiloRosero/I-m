@@ -11,7 +11,10 @@ export interface PostalAddress {
 }
 
 export interface PersonalInfo {
+  /** The name the site goes by. */
   name: string
+  /** The full legal name, for search engines and the copyright line. */
+  legalName: string
   /** The name on GitHub and LinkedIn, so searches for it find this site. */
   alternateName: string
   firstName: string
@@ -31,7 +34,7 @@ export interface PersonalInfo {
   position: string
   /** Short status shown in the hero, e.g. availability for work. */
   availability: string
-  /** wa.me link for WhatsApp; the hero shows a WhatsApp button only when set. */
+  /** wa.me link with a ready-made first message; the hero shows a WhatsApp button only when set. */
   whatsappUrl: string | null
   semester: string
   university: string

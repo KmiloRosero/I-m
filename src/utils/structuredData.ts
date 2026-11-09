@@ -21,8 +21,10 @@ function personNode(info: PersonalInfo, site: URL): JsonLd {
   return {
     '@type': 'Person',
     '@id': personId(site),
-    name: info.name,
-    alternateName: info.alternateName,
+    // The legal name is the person; the name the site goes by and the one on
+    // GitHub and LinkedIn are what people may search for instead.
+    name: info.legalName,
+    alternateName: [info.name, info.alternateName],
     url: site.href,
     image: new URL(info.photoSrc, site).href,
     email: `mailto:${info.email}`,

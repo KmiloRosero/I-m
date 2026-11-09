@@ -50,7 +50,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         </div>
 
         <p className="mt-12 border-t-2 border-white pt-4">
-          © <CurrentYear initialYear={new Date().getFullYear()} /> {info.name}. {info.location}.
+          © <CurrentYear initialYear={new Date().getFullYear()} /> {info.legalName}. {info.location}.
         </p>
       </div>
     </footer>
