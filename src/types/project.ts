@@ -12,6 +12,12 @@ export interface ProjectImage {
   width: number
 }
 
+export interface ProjectVideo {
+  label: string
+  poster: string
+  src: string
+}
+
 export interface Project {
   slug: string
   name: string
@@ -34,6 +40,7 @@ export interface Project {
   architecture: readonly string[]
   flowSteps: readonly string[]
   screenshots: readonly ProjectImage[]
+  video: ProjectVideo | null
   repoUrl: string
   repoLabel: string
   extraRepoUrl: string | null

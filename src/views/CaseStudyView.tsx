@@ -80,6 +80,23 @@ export function CaseStudyView({ locale, project }: { locale: Locale; project: Pr
         </div>
       </div>
 
+      {project.video ? (
+        <section aria-label={copy.trailer} className="bg-black px-gutter pt-section text-white">
+          <div className="mx-auto max-w-content">
+            {/* preload="none": the poster stands in until someone presses play. */}
+            <video
+              aria-label={project.video.label}
+              className="case-video"
+              controls
+              playsInline
+              poster={project.video.poster}
+              preload="none"
+              src={project.video.src}
+            />
+          </div>
+        </section>
+      ) : null}
+
       {project.screenshots.length > 0 ? (
         <section aria-label={copy.screenshots} className="bg-black px-gutter py-section text-white">
           <div className="case-screens mx-auto max-w-content" data-layout={project.layout}>

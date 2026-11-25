@@ -63,6 +63,7 @@ const project: Project = {
   architecture: [],
   flowSteps: [],
   screenshots: [],
+  video: null,
   repoUrl: 'https://github.com/demo/demo',
   repoLabel: 'Código',
   extraRepoUrl: null,
