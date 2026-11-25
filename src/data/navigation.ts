@@ -1,4 +1,4 @@
-import { visibleTestimonials } from '@/data/testimonials'
+import { hasTestimonials } from '@/data/testimonials'
 import { perLocale } from '@/i18n/config'
 import { getMessages } from '@/i18n/messages'
 import { sectionId, type SectionKey } from '@/i18n/paths'
@@ -23,7 +23,7 @@ const SECTION_KEYS: readonly SectionKey[] = [
   'stack',
   'services',
   'projects',
-  ...(visibleTestimonials.length > 0 ? (['testimonials'] as const) : []),
+  ...(hasTestimonials ? (['testimonials'] as const) : []),
   'experience',
   'contact',
 ]
