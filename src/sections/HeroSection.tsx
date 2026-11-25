@@ -1,8 +1,8 @@
 import { MessageCircle } from 'lucide-react'
+import { HERO_BACKDROP_SCRIPT, HeroBackdrop, HeroBackdropSwitch } from '@/components/hero/HeroBackdrop'
 import { HeroLaptop, type LaptopProfile } from '@/components/hero/HeroLaptop'
 import { ButtonLink } from '@/components/ui/ButtonLink'
 import { MorphingText } from '@/components/ui/liquid-text'
-import { NeuroNoiseBackground } from '@/components/ui/NeuroNoiseBackground'
 import { StorySection } from '@/components/ui/StorySection'
 import { getPersonalInfo } from '@/data/personalInfo'
 import type { Locale } from '@/i18n/config'
@@ -32,9 +32,13 @@ export function HeroSection({ locale }: { locale: Locale }) {
     <StorySection id={sectionId('home', locale)}>
       <section
         aria-labelledby="hero-title"
-        className="hero relative flex min-h-dvh flex-col justify-end overflow-hidden bg-cobalt px-gutter pt-24 pb-10 text-white"
+        className="hero relative flex min-h-dvh flex-col justify-end overflow-hidden bg-cobalt px-gutter pt-24 pb-10"
+        // The inline script below sets data-backdrop before hydration.
+        suppressHydrationWarning
       >
-        <NeuroNoiseBackground />
+        <script dangerouslySetInnerHTML={{ __html: HERO_BACKDROP_SCRIPT }} />
+        <HeroBackdrop />
+        <HeroBackdropSwitch label={copy.backdrop.label} names={copy.backdrop.names} />
 
         {/* Name first in reading order, so phones open on it; from lg the laptop
             floats on the right side of the hero. */}

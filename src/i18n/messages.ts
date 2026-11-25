@@ -39,6 +39,10 @@ const es = {
     aboutMe: 'Sobre mí',
     contactMe: 'Contactarme',
     whatsapp: 'Escríbeme por WhatsApp',
+    backdrop: {
+      label: 'Fondo del inicio',
+      names: { neuro: 'Fondo azul animado', split: 'Fondo blanco y azul' },
+    },
     laptopModel: (name: string) => `Modelo 3D interactivo del portátil MSI Cyborg 15 con el perfil de ${name}`,
     laptopPhoto: (name: string) => `Portátil MSI Cyborg 15 con el perfil de ${name}`,
     screen: {
@@ -109,6 +113,7 @@ const es = {
     frameworks: 'Frameworks',
     architecture: 'Arquitectura',
     screenshots: 'Capturas reales',
+    trailer: 'Tráiler',
     next: 'Siguiente proyecto',
   },
   experience: {
@@ -220,6 +225,10 @@ const en: Messages = {
     aboutMe: 'About me',
     contactMe: 'Contact me',
     whatsapp: 'Message me on WhatsApp',
+    backdrop: {
+      label: 'Hero background',
+      names: { neuro: 'Animated blue background', split: 'White and blue background' },
+    },
     laptopModel: (name) => `Interactive 3D model of an MSI Cyborg 15 laptop showing ${name}'s profile`,
     laptopPhoto: (name) => `MSI Cyborg 15 laptop showing ${name}'s profile`,
     screen: {
@@ -290,6 +299,7 @@ const en: Messages = {
     frameworks: 'Frameworks',
     architecture: 'Architecture',
     screenshots: 'Real screenshots',
+    trailer: 'Trailer',
     next: 'Next project',
   },
   experience: {

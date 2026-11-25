@@ -19,9 +19,135 @@
     animation: neuro-still-in 900ms var(--ease-out-strong) both;
   }
 
+  /* Second background: white and cobalt, cut along the diagonal. Phones are
+     tall, so their cut runs flatter to keep the name on the white side. */
+  .hero-split {
+    --split-angle: 160deg;
+    --split-at: 52%;
+    background: linear-gradient(
+      var(--split-angle),
+      var(--color-white) calc(var(--split-at) - 0.5px),
+      var(--color-cobalt) calc(var(--split-at) + 0.5px)
+    );
+    opacity: 0;
+    transition: opacity var(--duration-drawer) var(--ease-out-strong);
+  }
+
+  @media (min-width: 64rem) {
+    .hero-split {
+      --split-angle: 116deg;
+      --split-at: 54%;
+    }
+  }
+
+  .hero[data-backdrop='split'] .hero-split {
+    opacity: 1;
+  }
+
+  /* Before hydration the shader may not be mounted yet; never show it under the split. */
+  .hero[data-backdrop='split'] .neuro-noise-layer {
+    display: none;
+  }
+
   /* Over the blue shader, primary actions use its own cyan instead of yellow. */
   .hero {
     --shadow-press: 0.25rem 0.25rem 0 var(--color-electric);
+    color: var(--color-white);
+    transition: color var(--duration-drawer) var(--ease-out-strong);
+  }
+
+  .hero[data-backdrop='split'] {
+    --shadow-press: 0.25rem 0.25rem 0 var(--color-black);
+    color: var(--color-black);
+  }
+
+  /* The floor shadow is invisible on blue but would end in a hard edge on white. */
+  .hero[data-backdrop='split'] .laptop3d-gl {
+    mask-image: radial-gradient(closest-side, #000 72%, transparent);
+  }
+
+  /* On white, the white button needs an edge of its own. */
+  .hero[data-backdrop='split'] .button-link[data-variant='secondary'] {
+    outline: 2px solid var(--color-black);
+    outline-offset: -2px;
+  }
+
+  .hero[data-backdrop='split'] .hero-status {
+    border-color: transparent;
+    background: var(--color-black);
+    color: var(--color-white);
+  }
+
+  /* Background picker: two swatches that preview what they switch to. */
+  /* Phones: bottom corner, clear of the name; from lg: top corner, clear of the laptop. */
+  .hero-backdrop-switch {
+    position: absolute;
+    right: var(--spacing-gutter);
+    bottom: 1rem;
+    z-index: 20;
+    display: flex;
+    gap: 0.375rem;
+    padding: 0.3125rem;
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.55);
+    backdrop-filter: blur(6px);
+  }
+
+  @media (min-width: 64rem) {
+    .hero-backdrop-switch {
+      top: calc(var(--spacing-header) + 0.75rem);
+      bottom: auto;
+    }
+  }
+
+  .hero-backdrop-option {
+    position: relative;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.35);
+    transition:
+      scale var(--duration-press) var(--ease-out-strong),
+      box-shadow var(--duration-indicator) var(--ease-out-strong);
+  }
+
+  /* 44px touch target around the 36px swatch. */
+  .hero-backdrop-option::before {
+    position: absolute;
+    inset: -0.25rem;
+    content: '';
+  }
+
+  .hero-backdrop-option[data-backdrop='neuro'] {
+    background:
+      radial-gradient(60% 60% at 70% 30%, var(--color-cyan), transparent 70%),
+      radial-gradient(90% 90% at 30% 75%, var(--color-electric), #000 80%);
+  }
+
+  .hero-backdrop-option[data-backdrop='split'] {
+    background: linear-gradient(135deg, var(--color-white) calc(50% - 0.5px), var(--color-cobalt) calc(50% + 0.5px));
+  }
+
+  .hero-backdrop-option[aria-pressed='true'] {
+    box-shadow:
+      0 0 0 2px #000,
+      0 0 0 4px var(--color-white);
+  }
+
+  .hero-backdrop-option:active {
+    scale: 0.94;
+  }
+
+  .hero-backdrop-option:focus-visible {
+    outline: 2px solid var(--color-yellow);
+    outline-offset: 4px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hero-backdrop-option[aria-pressed='false']:hover {
+      box-shadow: inset 0 0 0 2px var(--color-white);
+    }
   }
 
   .hero .button-link[data-variant='primary'] {
@@ -86,7 +212,8 @@
       animation: none;
     }
 
-    .neuro-noise {
+    .neuro-noise,
+    .hero-backdrop-option {
       transition: none;
     }
 
